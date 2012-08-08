@@ -1,4 +1,4 @@
 ttf.js
 ======
 
-JavaScript TrueTypeFont library
+JavaScript TrueTypeFont library.
