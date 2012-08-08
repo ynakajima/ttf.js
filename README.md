@@ -4,6 +4,11 @@ ttf.js
 JavaScript TrueTypeFont library.
 
 
+Demo
+======
+
+<a href="http://ynakajima.github.com/ttf.js/demo/index.html">Demo Page</a>
+
 Example
 ======
 
