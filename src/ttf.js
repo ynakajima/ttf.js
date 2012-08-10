@@ -33,9 +33,14 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
  
-var ttfjs = {};
+(function(global) {
 
-(function(ttfjs) {
+	// import jDataView	
+	if (typeof global.jDataView === 'undefined' && typeof require === 'function') {
+		var jDataView = require('jDataView');
+	} else {
+		var jDataView = global.jDataView;	
+	}
 	
 	/**
 	 * TrueTypeFont Constructor
@@ -494,7 +499,17 @@ var ttfjs = {};
 		date.setTime(this.getUint32(byteOffset + 4, false));
 		return date;
 	};
+
 	
-	ttfjs.TTF = TTF;
-	
-})(ttfjs);
+	// export
+	var ttfjs = {
+		TTF: TTF,
+		TTFGlyf: TTFGlyf
+	}; 
+    
+	global.ttfjs = (global.module || {}).exports = ttfjs;
+	if (typeof module !== 'undefined') {
+		module.exports = ttfjs;
+	}
+
+})(this);
