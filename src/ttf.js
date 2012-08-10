@@ -1,5 +1,5 @@
 /**
- * ttf.js - JavaScript TrueTypeFont library
+ * ttf.js - JavaScript TrueType Font library
  *
  * Copyright (C) 2012 by ynakajima
  * 
