@@ -9,6 +9,9 @@
 <script type="text/javascript" src="./glyflist.js"></script>
 <link rel="stylesheet" href="http://yui.yahooapis.com/3.5.0/build/cssreset/cssreset-min.css" />
 <style>
+	html {
+		color: #333;
+	}
 	header {
 		background-color: #eee;
 		padding: 1.5em;
@@ -37,15 +40,27 @@
 		padding: 3px;
 		font-size: 10px;
 		background-color: #eee;
+		border-bottom: 1px solid #fff;
 	}
 	svg.glyfSVG {
 		width: 100%;
 		max-height: 200px;
 	}
 	
+	li.glyf p:hover {
+		background-color: #ddd;
+	}
+	
 	svg.glyfSVG .path {
-		fill: #999;
+		fill: #333;
 		stroke: none;
+		stroke-width: 10px;
+	}
+	
+	li.glyf p:hover svg.glyfSVG .path {
+		fill: none;
+		stroke: #333;
+		stroke-width: 15px;
 	}
 	
 	#loading {

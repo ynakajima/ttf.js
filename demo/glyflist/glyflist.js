@@ -37,6 +37,15 @@ function onReadFile(e) {
                             }
                             $('#glyfList').append(svg);
                         }
+                        
+                        $("li.glyf p").hover(
+                            function () {
+                                $(this).addClass('hover');
+                            },
+                            function () {
+                                $(this).removeClass('hover');
+                            }
+                        );
                 };
 
                 // エラー処理
