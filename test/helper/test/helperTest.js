@@ -6,9 +6,10 @@ var module = QUnit.module;
 var test = QUnit.test;
 var ttfPath = '../../fonts/mplus-1c-regular.ttf';
 var specPath = '../../fontSpec/mplus-1c-regular.json.gz';
+var tableDirectoryPath = '../../fontSpec/mplus-1c-regular_tableDirectory.json';
 
 // テストの初期化
-var testInitializer = new helper.TestInitializer(ttfPath, specPath);
+var testInitializer = new helper.TestInitializer(ttfPath, specPath, tableDirectoryPath);
 
 testInitializer.on('complete', function (err) {
 	if (err) {
@@ -17,6 +18,7 @@ testInitializer.on('complete', function (err) {
 
 	var ttf = testInitializer.ttf;
 	var spec = testInitializer.spec;
+	var tableDirectory = testInitializer.tableDirectory;
 
 	// テスト開始
 	module('TTFLoader');
@@ -27,6 +29,11 @@ testInitializer.on('complete', function (err) {
 	module('SpecLoader');
 	test('isLoaded', function () {
 		equal(typeof spec, 'object');
+	});
+
+	module('TableDirectoryLoader');
+	test('isLoaded', function () {
+		equal(typeof tableDirectory, 'object');
 	});
 
 });

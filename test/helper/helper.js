@@ -12,14 +12,29 @@ var ttfjs = require('./../../src/ttf.js');
  * @param {String} ttfPath
  * @param {String} specPath
  */
-function TestInitializer(ttfPath, specPath) {
+function TestInitializer(ttfPath, specPath, tableDirectoryPath) {
 	events.EventEmitter.call(this);
 	this.ttfPath = ttfPath;
 	this.specPath = specPath;
-	this.ttf = null;
-	this.spec = null;
+	this.tableDirectoryPath = tableDirectoryPath;
+
+	this.ttf = '';
+	this.spec = '';
+	this.tableDirectory = '';
 
 	this.init();
+	var that = this;
+	console.log('loading Table Directory...');
+	console.time('tabelDirectoryLoaded');
+	fs.readFile(this.tableDirectoryPath, 'utf-8', function onRead(err, data) {
+		if (err) {
+			throw err;
+		}
+		console.timeEnd('tabelDirectoryLoaded');
+		that.tableDirectory = JSON.parse(data);
+		that.isComplete();
+	});
+
 }
 
 util.inherits(TestInitializer, events.EventEmitter);
@@ -50,7 +65,7 @@ TestInitializer.prototype.init = function () {
 };
 
 TestInitializer.prototype.isComplete = function () {
-	if (this.ttf !== null && this.spec !== null) {
+	if (this.ttf !== '' && this.spec !== '' && this.tableDirectory !== '') {
 		this.emit("complete", false);
 	}
 };
