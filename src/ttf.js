@@ -67,8 +67,8 @@
 		// num tables
 		this.numTables = view.getUint16(4, false);
 
-		// searchRength
-		this.searchRength = view.getUint16(6, false);
+		// searchRenge
+		this.searchRenge = view.getUint16(6, false);
 
 		// entrySelector
 		this.entrySelector = view.getUint16(8, false);
@@ -77,24 +77,11 @@
 		this.rengeShift = view.getUint16(10, false);
 
 		// tableDirectoryの取得と各テーブルの初期化
-		this.tableDirectory = {};
-		for ( var i = view.tell(), l = this.numTables * 16; i < l; i += 16) {
+		this.tableDirectory = new TTFTableDirecotry(view, view.tell(), this.numTables);
 
-			var tag = view.getString(4, i);
-			var checkSum = padZero(view.getUint32(i + 4, false).toString(16), 8);
-			var offset = view.getUint32(i + 8, false);
-			var length = view.getUint32(i + 12, false);
-
-			this.tableDirectory[tag] = {
-				tag : tag,
-				checkSum : checkSum,
-				offset : offset,
-				length : length,
-				data : {}
-			};
-
+		//各種テーブルの初期化
+		for (var tag in this.tableDirectory) {
 			this[tag] = {};
-
 		}
 
 		// head
@@ -181,13 +168,47 @@
 		return this.glyf[glyfIndex];
 	};
 
+
+	/**
+	 * TableDirectory Constructor
+	 * @param {jDataView} view
+	 * @param {Number} offset
+	 */
+	function TTFTableDirecotry (view, offset, numTables) {
+		this.init(view, offset, numTables);
+	};
+
+	/**
+	 * 初期化
+	 * @param {jDataView} view
+	 * @param {Number} offset
+	 */
+	TTFTableDirecotry.prototype.init = function(view, offset, numTables) {
+		for ( var i = offset, l = numTables * 16; i < l; i += 16) {
+
+			var tag = view.getString(4, i);
+			var checkSum = padZero(view.getUint32(i + 4, false).toString(16), 8);
+			var offset = view.getUint32(i + 8, false);
+			var length = view.getUint32(i + 12, false);
+
+			this[tag] = {
+				tag : tag,
+				checkSum : checkSum,
+				offset : offset,
+				length : length,
+			};
+
+		}
+	};
+
+
 	/**
 	 * Glyph Constructor
 	 * @param {jDataView} view
 	 * @param {Number} offset
 	 * @param {Boolean} isNull
 	 */
-	var TTFGlyf = function(view, offset, isNull) {
+	function TTFGlyf(view, offset, isNull) {
 		// 各種初期化
 		this.view = view;
 		this.offset = offset;
@@ -481,6 +502,7 @@
 	// export
 	var ttfjs = {
 		TTF : TTF,
+		TTFTableDirecotry: TTFTableDirecotry,
 		TTFGlyf : TTFGlyf
 	};
 
