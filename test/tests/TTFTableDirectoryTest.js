@@ -27,10 +27,10 @@ testInitializer.on('complete', function (err) {
 	 */
 	module('Table Direcotry');
 	test('TableDirectory exists', function() {
-		ok(typeof ttf.tableDirectory !== 'undefined');
+		ok((typeof ttf.tableDirectory !== 'undefined'), 'ttf.tableDirectory  is NOT undefined');
 	});
 	test('instanceof TTFTableDirecotry', function(){
-		ok(ttf.tableDirectory instanceof ttfjs.TTFTableDirecotry);
+		ok(ttf.tableDirectory instanceof ttfjs.TTFTableDirecotry, 'ttf.tableDirectory  is instalce of TTFTableDirecotry');
 	});
 
 	//table directory
@@ -38,10 +38,10 @@ testInitializer.on('complete', function (err) {
 		test(tag, function(){
 			var actualTD = ttf.tableDirectory[tag];
 			var specTD = tableDirectory[tag];
-			ok(typeof actualTD !== 'undefined');
-			equal(actualTD.checkSum, specTD.checksum);
-			equal(actualTD.offset, specTD.offset);
-			equal(actualTD.length, specTD.len);
+			ok((typeof actualTD !== 'undefined'), tag + ' is NOT undefined');
+			equal(actualTD.checkSum, specTD.checksum, tag + '.checkSum is ' + specTD.checksum);
+			equal(actualTD.offset, specTD.offset, tag + '.offset is ' + specTD.offset);
+			equal(actualTD.length, specTD.len, tag + '.length is ' + specTD.len);
 		});
 	}
 

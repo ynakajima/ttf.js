@@ -25,21 +25,24 @@ testInitializer.on('complete', function (err) {
 	/**
 	 * テスト開始
 	 */
-	module('header');
-	test('version is 1', function(){
-		equal(ttf.version, 1);
+	module('TTF');
+	test('instanceof TTF', function(){
+		ok((ttf instanceof TTF), 'ttf is instalce of TTF');
+	})
+	test('version', function(){
+		equal(ttf.version, 1, 'version is 1');
 	});
 	test('numTables', function(){
-		equal(ttf.numTables, tableDirectory.numtables);
+		equal(ttf.numTables, tableDirectory.numtables, 'numTables is ' + tableDirectory.numtables);
 	});
 	test('searchRange', function(){
-		equal(ttf.searchRenge, tableDirectory.searchRange);
+		equal(ttf.searchRenge, tableDirectory.searchRange, 'searchRange is ' + tableDirectory.searchRange);
 	});
 	test('entrySelector', function(){
-		equal(ttf.entrySelector, tableDirectory.entrySel);
+		equal(ttf.entrySelector, tableDirectory.entrySel, 'entrySel is ' + tableDirectory.entrySel);
 	});
 	test('rangeShift', function(){
-		equal(ttf.rengeShift, tableDirectory.rangeshift);
+		equal(ttf.rengeShift, tableDirectory.rangeshift, 'rangeshift is ' + tableDirectory.rangeshift);
 	});
 
 });
