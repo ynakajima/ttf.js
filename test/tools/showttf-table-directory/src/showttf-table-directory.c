@@ -258,24 +258,24 @@ static int readttfheader(FILE *ttf, FILE *util, struct ttfinfo *info) {
     if ( v==CHR('t','t','c','f')) {
 	v = getlong(ttf);
 	info->ttccnt = getlong(ttf);
-	printf( "This is a TrueType Font Collection file (version=%x), with %d fonts\n", v, info->ttccnt );
+	printf( "\"ttc\":\"This is a TrueType Font Collection file (version=%x), with %d fonts\",\n", v, info->ttccnt );
 	info->ttcoffsets = calloc(info->ttccnt,sizeof(int));
 	for ( i = 0; i<info->ttccnt; ++i ) {
 	    info->ttcoffsets[i] = getlong(ttf);
-	    printf( " Offset to font %d header: %d\n", i, info->ttcoffsets[i]);
+	    printf( "\"ttcOffset\":\" Offset to font %d header: %d\",\n", i, info->ttcoffsets[i]);
 	}
 return(true);
     }
-	
+
     version = long2fixed(v);
     info->numtables = getushort(ttf);
     sr = getushort(ttf),
     es = getushort(ttf),
     rs = getushort(ttf);
     if ( v==CHR('O','T','T','O'))
-	printf( "version='OTTO', " );
+	printf( "\"version\":\"OTTO\", " );
     else if ( v==CHR('t','r','u','e'))
-	printf( "version='true', " );
+	printf( "\"version\":\"true\", " );
     else if ( v==CHR('S','p','l','i')) {
 	fprintf(stderr, "This looks like one of fontforge's spline font databases, and not a truetype font.\n" );
 exit ( 1 );
@@ -294,25 +294,29 @@ exit ( 1 );
 	readcff(ttf,util,info);
 exit(0);
     } else if ( v==CHR('t','y','p','1')) {
-	printf( "version='typ1', " );
+	printf( "\"version\":\"typ1\", " );
 	/* This is apple's embedding of a type1 font in a truetype file. I don't know how to parse it. I'd like a copy to look at if you don't mind sending me one... gww@silcom.com */
     } else
-	printf( "version=%g, ", version );
-    printf( "numtables=%d, searchRange=%d entrySel=%d rangeshift=%d\n",
+	printf( "\"version\":%g, ", version );
+    printf( "\"numtables\":%d, \"searchRange\":%d, \"entrySel\":%d, \"rangeshift\":%d,\n",
 	    info->numtables, sr, es, rs);
     e_sr = (info->numtables<8?4:info->numtables<16?8:info->numtables<32?16:info->numtables<64?32:64)*16;
     e_es = (info->numtables<8?2:info->numtables<16?3:info->numtables<32?4:info->numtables<64?5:6);
     e_rs = info->numtables*16-e_sr;
     if ( e_sr!=sr || e_es!=es || e_rs!=rs )
-	printf( "!!!! Unexpected values for binsearch header. Based on the number of tables I\n!!!!! expect searchRange=%d (not %d), entrySel=%d (not %d) rangeShift=%d (not %d)\n",
+	printf( "\"unexpectedValues\":\"!!!! Unexpected values for binsearch header. Based on the number of tables I\n!!!!! expect searchRange=%d (not %d), entrySel=%d (not %d) rangeShift=%d (not %d)\",\n",
 		e_sr, sr, e_es, es, e_rs, rs );
-    
+
+
+
 /* The one example I have of a ttc file has the file checksum set to: 0xdcd07d3e */
 /*  I don't know if that's magic or not (docs don't say), but it vaguely follows */
 /*  the same pattern as 0xb1b0afba so it might be */
 /* All the fonts used the same head table so one difficulty was eased */
-    printf( "File Checksum =%x (should be 0xb1b0afba), diff=%x\n",
-	    filecheck(util,0,-1), 0xb1b0afba-filecheck(util,0,-1));
+    /*printf( "\"checksum\":%x, \"actualChecksum\":0xb1b0afba), diff=%x\n",
+	    filecheck(util,0,-1), 0xb1b0afba-filecheck(util,0,-1));*/
+
+    printf("\"tableDirectory\":{\n");
 
     for ( i=0; i<info->numtables; ++i ) {
 	tag = getlong(ttf);
@@ -320,7 +324,7 @@ exit(0);
 	offset = getlong(ttf);
 	length = getlong(ttf);
 	cs = filecheck(util,offset,length);
- printf( "%c%c%c%c checksum=%08x actual=%08x diff=%x offset=%d len=%d\n",
+ printf( "\"%c%c%c%c\": {\"checksum\":\"%08x\", \"actual\":\"%08x\", \"diff\":\"%x\", \"offset\":%d, \"len\":%d},\n",
 	     tag>>24, (tag>>16)&0xff, (tag>>8)&0xff, tag&0xff,
 	     checksum, cs, checksum^cs,
 	     offset, length );
@@ -455,6 +459,9 @@ exit(0);
 	  break;
 	}
     }
+
+    printf("}\n"); // end of tableDirectory
+
     if ( (info->encoding_start!=0 && info->glyph_start==0 && info->head_start!=0 &&
 	    info->hhea_start!=0 && info->hmetrics_start!=0 && info->glyphlocations_start == 0 &&
 	    info->maxp_start!=0 && info->copyright_start!=0 && info->postscript_start!=0 &&
@@ -2231,7 +2238,7 @@ static void showlangsys(FILE *ttf,int script_start, uint16 ls_off, uint32 ls_nam
     for ( i=0; i<cnt; ++i )
 	printf( "\t   Feature %d Offset=%d\n", i, getushort(ttf));
 }
-    
+
 static void showscriptlist(FILE *ttf,int script_start ) {
     int cnt,i, j;
     uint16 *script_table_offsets;
@@ -2450,7 +2457,7 @@ static void gposPairSubTable(FILE *ttf, int which, int stoffset, struct ttfinfo 
     printf( "\t   SubFormat=%d\n", subformat = getushort(ttf));
     printf( "\t   Coverage Offset=%d\n", coverage = getushort(ttf));
     printf( "\t   ValueFormat1=0x%x ", vf1 = getushort(ttf));
-    printf( "%s%s%s%s%s%s%s%s\n", 
+    printf( "%s%s%s%s%s%s%s%s\n",
 	    (vf1&1) ? "XPlacement|":"",
 	    (vf1&2) ? "YPlacement|":"",
 	    (vf1&4) ? "XAdvance|":"",
@@ -2602,7 +2609,7 @@ static void gsubSingleSubTable(FILE *ttf, int which, int stoffset, struct ttfinf
 		    val >= info->glyph_cnt ? "!!! Bad glyph !!!" : info->glyph_names == NULL ? "" : info->glyph_names[val]);
 	}
     }
-    
+
 }
 
 static void gsubMultipleSubTable(FILE *ttf, int which, int stoffset, struct ttfinfo *info) {
@@ -3037,7 +3044,7 @@ static void readttffontdescription(FILE *ttf, FILE *util, struct ttfinfo *info) 
 	val = getfixed(ttf);
 	fseek(ttf,-4,SEEK_CUR);
 	lval = getlong(ttf);
-	printf("\t  %c%c%c%c %s %08lx ", 
+	printf("\t  %c%c%c%c %s %08lx ",
 	     tag>>24, (tag>>16)&0xff, (tag>>8)&0xff, tag&0xff,
 	     tag==CHR('w','g','h','t')? "Weight" :
 	     tag==CHR('w','d','t','h')? "Width" :
@@ -3285,7 +3292,7 @@ return( setting==0 ? "hyphens to Em dashes On" :
 	setting==3 ? "hyphens to En dashes Off" :
 	setting==4 ? "unslashed Zero On" :
 	setting==5 ? "unslashed Zero Off" :
-	setting==6 ? "form Interrobang On" : 
+	setting==6 ? "form Interrobang On" :
 	setting==7 ? "form Interrobang Off" :
 	setting==8 ? "smart Quotes On" :
 	setting==9 ? "smart Quotes Off" :
@@ -3465,10 +3472,10 @@ static void show_applelookuptable(FILE *ttf,struct ttfinfo *info,void (*show)(FI
 	    last = getushort(ttf);
 	    first = getushort(ttf);
 	    printf( "All glyphs between %d (%s) and %d (%s)=",
-		    first, 
+		    first,
 		    first>=info->glyph_cnt ? "!!!! Bad Glyph !!!!" : info->glyph_names!=NULL ?
 		     info->glyph_names[first]: "",
-		    last, 
+		    last,
 		    last>=info->glyph_cnt ? "!!!! Bad Glyph !!!!" : info->glyph_names!=NULL ?
 		     info->glyph_names[last]: "" );
 	    show( ttf,info );
@@ -3844,7 +3851,7 @@ return( NULL );
 
     st->nstates = state_max;
     st->nentries = ent_max;
-    
+
     fseek(ttf,here+state_off,SEEK_SET);
     /* an array of arrays of state transitions, each represented by one byte */
     /*  which is an index into the Entry subtable, which comes next. */
@@ -4143,7 +4150,7 @@ return;
     do {
 	val = getlong(ttf);
 	printf( "\t    lig action %08x %s offset=%d\n", val,
-		(val&0x80000000)?"last (& store)": 
+		(val&0x80000000)?"last (& store)":
 		(val&0x40000000)?"store": "delete",
 		(((int32)val)<<2)>>2 );		/* Sign extend */
 	/* I think we take 2 * (glyph_id-st->first_glyph + offset) + state_start */
@@ -4188,7 +4195,7 @@ return;
     do {
 	val = getlong(ttf);
 	printf( "\t    lig action %08x %s offset=%d\n", val,
-		(val&0x80000000)?"last (& store)": 
+		(val&0x80000000)?"last (& store)":
 		(val&0x40000000)?"store": "delete",
 		(((int32)val)<<2)>>2 );		/* Sign extend */
 	/* I think we take 2 * (glyph_id-st->first_glyph + offset) + state_start */
@@ -6094,7 +6101,7 @@ static void PrintDeviceTable(FILE *ttf, uint32 start) {
     }
     fseek( ttf, here, SEEK_SET );
 }
-    
+
 static void PrintMathValueRecord(FILE *ttf, uint32 start) {
     int val;
     uint32 devtaboffset;
@@ -6800,8 +6807,12 @@ int main(int argc, char **argv) {
     int i;
     char *pt;
 
+    // ヘッダーのみ表示する
+    just_headers = true;
+
     for ( i=1; i<argc; ++i ) {
 	if ( *argv[i]=='-' ) {
+		/*
 	    pt = argv[i]+1;
 	    if ( *pt=='-' ) ++pt;
 	    if ( strcmp(pt,"v")==0 || strcmp(pt,"verbose")==0 )
@@ -6814,6 +6825,7 @@ int main(int argc, char **argv) {
 		fprintf( stderr, "%s [-verbose] ttf-file\n", argv[0]);
 		exit(1);
 	    }
+	    */
 	} else {
 	    if ( filename!=NULL )
 		printf( "\n\n\n******************** %s *****************\n\n\n", argv[i]);
@@ -6825,7 +6837,11 @@ return( 1 );
 	    }
 	    util = fopen(filename,"rb");
 
+	    // JSON開始
+	    printf("{\n");
 	    readit(ttf,util);
+	    // JSON終了
+	    printf("}\n");
 	    fclose(ttf);
 	    fclose(util);
 	}
