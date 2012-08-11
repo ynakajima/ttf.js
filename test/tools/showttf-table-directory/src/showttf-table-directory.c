@@ -352,10 +352,15 @@ exit(0);
 	offset = getlong(ttf);
 	length = getlong(ttf);
 	cs = filecheck(util,offset,length);
- printf( "\"%c%c%c%c\": {\"checksum\":\"%08x\", \"actual\":\"%08x\", \"diff\":\"%x\", \"offset\":%d, \"len\":%d},\n",
+ printf( "\"%c%c%c%c\": {\"checksum\":\"%08x\", \"actual\":\"%08x\", \"diff\":\"%x\", \"offset\":%d, \"len\":%d}",
 	     tag>>24, (tag>>16)&0xff, (tag>>8)&0xff, tag&0xff,
 	     checksum, cs, checksum^cs,
 	     offset, length );
+ 	 //末尾にはコンマをつけない
+ 	 if (i<info->numtables -1) {
+ 		printf(",");
+ 	 }
+ 	printf("\n");
 	switch ( tag ) {
 	  case CHR('B','A','S','E'):
 	    info->base_start = offset;
