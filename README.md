@@ -5,8 +5,9 @@ A JavaScript TrueType font engine for modern browsers and Node.js.
 
 Demo
 ------
-<a href="http://ynakajima.github.com/ttf.js/demo/glyflist/index.html">Demo Page</a>
+<a href="http://ynakajima.github.com/ttf.js/demo/glyflist/index.html">ttf.js Demo - Glyph List</a>
 
+<img src="http://ynakajima.github.com/ttf.js/images/demo_screen_thumb.png" alt="ttf.js Demo - Glyph List" />
 
 Development Status
 ------
