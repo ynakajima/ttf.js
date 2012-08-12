@@ -13,6 +13,58 @@ Development Status
 work in progress...
 
 
+
+### Implementation status of TrueType Tables
+
+#### header
+<table>
+  <tbody>
+    <tr><th>sfnt version</th><td>Implemented</td></tr>
+    <tr><th>numTables</th><td>Implemented</td></tr>
+    <tr><th>searchRange</th><td>Implemented</td></tr>
+    <tr><th>entrySelector</th><td>Implemented</td></tr>
+    <tr><th>rangeShift</th><td>Implemented</td></tr>
+    <tr><th>Table Directory</th><td>Implemented</td></tr>
+  </tbody>
+</table>
+
+#### Required Tables
+<table>
+  <tbody>
+    <tr><th>cmap</th><td>-</td></tr>
+    <tr><th>glyf</th><td>O</td></tr>
+    <tr><th>head</th><td>some</td></tr>
+    <tr><th>hhea</th><td>-</td></tr>
+    <tr><th>hmtx</th><td>-</td></tr>
+    <tr><th>loca</th><td>-</td></tr>
+    <tr><th>maxp</th><td>-</td></tr>
+    <tr><th>name</th><td>-</td></tr>
+    <tr><th>post</th><td>-</td></tr>
+    <tr><th>OS/2</th><td>-</td></tr>
+  </tbody>
+</table>
+
+#### Optional Tables
+<table>
+  <tbody>
+    <tr><th>cvt</th><td>-</td></tr>
+    <tr><th>EBDT</th><td>-</td></tr>
+    <tr><th>EBLC</th><td>-</td></tr>
+    <tr><th>EBSC</th><td>-</td></tr>
+    <tr><th>fpgm</th><td>-</td></tr>
+    <tr><th>gasp</th><td>-</td></tr>
+    <tr><th>hdmx</th><td>-</td></tr>
+    <tr><th>kern</th><td>-</td></tr>
+    <tr><th>LTSH</th><td>-</td></tr>
+    <tr><th>prep</th><td>-</td></tr>
+    <tr><th>PCLT</th><td>-</td></tr>
+    <tr><th>VDMX</th><td>-</td></tr>
+    <tr><th>vhea</th><td>-</td></tr>
+    <tr><th>vmtx</th><td>-</td></tr>
+  </tbody>
+</table>
+
+
 TrueType Specifications
 ------
 
