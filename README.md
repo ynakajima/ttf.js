@@ -32,12 +32,12 @@ work in progress...
 <table>
   <tbody>
     <tr><th>cmap</th><td>-</td></tr>
-    <tr><th>glyf</th><td>O</td></tr>
-    <tr><th>head</th><td>some</td></tr>
+    <tr><th>glyf</th><td>Almost</td></tr>
+    <tr><th>head</th><td>Almost</td></tr>
     <tr><th>hhea</th><td>-</td></tr>
     <tr><th>hmtx</th><td>-</td></tr>
-    <tr><th>loca</th><td>-</td></tr>
-    <tr><th>maxp</th><td>-</td></tr>
+    <tr><th>loca</th><td>Almost</td></tr>
+    <tr><th>maxp</th><td>Almost</td></tr>
     <tr><th>name</th><td>-</td></tr>
     <tr><th>post</th><td>-</td></tr>
     <tr><th>OS/2</th><td>-</td></tr>
