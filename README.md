@@ -17,7 +17,7 @@ work in progress...
 
 ### Implementation status of TrueType Tables
 
-#### header
+#### Offset Table
 <table>
   <tbody>
     <tr><th>sfnt version</th><td>Implemented</td></tr>
@@ -25,6 +25,12 @@ work in progress...
     <tr><th>searchRange</th><td>Implemented</td></tr>
     <tr><th>entrySelector</th><td>Implemented</td></tr>
     <tr><th>rangeShift</th><td>Implemented</td></tr>
+  </tbody>
+</table>
+
+#### Table Directory
+<table>
+  <tbody>
     <tr><th>Table Directory</th><td>Implemented</td></tr>
   </tbody>
 </table>
