@@ -17,7 +17,7 @@ work in progress...
 
 ### Implementation status of TrueType Tables
 
-#### Offset Table
+#### sfnt header
 <table>
   <tbody>
     <tr><th>sfnt version</th><td>Implemented</td></tr>
