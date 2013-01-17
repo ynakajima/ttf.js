@@ -404,13 +404,12 @@
 						if (currentPoint.isOnCurve) {
 							path += "M" + currentPoint.x + "," + currentPoint.y
 									+ " ";
-						} else if (typeof prevPoint !== 'undefined'
-								&& typeof nextPoint !== 'undefined') { // 開始点が曲線上になかった場合
+						} else { // 開始点が曲線上になかった場合
 
 							// 中間点
 							var midPoint = {
-								x : (prevPoint.x + nextPoint.x) / 2,
-								y : (prevPoint.y + nextPoint.y) / 2
+								x : (prevPoint.x + currentPoint.x) / 2,
+								y : (prevPoint.y + currentPoint.y) / 2
 							};
 							path += "M" + midPoint.x + "," + midPoint.y + " Q"
 									+ currentPoint.x + "," + currentPoint.y
@@ -449,8 +448,18 @@
 				// 輪郭の終点が曲線上にない場合の処理
 				if (!currentPoint.isOnCurve
 						&& typeof this.coordinates[startPts] !== 'undefined') {
-					pathArray.push(this.coordinates[startPts].x + ","
-							+ this.coordinates[startPts].y + " ");
+
+					// 輪郭の開始点が曲線上にあった場合
+				  if (this.coordinates[startPts].isOnCurve) {
+						pathArray.push(this.coordinates[startPts].x + ","
+								+ this.coordinates[startPts].y + " ");
+					} else {
+						var midPoint = {
+								x : (currentPoint.x + this.coordinates[startPts].x) / 2,
+								y : (currentPoint.y + this.coordinates[startPts].y) / 2
+							};
+						pathArray.push(midPoint.x + "," + midPoint.y + " ");
+					}
 				}
 
 				// パスを閉じる
