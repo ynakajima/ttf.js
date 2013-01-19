@@ -156,8 +156,9 @@ if (!ttfjs) { var ttfjs = {}; }
     if (typeof offset === 'number') {
       this.seek(offset);
     }
-    return parseInt(this.view.getUint16().toString(10) +
-      '.' + this.view.getInt16().toString(10), 10);
+    var mantissa = this.view.getInt16();
+    var fraction = this.view.getUint16() / Math.pow(2, 16);
+    return Math.round((mantissa + fraction) * 1000000) / 1000000;
   };
 
   /**

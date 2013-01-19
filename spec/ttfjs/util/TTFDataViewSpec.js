@@ -45,6 +45,7 @@
       0xde, 0xf0, // USHORT: 57072, SHORT: -8464
       0xab, 0xcd, 0xef, 0x89, // ULONG: 2882400137, LONG: -1412567159
       0x00, 0x01, 0x00, 0x00, // FIXED: 1.0
+      0x01, 0x9c, 0x39, 0xe1, // FIXED: 412.226089478
       0x7f, 0xff, // F2DOT14: 1.999939
       0x70, 0x00, // F2DOT14: 1.75
       0x00, 0x01, // F2DOT14: 0.000061
@@ -79,7 +80,7 @@
         expect(ttfDataView.getString).toEqual(jasmine.any(Function));
       });
 
-      ttfDataView.seek(23);
+      ttfDataView.seek(27);
 
       it('returns string.', function() {
         expect(ttfDataView.getString(2)).toEqual('2@');
@@ -167,6 +168,7 @@
 
       it('returns the 32-bit signed fixed-point number (16.16).', function() {
         expect(ttfDataView.getFixed(7)).toEqual(1.0);
+        expect(ttfDataView.getFixed()).toEqual(412.226089);
       });
 
     });
