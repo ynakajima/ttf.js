@@ -59,11 +59,30 @@ if (!ttfjs) { var ttfjs = {}; }
   ttfjs.util.TTFDataView.INT2 = [0, 1, -2, -1];
 
   /**
+   * seek
+   * @param {number} offset offset.
+   */
+  ttfjs.util.TTFDataView.prototype.seek = function(offset) {
+    return this.view.seek(offset | 0);
+  };
+
+  /**
+   * Return String.
+   * @param {number} length length of string.
+   */
+  ttfjs.util.TTFDataView.prototype.getString = function(length) {
+    return this.view.getString(length);
+  };
+
+  /**
    * Return 8-bit unsigned integer.
    * @param {number} offset offset.
    */
   ttfjs.util.TTFDataView.prototype.getByte = function(offset) {
-    return this.view.getUint8(offset | 0);
+    if (typeof offset === 'number') {
+      this.seek(offset);
+    }
+    return this.view.getUint8();
   };
 
   /**
@@ -71,7 +90,10 @@ if (!ttfjs) { var ttfjs = {}; }
    * @param {number} offset offset.
    */
   ttfjs.util.TTFDataView.prototype.getChar = function(offset) {
-    return this.view.getInt8(offset | 0);
+    if (typeof offset === 'number') {
+      this.seek(offset);
+    }
+    return this.view.getInt8();
   };
 
   /**
@@ -79,7 +101,10 @@ if (!ttfjs) { var ttfjs = {}; }
    * @param {number} offset offset.
    */
   ttfjs.util.TTFDataView.prototype.getUshort = function(offset) {
-    return this.view.getUint16(offset | 0);
+    if (typeof offset === 'number') {
+      this.seek(offset);
+    }
+    return this.view.getUint16();
   };
 
   /**
@@ -87,7 +112,10 @@ if (!ttfjs) { var ttfjs = {}; }
    * @param {number} offset offset.
    */
   ttfjs.util.TTFDataView.prototype.getShort = function(offset) {
-    return this.view.getInt16(offset | 0);
+    if (typeof offset === 'number') {
+      this.seek(offset);
+    }
+    return this.view.getInt16();
   };
 
   /**
@@ -95,7 +123,10 @@ if (!ttfjs) { var ttfjs = {}; }
    * @param {number} offset offset.
    */
   ttfjs.util.TTFDataView.prototype.getUlong = function(offset) {
-    return this.view.getUint32(offset | 0);
+    if (typeof offset === 'number') {
+      this.seek(offset);
+    }
+    return this.view.getUint32();
   };
 
   /**
@@ -103,7 +134,10 @@ if (!ttfjs) { var ttfjs = {}; }
    * @param {number} offset offset.
    */
   ttfjs.util.TTFDataView.prototype.getLong = function(offset) {
-    return this.view.getInt32(offset | 0);
+    if (typeof offset === 'number') {
+      this.seek(offset);
+    } 
+    return this.view.getInt32();
   };
 
   /**
@@ -111,9 +145,11 @@ if (!ttfjs) { var ttfjs = {}; }
    * @param {number} offset offset.
    */
   ttfjs.util.TTFDataView.prototype.getFixed = function(offset) {
-    offset = offset | 0;
-    return parseInt(this.view.getUint16(offset).toString(10) +
-      '.' + this.view.getInt16(offset + 1).toString(10), 10);
+    if (typeof offset === 'number') {
+      this.seek(offset);
+    }
+    return parseInt(this.view.getUint16().toString(10) +
+      '.' + this.view.getInt16().toString(10), 10);
   };
 
   /**
@@ -121,8 +157,10 @@ if (!ttfjs) { var ttfjs = {}; }
    * @param {number} offset offset.
    */
   ttfjs.util.TTFDataView.prototype.getF2dot14 = function(offset) {
-    offset = offset | 0;
-    var raw = this.view.getUint16(offset);
+    if (typeof offset === 'number') {
+      this.seek(offset);
+    } 
+    var raw = this.view.getUint16();
     var mantissa = ttfjs.util.TTFDataView.INT2[(raw >>> 14)];
     var fraction = parseInt(('0000000000000000' + (raw).toString(2)).slice(-14), 2) / 16384;
     return Math.round((mantissa + fraction) * 1000000) / 1000000;

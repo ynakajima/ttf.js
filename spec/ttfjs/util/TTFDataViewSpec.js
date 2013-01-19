@@ -50,7 +50,8 @@
       0x00, 0x01, // F2DOT14: 0.000061
       0x00, 0x00, // F2DOT14: 0.0
       0xff, 0xff, // F2DOT14: -0.000061
-      0x80, 0x00  // F2DOT14: -2.0
+      0x80, 0x00, // F2DOT14: -2.0
+      0x32, 0x40 // string: '2@'
     );
     var view = new jDataView(dummyBuffer);
     var ttfDataView = new ttfjs.util.TTFDataView(view);
@@ -62,6 +63,28 @@
 
     it('has view member.', function() {
       expect(ttfDataView.view).toEqual(jasmine.any(jDataView));
+    });
+
+    describe('ttfjs.util.TTFDataView.seek()', function() {
+
+      it('is method.', function() {
+        expect(ttfDataView.seek).toEqual(jasmine.any(Function));
+      });
+
+    });
+
+   describe('ttfjs.util.TTFDataView.getString()', function() {
+
+      it('is method.', function() {
+        expect(ttfDataView.getString).toEqual(jasmine.any(Function));
+      });
+
+      ttfDataView.seek(23);
+
+      it('returns string.', function() {
+        expect(ttfDataView.getString(2)).toEqual('2@');
+      });
+
     });
 
     describe('ttfjs.util.TTFDataView.getByte()', function() {
@@ -155,11 +178,11 @@
       });
 
       it('returns the 16-bit signed fixed number with the low 14 bits of fraction (2.14).', function() {
-        expect(ttfDataView.getF2dot14(11)).toEqual(1.999939);
-        expect(ttfDataView.getF2dot14(13)).toEqual(1.75);
-        expect(ttfDataView.getF2dot14(15)).toEqual(0.000061);
-        expect(ttfDataView.getF2dot14(17)).toEqual(0.0);
-        expect(ttfDataView.getF2dot14(19)).toEqual(-0.000061);
+        expect(ttfDataView.getF2dot14()).toEqual(1.999939);
+        expect(ttfDataView.getF2dot14()).toEqual(1.75);
+        expect(ttfDataView.getF2dot14()).toEqual(0.000061);
+        expect(ttfDataView.getF2dot14()).toEqual(0.0);
+        expect(ttfDataView.getF2dot14()).toEqual(-0.000061);
       });
 
     });
