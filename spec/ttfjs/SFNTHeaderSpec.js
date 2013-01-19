@@ -33,6 +33,9 @@
   var ttfjs = (typeof require !== 'undefined') ?
     require('../../src/SFNTHeader.js') :
     global.ttfjs;
+  ttfjs.util = (typeof require !== 'undefined') ?
+    require('../../src/util/TTFDataView.js').util :
+    global.ttfjs.util;
   var jDataView = (typeof global.jDataView === 'undefined') ?
     require('../../vendor/jdataview') :
     global.jDataView;
@@ -44,7 +47,7 @@
   // spec
   describe('ttfjs.SFNTHeader', function() {
 
-    var dataview = new jDataView(buffer, 0, buffer.byteLength, false);
+    var dataview =new ttfjs.util.TTFDataView(new jDataView(buffer, 0, buffer.byteLength, false));
     var sfntHeader = new ttfjs.SFNTHeader(dataview);
 
     it('is Coonstructor', function() {
@@ -52,14 +55,14 @@
       expect(sfntHeader).toEqual(jasmine.any(ttfjs.SFNTHeader));
     });
 
-    it('will throw an error when passed an argument other than jDataView.',
+    it('will throw an error when passed an argument other than TTFDataView.',
       function() {
         expect(function() {
           new ttfjs.SFNTHeader(dataview);
-        }).not.toThrow('error: dataview is not jDataView.');
+        }).not.toThrow('error: dataview is not TTFDataView.');
         expect(function() {
           new ttfjs.SFNTHeader('hoge');
-        }).toThrow('error: dataview is not jDataView.');
+        }).toThrow('error: dataview is not TTFDataView.');
       }
     );
 

@@ -33,20 +33,20 @@ if (!ttfjs) { var ttfjs = {}; }
 (function(global, ttfjs) {
 
   // require
-  var jDataView = (typeof global.jDataView === 'undefined') ?
-    require('../vendor/jdataview') :
-    global.jDataView;
+  ttfjs.util = (typeof require !== 'undefined') ?
+    require('./util/TTFDataView.js').util :
+    global.ttfjs.util;
 
   /**
    * SFNTHeader Class
    * <p>Spec: http://www.microsoft.com/typography/otspec/otff.htm</p>
    * @constructor
-   * @param {jDataView} dataview jDataView Object.
+   * @param {ttfjs.util.TTFDataView} dataview TTFDataView Object.
    */
   ttfjs.SFNTHeader = function(dataview) {
 
-    if (typeof dataview !== 'object' || !dataview instanceof jDataView) {
-      throw 'error: dataview is not jDataView.';
+    if (typeof dataview !== 'object' || !dataview instanceof ttfjs.util.TTFDataView) {
+      throw 'error: dataview is not TTFDataView.';
     }
 
     /**
@@ -85,7 +85,7 @@ if (!ttfjs) { var ttfjs = {}; }
 
   /**
    * Init SFNTheader
-   * @param {jDataView} dataview jDataView Object.
+   * @param {ttfjs.util.TTFDataView} dataview TTFDataView Object.
    * @private
    */
   ttfjs.SFNTHeader.prototype._init = function(dataview) {

@@ -78,8 +78,8 @@ if (!ttfjs) { var ttfjs = {}; }
   };
 
   /**
-   * Create Table insance from jDataView object.
-   * @param {jDataView} view jDataView object.
+   * Create Table insance from TTFDataView object.
+   * @param {TTFDataView} view TTFDataView object.
    */
   ttfjs.Table.createFromDataView = function(view) {
     throw 'error: this is interface.';

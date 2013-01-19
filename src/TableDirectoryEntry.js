@@ -33,9 +33,9 @@ if (!ttfjs) { var ttfjs = {}; }
 (function(global, ttfjs) {
 
   // require
-  var jDataView = (typeof global.jDataView === 'undefined') ?
-    require('../vendor/jdataview') :
-    global.jDataView;
+  ttfjs.util = (typeof require !== 'undefined') ?
+    require('./util/TTFDataView.js') :
+    global.ttfjs.util;
 
   /**
    * The table directory follows the offset subtable.
@@ -44,7 +44,7 @@ if (!ttfjs) { var ttfjs = {}; }
    * @param {string} checksum checksum for table.
    * @param {number} offset offset from beginning of sfnt.
    * @param {number} length length of table in byte.
-   * @param {jDataView} view Font file buffer.
+   * @param {ttfjs.util.TTFDataView} view Font file buffer.
    */
   ttfjs.TableDirectoryEntry = function(tag, checksum, offset, length, view) {
 
@@ -74,9 +74,9 @@ if (!ttfjs) { var ttfjs = {}; }
 
     /**
      * @private
-     * @type jDataView
+     * @type ttfjs.util.TTFDataView 
      */
-    this.view_ = (view instanceof jDataView) ? view : null;
+    this.view_ = (view instanceof ttfjs.util.TTFDataView) ? view : null;
 
     // init
     this.setTag(tag);
@@ -87,21 +87,21 @@ if (!ttfjs) { var ttfjs = {}; }
   };
 
   /**
-   * Create TableDirectoryEntry insance from jDataView object.
-   * @param {jDataView} view jDataView object.
+   * Create TableDirectoryEntry insance from TTFDataView object.
+   * @param {ttfjs.util.TTFDataView} view Font file buffer. 
    * @param {number} offset offset from beginning of sfnt.
    * @return {ttfjs.TableDirectoryEntry} TableDirectoryEntry instance.
    */
   ttfjs.TableDirectoryEntry.createFromDataView = function(view, offset) {
 
-    if (typeof view !== 'undefined' && view instanceof jDataView &&
+    if (typeof view !== 'undefined' && view instanceof ttfjs.util.TTFDataView &&
         typeof offset === 'number') {
 
       view.seek(offset);
       var _tag = view.getString(4);
-      var _checksum = ('00000000' + view.getUint32().toString(16)).slice(-8);
-      var _offset = view.getUint32();
-      var _length = view.getUint32();
+      var _checksum = ('00000000' + view.getUlong().toString(16)).slice(-8);
+      var _offset = view.getUlong();
+      var _length = view.getUlong();
 
       return new ttfjs.TableDirectoryEntry(_tag, _checksum, _offset, _length, view);
 
@@ -202,7 +202,7 @@ if (!ttfjs) { var ttfjs = {}; }
       var nLongs = parseInt((this.getLength() + 3) / 4, 10);
       
       while (nLongs-- > 0) {
-        sum = (sum + view.getUint32()) & 0xffffffff;
+        sum = (sum + view.getUlong()) & 0xffffffff;
       }
 
       return ('00000000' + (sum & 0xffffffff).toString(16)).slice(-8);

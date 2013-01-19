@@ -36,6 +36,9 @@
   var ttfjs = (typeof require !== 'undefined') ?
     require('../../src/TableDirectoryEntry.js') :
     global.ttfjs;
+  ttfjs.util = (typeof require !== 'undefined') ?
+    require('../../src/util/TTFDataView.js').util :
+    global.ttfjs.util;
   var jDataView = (typeof global.jDataView === 'undefined') ?
     require('../../vendor/jdataview') :
     global.jDataView;
@@ -86,7 +89,7 @@
     '0x00', '0x7D', '0x00', '0x49', '0x00', '0x74', '0x00', '0x21',
     '0x00', '0x6A', '0x00', '0xC5', '0x00', '0x55', '0x00', '0x00'
   );
-  var view = new jDataView(tableDirectoryBuffer);
+  var view = new ttfjs.util.TTFDataView(new jDataView(tableDirectoryBuffer));
 
   var tableDirectoryData = {
     'cvt ': {'checksum': '08b1086a', 'offset': 116, 'len': 70},
