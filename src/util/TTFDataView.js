@@ -136,7 +136,7 @@ if (!ttfjs) { var ttfjs = {}; }
   ttfjs.util.TTFDataView.prototype.getLong = function(offset) {
     if (typeof offset === 'number') {
       this.seek(offset);
-    } 
+    }
     return this.view.getInt32();
   };
 
@@ -159,10 +159,11 @@ if (!ttfjs) { var ttfjs = {}; }
   ttfjs.util.TTFDataView.prototype.getF2dot14 = function(offset) {
     if (typeof offset === 'number') {
       this.seek(offset);
-    } 
+    }
     var raw = this.view.getUint16();
     var mantissa = ttfjs.util.TTFDataView.INT2[(raw >>> 14)];
-    var fraction = parseInt(('0000000000000000' + (raw).toString(2)).slice(-14), 2) / 16384;
+    var fraction = parseInt(('0000000000000000' +
+      (raw).toString(2)).slice(-14), 2) / 16384;
     return Math.round((mantissa + fraction) * 1000000) / 1000000;
   };
 

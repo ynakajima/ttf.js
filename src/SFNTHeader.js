@@ -45,7 +45,8 @@ if (!ttfjs) { var ttfjs = {}; }
    */
   ttfjs.SFNTHeader = function(dataview) {
 
-    if (typeof dataview !== 'object' || !dataview instanceof ttfjs.util.TTFDataView) {
+    if (typeof dataview !== 'object' ||
+        !dataview instanceof ttfjs.util.TTFDataView) {
       throw 'error: dataview is not TTFDataView.';
     }
 

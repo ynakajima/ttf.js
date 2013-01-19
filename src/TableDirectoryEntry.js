@@ -74,7 +74,7 @@ if (!ttfjs) { var ttfjs = {}; }
 
     /**
      * @private
-     * @type ttfjs.util.TTFDataView 
+     * @type ttfjs.util.TTFDataView
      */
     this.view_ = (view instanceof ttfjs.util.TTFDataView) ? view : null;
 
@@ -88,7 +88,7 @@ if (!ttfjs) { var ttfjs = {}; }
 
   /**
    * Create TableDirectoryEntry insance from TTFDataView object.
-   * @param {ttfjs.util.TTFDataView} view Font file buffer. 
+   * @param {ttfjs.util.TTFDataView} view Font file buffer.
    * @param {number} offset offset from beginning of sfnt.
    * @return {ttfjs.TableDirectoryEntry} TableDirectoryEntry instance.
    */
@@ -103,7 +103,8 @@ if (!ttfjs) { var ttfjs = {}; }
       var _offset = view.getUlong();
       var _length = view.getUlong();
 
-      return new ttfjs.TableDirectoryEntry(_tag, _checksum, _offset, _length, view);
+      return new ttfjs.TableDirectoryEntry(_tag, _checksum, _offset,
+        _length, view);
 
     } else {
       return null;
@@ -200,7 +201,7 @@ if (!ttfjs) { var ttfjs = {}; }
       // calculate checksum
       var sum = 0;
       var nLongs = parseInt((this.getLength() + 3) / 4, 10);
-      
+
       while (nLongs-- > 0) {
         sum = (sum + view.getUlong()) & 0xffffffff;
       }

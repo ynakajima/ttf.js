@@ -163,7 +163,7 @@
       it('has VDMX that value is "VerticalDeviceMetrics"', function() {
         expect(ttfjs.Table.LONG_NAME_LIST['VDMX']).toEqual('VerticalDeviceMetrics');
       });
-    
+
       it('has vhea that value is "VerticalMetricsHeader"', function() {
         expect(ttfjs.Table.LONG_NAME_LIST['vhea']).toEqual('VerticalMetricsHeader');
       });

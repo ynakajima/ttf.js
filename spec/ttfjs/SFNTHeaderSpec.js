@@ -47,7 +47,7 @@
   // spec
   describe('ttfjs.SFNTHeader', function() {
 
-    var dataview =new ttfjs.util.TTFDataView(new jDataView(buffer, 0, buffer.byteLength, false));
+    var dataview = new ttfjs.util.TTFDataView(new jDataView(buffer, 0, buffer.byteLength, false));
     var sfntHeader = new ttfjs.SFNTHeader(dataview);
 
     it('is Coonstructor', function() {
