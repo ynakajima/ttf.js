@@ -48,8 +48,11 @@ if (!ttfjs) { var ttfjs = {}; }
    * @param {jDataView} jdataview jDataView instance.
    */
   ttfjs.util.TTFDataView = function(jdataview) {
-    /** @type {jDataView} */
-    this.view = jdataview;
+    /**
+     * @private 
+     * @type {jDataView}
+     */
+    this.view_ = jdataview;
   };
 
   /**
@@ -67,11 +70,11 @@ if (!ttfjs) { var ttfjs = {}; }
   ttfjs.util.TTFDataView.SIZE_OF_14_BIT_ = 16384;
 
   /**
-   * seek
+   * Moves the internal pointer to the position
    * @param {number} offset offset.
    */
   ttfjs.util.TTFDataView.prototype.seek = function(offset) {
-    return this.view.seek(offset | 0);
+    return this.view_.seek(offset);
   };
 
   /**
@@ -79,7 +82,7 @@ if (!ttfjs) { var ttfjs = {}; }
    * @param {number} length length of string.
    */
   ttfjs.util.TTFDataView.prototype.getString = function(length) {
-    return this.view.getString(length);
+    return this.view_.getString(length);
   };
 
   /**
@@ -90,7 +93,7 @@ if (!ttfjs) { var ttfjs = {}; }
     if (typeof offset === 'number') {
       this.seek(offset);
     }
-    return this.view.getUint8();
+    return this.view_.getUint8();
   };
 
   /**
@@ -101,7 +104,7 @@ if (!ttfjs) { var ttfjs = {}; }
     if (typeof offset === 'number') {
       this.seek(offset);
     }
-    return this.view.getInt8();
+    return this.view_.getInt8();
   };
 
   /**
@@ -112,7 +115,7 @@ if (!ttfjs) { var ttfjs = {}; }
     if (typeof offset === 'number') {
       this.seek(offset);
     }
-    return this.view.getUint16();
+    return this.view_.getUint16();
   };
 
   /**
@@ -123,7 +126,7 @@ if (!ttfjs) { var ttfjs = {}; }
     if (typeof offset === 'number') {
       this.seek(offset);
     }
-    return this.view.getInt16();
+    return this.view_.getInt16();
   };
 
   /**
@@ -134,7 +137,7 @@ if (!ttfjs) { var ttfjs = {}; }
     if (typeof offset === 'number') {
       this.seek(offset);
     }
-    return this.view.getUint32();
+    return this.view_.getUint32();
   };
 
   /**
@@ -145,7 +148,7 @@ if (!ttfjs) { var ttfjs = {}; }
     if (typeof offset === 'number') {
       this.seek(offset);
     }
-    return this.view.getInt32();
+    return this.view_.getInt32();
   };
 
   /**
@@ -156,8 +159,8 @@ if (!ttfjs) { var ttfjs = {}; }
     if (typeof offset === 'number') {
       this.seek(offset);
     }
-    var mantissa = this.view.getInt16();
-    var fraction = this.view.getUint16() / Math.pow(2, 16);
+    var mantissa = this.view_.getInt16();
+    var fraction = this.view_.getUint16() / Math.pow(2, 16);
     return Math.round((mantissa + fraction) * 1000000) / 1000000;
   };
 
@@ -169,7 +172,7 @@ if (!ttfjs) { var ttfjs = {}; }
     if (typeof offset === 'number') {
       this.seek(offset);
     }
-    var value = this.view.getUint16();
+    var value = this.view_.getUint16();
     var mantissa = ttfjs.util.TTFDataView.INT2_[(value >>> 14)];
     var fraction = (value & 0x3fff) / ttfjs.util.TTFDataView.SIZE_OF_14_BIT_;
     return Math.round((mantissa + fraction) * 1000000) / 1000000;

@@ -62,10 +62,6 @@
       expect(ttfDataView).toEqual(jasmine.any(ttfjs.util.TTFDataView));
     });
 
-    it('has view member.', function() {
-      expect(ttfDataView.view).toEqual(jasmine.any(jDataView));
-    });
-
     describe('ttfjs.util.TTFDataView.seek()', function() {
 
       it('is method.', function() {
