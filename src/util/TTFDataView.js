@@ -163,7 +163,7 @@ if (!ttfjs) { var ttfjs = {}; }
     }
     var mantissa = this.view_.getInt16();
     var fraction = this.view_.getUint16() / Math.pow(2, 16);
-    return Math.round((mantissa + fraction) * 1000000) / 1000000;
+    return Math.ceil((mantissa + fraction) * 1000) / 1000;
   };
 
   /**
