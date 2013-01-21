@@ -74,15 +74,17 @@ if (!ttfjs) { var ttfjs = {}; }
    * @param {number} offset offset.
    */
   ttfjs.util.TTFDataView.prototype.seek = function(offset) {
-    return this.view_.seek(offset);
+    this.view_.seek(offset);
   };
 
   /**
    * Return String.
    * @param {number} length length of string.
+   * @return {string} string.
+   * @param {number} offset offset.
    */
-  ttfjs.util.TTFDataView.prototype.getString = function(length) {
-    return this.view_.getString(length);
+  ttfjs.util.TTFDataView.prototype.getString = function(length, offset) {
+    return this.view_.getString(length, offset);
   };
 
   /**

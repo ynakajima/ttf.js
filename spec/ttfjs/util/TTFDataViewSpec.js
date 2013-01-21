@@ -68,6 +68,11 @@
         expect(ttfDataView.seek).toEqual(jasmine.any(Function));
       });
 
+      it('moves the internal pointer to the position', function() {
+        ttfDataView.seek(12);
+        expect(view.tell()).toEqual(12);
+      });
+
     });
 
    describe('ttfjs.util.TTFDataView.getString()', function() {
@@ -76,10 +81,10 @@
         expect(ttfDataView.getString).toEqual(jasmine.any(Function));
       });
 
-      ttfDataView.seek(27);
-
       it('returns string.', function() {
+        ttfDataView.seek(27);
         expect(ttfDataView.getString(2)).toEqual('2@');
+        expect(ttfDataView.getString(1, 13)).toEqual('9');
       });
 
     });
