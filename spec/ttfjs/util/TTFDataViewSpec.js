@@ -76,6 +76,19 @@
 
     });
 
+    describe('ttfjs.util.TTFDataView.tell()', function() {
+
+      it('is method.', function() {
+        expect(ttfDataView.tell).toEqual(jasmine.any(Function));
+      });
+
+      it('returns the current position', function() {
+        ttfDataView.seek(8);
+        expect(ttfDataView.tell()).toEqual(8);
+      });
+
+    });
+
    describe('ttfjs.util.TTFDataView.getString()', function() {
 
       it('is method.', function() {

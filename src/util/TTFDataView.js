@@ -49,7 +49,7 @@ if (!ttfjs) { var ttfjs = {}; }
    */
   ttfjs.util.TTFDataView = function(jdataview) {
     /**
-     * @private 
+     * @private
      * @type {jDataView}
      */
     this.view_ = jdataview;
@@ -75,6 +75,13 @@ if (!ttfjs) { var ttfjs = {}; }
    */
   ttfjs.util.TTFDataView.prototype.seek = function(offset) {
     this.view_.seek(offset);
+  };
+  /**
+   * Returns the current position.
+   * @return {number} current positin.
+   */
+  ttfjs.util.TTFDataView.prototype.tell = function(offset) {
+    return this.view_.tell();
   };
 
   /**
