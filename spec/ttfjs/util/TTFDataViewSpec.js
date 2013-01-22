@@ -53,7 +53,11 @@
       0x00, 0x00, // F2DOT14: 0.0
       0xff, 0xff, // F2DOT14: -0.000061
       0x80, 0x00, // F2DOT14: -2.0
-      0x32, 0x40 // string: '2@'
+      0x32, 0x40, // string: '2@'
+      0x00, 0x00, 0x00, 0x00, 0xba, 0xb9, 0xf0, 0xb8, // longDateTime: Thu Apr 10 00:46:00 2003
+      0x00, 0x00, 0x00, 0x00, 0xba, 0xc2, 0x67, 0x91, // longDateTime: Wed Apr 16 10:51:13 2003
+      0x00, 0x00, 0x00, 0x00, 0xcd, 0x15, 0xa0, 0x7d, // longDateTime: Fri Jan 11 19:57:01 2013
+      0x00, 0x00, 0x00, 0x00, 0xcd, 0x16, 0x10, 0xfe  // longDateTime: Sat Jan 12 03:57:02 2013
     );
     var view = new jDataView(dummyBuffer);
     var ttfDataView = new ttfjs.util.TTFDataView(view);
@@ -201,6 +205,22 @@
         expect(ttfDataView.getF2dot14()).toEqual(0.000061);
         expect(ttfDataView.getF2dot14()).toEqual(0.0);
         expect(ttfDataView.getF2dot14()).toEqual(-0.000061);
+      });
+
+    });
+
+    describe('ttfjs.TTFDataView.getLongDateTime()', function() {
+
+      it('is method.', function() {
+        expect(ttfDataView.getLongDateTime).toEqual(jasmine.any(Function));
+      });
+
+      it('returns the long internal format of a date in seconds since 12:00 midnight, January 1, 1904.', function() {
+        expect(ttfDataView.getLongDateTime(33).getTime()).toEqual(Date.parse('Thu Apr 10 00:46:00 2003'));
+        expect(ttfDataView.getLongDateTime().getTime()).toEqual(Date.parse('Wed Apr 16 10:51:13 2003'));
+        expect(ttfDataView.getLongDateTime().getTime()).toEqual(Date.parse('Fri Jan 11 19:57:01 2013'));
+        expect(ttfDataView.getLongDateTime().getTime()).toEqual(Date.parse('Sat Jan 12 03:57:02 2013'));
+        // TODO(ynakajima): more test case. Distant past or future.
       });
 
     });
