@@ -135,7 +135,7 @@
 		var locaSize = (this.head.indexToLocFormat === 0) ? 2 : 4;
 		var locaRatio = (this.head.indexToLocFormat === 0) ? 2 : 1;
 
-		for ( var i = 0; i < this.maxp.numGlyphs + 1; i++) {
+		for ( var i = 0; i < this.maxp.numGlyphs; i++) {
 			this.loca.push(view["get" + locaType](locaOffset, false)
 					* locaRatio); // locaのタイプがshortだった場合、2で割った値が記録されている為2をかけて値を戻す
 			this.locaOffsetSize.push(locaOffset);
