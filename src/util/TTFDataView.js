@@ -220,6 +220,26 @@ if (!ttfjs) { var ttfjs = {}; }
   };
 
   /**
+   * Return 16-bit unsigned integer that describes a quantity in FUnits,
+   * the smallest measurable distance in em space.
+   * @param {number} offset offset.
+   * @return {number} UFWord
+   */
+  ttfjs.util.TTFDataView.prototype.getUFWord = function(offset) {
+    return this.getUshort(offset);
+  };
+
+  /**
+   * Return 16-bit signed integer that describes a quantity in FUnits,
+   * the smallest measurable distance in em space.
+   * @param {number} offset offset.
+   * @return {number} FWord
+   */
+  ttfjs.util.TTFDataView.prototype.getFWord = function(offset) {
+    return this.getShort(offset);
+  };
+
+  /**
    * Return the long internal format of a date
    * in seconds since 12:00 midnight, January 1, 1904.
    * It is represented as a signed 64-bit integer.<br />

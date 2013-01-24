@@ -225,6 +225,31 @@
 
     });
 
+    describe('ttfjs.util.TTFDataView.getUFWord()', function() {
+                                    
+      it('is method.', function() { 
+        expect(ttfDataView.getUFWord).toEqual(jasmine.any(Function));
+      });
+
+      it('returns the 16-bit signed integer.', function() {
+        expect(ttfDataView.getUFWord(1)).toEqual(57072);
+      });
+
+    });
+
+    describe('ttfjs.util.TTFDataView.getFWord()', function() {
+                                    
+      it('is method.', function() { 
+        expect(ttfDataView.getFWord).toEqual(jasmine.any(Function));
+      });
+
+      it('returns the 16-bit signed integer.', function() {
+        expect(ttfDataView.getFWord(1)).toEqual(-8464);
+      });
+
+    });
+
+
   });
 
 })(this);
