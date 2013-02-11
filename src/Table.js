@@ -49,8 +49,9 @@ if (!ttfjs) { var ttfjs = {}; }
   /**
    * Conversion list from table name to long name.
    * @type Object.<string>
+   * @private
    */
-  ttfjs.Table.LONG_NAME_LIST = {
+  ttfjs.Table.LONG_NAME_LIST_ = {
     'cmap': 'CMap',
     'glyf': 'GlyphData',
     'head': 'FontHeader',
@@ -75,6 +76,30 @@ if (!ttfjs) { var ttfjs = {}; }
     'VDMX': 'VerticalDeviceMetrics',
     'vhea': 'VerticalMetricsHeader',
     'vmtx': 'VerticalMetrics'
+  };
+
+  /**
+   * Return long name of table.
+   * @param {string} shortName short name of table.
+   * @return {string} long name of table.
+   */
+  ttfjs.Table.getLongName = function(shortName) {
+    return ttfjs.Table.LONG_NAME_LIST_[shortName];
+  };
+
+  /**
+   * Return short name of table.
+   * @param {string} longName long name of table.
+   * @return {string} short name of table.
+   */
+  ttfjs.Table.getShortName = function(longName) {
+    var longNameList = ttfjs.Table.LONG_NAME_LIST_;
+    for( var key in longNameList) {
+      if (longNameList[key] == longName) {
+        return key;
+      }
+    }
+    return "";
   };
 
   /**
