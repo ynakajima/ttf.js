@@ -7534,13 +7534,13 @@ var jDataView = (typeof require !== 'undefined') ?
   global.jDataView;
 
 var font = jDataView.createBuffer.apply(null, hexdumpData);
-var fontDataView = new jDataView(font);
+var testFont = new jDataView(font);
 
 // exports
 if (typeof module !== 'undefined') {
- module.exports = fontDataView;
+ module.exports = testFont;
 } else {
-  global.fontDataView = fontDataView;
+  global.testFont = testFont;
 }
 
 })(this);

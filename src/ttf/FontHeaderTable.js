@@ -50,10 +50,10 @@ if (!ttfjs) { var ttfjs = {}; }
    */
   ttfjs.ttf.FontHeaderTable = function() {
     /**
-     * Table version number.
+     * Table table version number.
      * @type {number}
      */
-    this.version = 1.0;
+    this.tavleVersion = 1.0;
 
     /**
      * Font revision.
@@ -230,8 +230,8 @@ if (!ttfjs) { var ttfjs = {}; }
     // init fontHeaderTable
     var fontHeaderTable = new ttfjs.ttf.FontHeaderTable();
 
-    // version
-    fontHeaderTable.version = view.getFixed();
+    // table version
+    fontHeaderTable.tableVersion = view.getFixed();
 
     // fontRevision
     fontHeaderTable.fontRevision = view.getFixed();
