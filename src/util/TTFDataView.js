@@ -291,14 +291,8 @@ if (!ttfjs) { var ttfjs = {}; }
   };
 
   /**
-   * Return the long internal format of a date
-   * in seconds since 12:00 midnight, January 1, 1904.
-   * It is represented as a signed 64-bit integer.<br />
-   *
-   * This method has been ported form the FontForge. <br />
-   * https://github.com/fontforge/fontforge/blob/v20120731-b/fonttools/showttf.c#L483-L516
-   * @param {number} offset offset.
-   * @return {Date} date.
+   * data type spec.
+   * @type {object}
    */
   ttfjs.util.TTFDataView.DATA_TYPE = {
     BYTE        : {byteSize: 1, methodName: 'getByte'},
