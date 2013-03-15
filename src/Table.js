@@ -32,6 +32,13 @@ if (!ttfjs) { var ttfjs = {}; }
 
 (function(global, ttfjs) {
 
+  if (typeof ttfjs.util === 'undefined') {
+    ttfjs.util = {};
+  }
+  ttfjs.util.TTFDataView = (typeof require !== 'undefined') ?
+    require('./util/TTFDataView').util.TTFDataView :
+    global.ttfjs.util.TTFDataView;
+
   /**
    * The Table class.
    * @constructor
@@ -43,6 +50,18 @@ if (!ttfjs) { var ttfjs = {}; }
      * @type Boolean
      */
     this.isRequired_ = false;
+
+    /**
+     * Table spec list
+     * @type Object.<Array>
+     */
+    this.specs = {};
+
+    /**
+     * @private
+     * @type Object
+     */
+    this.spec = {};
 
   };
 
@@ -117,6 +136,40 @@ if (!ttfjs) { var ttfjs = {}; }
   ttfjs.Table.prototype.isRequired = function() {
     return this.isRequired_;
   };
+
+  /**
+   * Initialize and set table spec data.
+   * @param {String} specName spec name.
+   */
+  ttfjs.Table.prototype.setSpec = function(specName) {
+    if (typeof specName !== 'undefined' && typeof this.specs[specName] !== 'undefined') {
+
+      // init var
+      var selectedSepc = this.specs[specName];
+      var spec = {
+        dataList: [],
+        dataSpec: {}
+      };
+      var offset = 0;
+
+      // create spec data
+      for (var i = 0, l = selectedSepc.length; i < l; i++) {
+        var dataName = selectedSepc[i].name;
+        var dataType =  selectedSepc[i].type.toUpperCase();
+        var byteSize = ttfjs.util.TTFDataView.DATA_TYPE[dataType].byteSize;
+        spec.dataList.push(dataName);
+        spec.dataSpec[dataName] = {
+          type: dataType,
+          offset: offset
+        }
+        offset += byteSize;
+      }
+
+      // set spec data
+      this.spec = spec;
+    }
+  };
+
 
   // exports
   if (typeof module !== 'undefined') {

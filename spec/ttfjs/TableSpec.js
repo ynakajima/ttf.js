@@ -37,6 +37,10 @@
     require('../../src/Table.js') :
     global.ttfjs;
 
+  var jDataView = (typeof global.jDataView === 'undefined') ?
+  require('../../vendor/jdataview') :
+  global.jDataView;
+
   // spec
   describe('ttfjs.Table', function() {
 
@@ -276,6 +280,92 @@
 
       it('has VerticalMetrics that value is "vmtx"', function() {
         expect(ttfjs.Table.getShortName('VerticalMetrics')).toEqual('vmtx');
+      });
+
+    });
+
+  });
+
+  describe('ttfjs.Table.specs', function() {
+
+    var table = new ttfjs.Table();
+
+    it('is Object', function() {
+      expect(table.specs).toEqual(jasmine.any(Object));
+    });
+
+  });
+
+  describe('ttfjs.Table.setSpec', function(){
+
+    var testData = jDataView.createBuffer(
+      0x00, 0x01, 0x00, 0x00,
+      0x00, 0x01,
+      0x00, 0x01,
+      0x00, 0x01
+    );
+
+    var testDataView = new jDataView(testData);
+
+    function TestTable() {
+      
+      this.specs = {
+        v1_0 : [
+          {name: 'tableVersion', type: 'Fixed'},
+          {name: 'numGlyphs', type: 'USHORT'}
+        ],
+        v2_0 : [
+          {name: 'tableVersion', type: 'Fixed'},
+          {name: 'numGlyphs', type: 'USHORT'},
+          {name: 'maxPoints', type: 'USHORT'},
+          {name: 'maxContours', type: 'USHORT'}
+        ]
+      }
+
+    }
+
+    TestTable.prototype = new ttfjs.Table();
+
+    var testTable = new TestTable();
+          
+    it('is Function', function() {
+      expect(testTable.setSpec).toEqual(jasmine.any(Function));
+    });
+
+    it('init and set spec data', function() {
+
+      testTable.setSpec('v1_0');
+      expect(testTable.spec.dataList).toEqual(['tableVersion', 'numGlyphs']);
+      expect(testTable.spec.dataSpec).toEqual({
+        'tableVersion': {
+          type: 'FIXED',
+          offset: 0
+        },
+        'numGlyphs': {
+          type: 'USHORT',
+          offset: 4
+        }
+      });
+
+      testTable.setSpec('v2_0');
+      expect(testTable.spec.dataList).toEqual(['tableVersion', 'numGlyphs', 'maxPoints', 'maxContours']);
+      expect(testTable.spec.dataSpec).toEqual({
+        'tableVersion': {
+          type: 'FIXED',
+          offset: 0
+        },
+        'numGlyphs': {
+          type: 'USHORT',
+          offset: 4
+        },
+        'maxPoints': {
+          type: 'USHORT',
+          offset: 6
+        },
+        'maxContours': {
+          type: 'USHORT',
+          offset: 8
+        }
       });
 
     });
