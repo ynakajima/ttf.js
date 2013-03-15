@@ -305,6 +305,12 @@
         expect(ttfjs.util.TTFDataView.DATA_TYPE.LONG.methodName).toEqual('getLong');
      });
 
+     it('has FIXED', function() {
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.FIXED).toEqual(jasmine.any(Object));
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.FIXED.byteSize).toEqual(4);
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.FIXED.methodName).toEqual('getFixed');
+     });
+
      it('has FWORD', function() {
         expect(ttfjs.util.TTFDataView.DATA_TYPE.FWORD).toEqual(jasmine.any(Object));
         expect(ttfjs.util.TTFDataView.DATA_TYPE.FWORD.byteSize).toEqual(2);
