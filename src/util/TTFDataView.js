@@ -290,6 +290,29 @@ if (!ttfjs) { var ttfjs = {}; }
     return new Date(unixtime);
   };
 
+  /**
+   * Return the long internal format of a date
+   * in seconds since 12:00 midnight, January 1, 1904.
+   * It is represented as a signed 64-bit integer.<br />
+   *
+   * This method has been ported form the FontForge. <br />
+   * https://github.com/fontforge/fontforge/blob/v20120731-b/fonttools/showttf.c#L483-L516
+   * @param {number} offset offset.
+   * @return {Date} date.
+   */
+  ttfjs.util.TTFDataView.DATA_TYPE = {
+    BYTE        : {byteSize: 1, methodName: 'getByte'},
+    CHAR        : {byteSize: 1, methodName: 'getChar'},
+    USHORT      : {byteSize: 2, methodName: 'getUshort'},
+    SHORT       : {byteSize: 2, methodName: 'getShort'},
+    ULONG       : {byteSize: 4, methodName: 'getUlong'},
+    LONG        : {byteSize: 4, methodName: 'getLong'},
+    FIXED       : {byteSize: 4, methodName: 'getFixed'},
+    FWORD       : {byteSize: 2, methodName: 'getFWord'},
+    UFWORD      : {byteSize: 2, methodName: 'getUFWord'},
+    LONGDATETIME: {byteSize: 8, methodName: 'getLongDateTime'}
+  }
+
   // exports
   if (typeof module !== 'undefined') {
     module.exports = ttfjs;

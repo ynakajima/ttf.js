@@ -250,6 +250,83 @@
     });
 
 
+    describe('ttfjs.util.TTFDataView.DATA_TYPE', function() {
+                                    
+      it('is class member.', function() { 
+        expect(ttfjs.util.TTFDataView.DATA_TYPE).toEqual(jasmine.any(Object));
+      });
+
+      /*
+      BYTE        : {byteSize: 1, methodName: 'getByte'},
+    CHAR        : {byteSize: 1, methodName: 'getChar'},
+    USHORT      : {byteSize: 2, methodName: 'getUshort'},
+    SHORT       : {byteSize: 2, methodName: 'getShort'},
+    ULONG       : {byteSize: 4, methodName: 'getUlong'},
+    LONG        : {byteSize: 4, methodName: 'getLong'},
+    FIXED       : {byteSize: 4, methodName: 'getFixed'},
+    FWORD       : {byteSize: 2, methodName: 'getFWord'},
+    UFWORD      : {byteSize: 2, methodName: 'getUFWord'},
+    LONGDATETIME: {byteSize: 8, methodName: 'getLongDateTime'}
+      */
+
+     it('has BYTE', function() {
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.BYTE).toEqual(jasmine.any(Object));
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.BYTE.byteSize).toEqual(1);
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.BYTE.methodName).toEqual('getByte');
+     });
+
+     it('has CHAR', function() {
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.CHAR).toEqual(jasmine.any(Object));
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.CHAR.byteSize).toEqual(1);
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.CHAR.methodName).toEqual('getChar');
+     });
+
+     it('has USHORT', function() {
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.USHORT).toEqual(jasmine.any(Object));
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.USHORT.byteSize).toEqual(2);
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.USHORT.methodName).toEqual('getUshort');
+     });
+
+     it('has SHORT', function() {
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.SHORT).toEqual(jasmine.any(Object));
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.SHORT.byteSize).toEqual(2);
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.SHORT.methodName).toEqual('getShort');
+     });
+
+     it('has ULONG', function() {
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.ULONG).toEqual(jasmine.any(Object));
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.ULONG.byteSize).toEqual(4);
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.ULONG.methodName).toEqual('getUlong');
+     });
+
+     it('has LONG', function() {
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.LONG).toEqual(jasmine.any(Object));
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.LONG.byteSize).toEqual(4);
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.LONG.methodName).toEqual('getLong');
+     });
+
+     it('has FWORD', function() {
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.FWORD).toEqual(jasmine.any(Object));
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.FWORD.byteSize).toEqual(2);
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.FWORD.methodName).toEqual('getFWord');
+     });
+
+     it('has UFWORD', function() {
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.UFWORD).toEqual(jasmine.any(Object));
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.UFWORD.byteSize).toEqual(2);
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.UFWORD.methodName).toEqual('getUFWord');
+     });
+
+     it('has LONGDATETIME', function() {
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.LONGDATETIME).toEqual(jasmine.any(Object));
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.LONGDATETIME.byteSize).toEqual(8);
+        expect(ttfjs.util.TTFDataView.DATA_TYPE.LONGDATETIME.methodName).toEqual('getLongDateTime');
+     });
+
+
+    });
+
+
   });
 
 })(this);
