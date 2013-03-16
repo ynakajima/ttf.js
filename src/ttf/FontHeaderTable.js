@@ -49,6 +49,39 @@ if (!ttfjs) { var ttfjs = {}; }
    * @constructor
    */
   ttfjs.ttf.FontHeaderTable = function() {
+
+    /**
+     * Table Spec
+     * @type {Array}
+     */
+    this.specs = [
+      {
+        name: 'default',
+        dataSpec: [
+          {name: 'tableVersion', type: 'Fixed'},
+          {name: 'fontRevision', type: 'Fixed'},
+          {name: 'checkSumAdjustment', type: 'ULONG'},
+          {name: 'magicNumber', type: 'ULONG'},
+          {name: 'flags', type: 'USHORT', isFlags: true},
+          {name: 'unitsPerEm', type: 'USHORT'},
+          {name: 'created', type: 'LONGDATETIME'},
+          {name: 'modified', type: 'LONGDATETIME'},
+          {name: 'xMin', type: 'SHORT'},
+          {name: 'yMin', type: 'SHORT'},
+          {name: 'xMax', type: 'SHORT'},
+          {name: 'yMax', type: 'SHORT'},
+          {name: 'macStyle', type: 'USHORT', isFlags: true},
+          {name: 'lowestRecPPEM', type: 'USHORT'},
+          {name: 'fontDirectionHint', type: 'SHORT'},
+          {name: 'indexToLocFormat', type: 'SHORT'},
+          {name: 'glyphDataFormat', type: 'SHORT'}
+        ]
+      }
+    ];
+
+    // extends Table
+    ttfjs.Table.call(this);
+
     /**
      * Table table version number.
      * @type {number}
@@ -82,26 +115,37 @@ if (!ttfjs) { var ttfjs = {}; }
      * bit 0 - y value of 0 specifies baseline
      * bit 1 - x position of left most black bit is LSB
      * bit 2 - scaled point size and actual point size will differ
-     *         (i.e. 24 point glyph differs from 12 point glyph scaled by factor of 2)
+     *         (i.e. 24 point glyph differs from 12 point glyph
+     *         scaled by factor of 2)
      * bit 3 - use integer scaling instead of fractional
      * bit 4 - (used by the Microsoft implementation of the TrueType scaler)
-     * bit 5 - This bit should be set in fonts that are intended to e laid out vertically,
-     *         and in which the glyphs have been drawn such that an x-coordinate of 0 corresponds to the desired vertical baseline.
+     * bit 5 - This bit should be set in fonts that are intended to e laid out
+     *         vertically, and in which the glyphs have been drawn such
+     *         that an x-coordinate of 0 corresponds to the desired vertical
+     *         baseline.
      * bit 6 - This bit must be set to zero.
-     * bit 7 - This bit should be set if the font requires layout for correct linguistic rendering (e.g. Arabic fonts).
-     * bit 8 - This bit should be set for a GX font which has one or more metamorphosis effects designated as happening by default.
-     * bit 9 - This bit should be set if the font contains any strong right-to-left glyphs.
-     * bit 10 - This bit should be set if the font contains Indic-style rearrangement effects.
-     * Bit 11: Font data is 'lossless,' as a result of having been compressed and decompressed with the Agfa MicroType Express engine.
+     * bit 7 - This bit should be set if the font requires layout for correct
+     *         linguistic rendering (e.g. Arabic fonts).
+     * bit 8 - This bit should be set for a GX font which has one or more
+     *         metamorphosis effects designated as happening by default.
+     * bit 9 - This bit should be set if the font contains any strong
+     *         right-to-left glyphs.
+     * bit 10 - This bit should be set if the font contains Indic-style
+     *          rearrangement effects.
+     * Bit 11: Font data is 'lossless,' as a result of having been compressed
+     *         and decompressed with the Agfa MicroType Express engine.
      * Bit 12: Font converted (produce compatible metrics)
      * Bit 13: Font optimized for ClearType™. Note,
-     *         fonts that rely on embedded bitmaps (EBDT) for rendering should not be
-     *         considered optimized for ClearType, and therefore should keep this bit cleared.
-     * Bit 14: Last Resort font. If set, indicates that the glyphs encoded in the cmap subtables
-     *         are simply generic symbolic representations of code point ranges and don’t truly
-     *         represent support for those code points. If unset, indicates that the glyphs encoded
-     *         in the cmap subtables represent proper support for those code points.
-     * Bit 15: Reserved, set to 0 
+     *         fonts that rely on embedded bitmaps (EBDT) for rendering should
+     *         not be considered optimized for ClearType, and therefore should
+     *         keep this bit cleared.
+     * Bit 14: Last Resort font. If set, indicates that the glyphs encoded in
+     *         the cmap subtables are simply generic symbolic representations of
+     *         code point ranges and don’t truly represent support for those
+     *         code points. If unset, indicates that the glyphs encoded
+     *         in the cmap subtables represent proper support for those
+     *         code points.
+     * Bit 15: Reserved, set to 0
      * </pre>
      * @type {number}
      */
@@ -225,68 +269,10 @@ if (!ttfjs) { var ttfjs = {}; }
    * @param {number} offset offset.
    */
   ttfjs.ttf.FontHeaderTable.createFromDataView = function(view, offset) {
-    view.seek(offset);
-    
-    // init fontHeaderTable
-    var fontHeaderTable = new ttfjs.ttf.FontHeaderTable();
-
-    // table version
-    fontHeaderTable.tableVersion = view.getFixed();
-
-    // fontRevision
-    fontHeaderTable.fontRevision = view.getFixed();
-
-    // checkSumAdjustment
-    fontHeaderTable.checkSumAdjustment = view.getUlong();
-
-    // magickNumber
-    fontHeaderTable.magickNumber = view.getUlong();
-
-    // flags
-    var flags = view.getUshort();
-    for (var i = 0; i < 16; i++) {
-      var bit = Math.pow(2, i);
-      fontHeaderTable.flags[i] = ((bit & flags) === bit);
-    }
-
-    // unitsPerEm
-    fontHeaderTable.unitsPerEm = view.getUshort();
-
-    // created
-    fontHeaderTable.created = view.getLongDateTime();
-
-    // modified
-    fontHeaderTable.modified = view.getLongDateTime();
-
-    // xMin, yMin, xMax, yMax
-    fontHeaderTable.xMin = view.getFWord();
-    fontHeaderTable.yMin = view.getFWord();
-    fontHeaderTable.xMax = view.getFWord();
-    fontHeaderTable.yMax = view.getFWord();
- 
-    // macStyle
-    var macStyle = view.getUshort();
-    for (var i = 0; i < 16; i++) {
-      var bit = Math.pow(2, i);
-      fontHeaderTable.macStyle[i] = ((bit & macStyle) === bit);
-    }
-
-    // lowestRecPPEM
-    fontHeaderTable.lowestRecPPEM = view.getUshort();
- 
-    // fontDirectionHint
-    fontHeaderTable.fontDirectionHint = view.getShort();
- 
-    // indexToLocFormat 
-    fontHeaderTable.indexToLocFormat = view.getShort();
- 
-    // glyphDataFormat 
-    fontHeaderTable.glyphDataFormat = view.getShort();
-   
-    return fontHeaderTable;
+    return ttfjs.Table.createFromDataView_(
+           ttfjs.ttf.FontHeaderTable, view, offset);
   };
 
-  // TODO(ynakajima): Implement this.
 
   // exports
   if (typeof module !== 'undefined') {
