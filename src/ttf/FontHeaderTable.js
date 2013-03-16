@@ -86,7 +86,7 @@ if (!ttfjs) { var ttfjs = {}; }
      * Table table version number.
      * @type {number}
      */
-    this.tavleVersion = 1.0;
+    this.tableVersion = 1.0;
 
     /**
      * Font revision.
