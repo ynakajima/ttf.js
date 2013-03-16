@@ -223,7 +223,7 @@ if (!ttfjs) { var ttfjs = {}; }
    * Return 16-bit unsigned integer that describes a quantity in FUnits,
    * the smallest measurable distance in em space.
    * @param {number} offset offset.
-   * @return {number} UFWord
+   * @return {number} UFWord.
    */
   ttfjs.util.TTFDataView.prototype.getUFWord = function(offset) {
     return this.getUshort(offset);
@@ -233,7 +233,7 @@ if (!ttfjs) { var ttfjs = {}; }
    * Return 16-bit signed integer that describes a quantity in FUnits,
    * the smallest measurable distance in em space.
    * @param {number} offset offset.
-   * @return {number} FWord
+   * @return {number} FWord.
    */
   ttfjs.util.TTFDataView.prototype.getFWord = function(offset) {
     return this.getShort(offset);
@@ -295,17 +295,17 @@ if (!ttfjs) { var ttfjs = {}; }
    * @type {object}
    */
   ttfjs.util.TTFDataView.DATA_TYPE = {
-    BYTE        : {byteSize: 1, methodName: 'getByte'},
-    CHAR        : {byteSize: 1, methodName: 'getChar'},
-    USHORT      : {byteSize: 2, methodName: 'getUshort'},
-    SHORT       : {byteSize: 2, methodName: 'getShort'},
-    ULONG       : {byteSize: 4, methodName: 'getUlong'},
-    LONG        : {byteSize: 4, methodName: 'getLong'},
-    FIXED       : {byteSize: 4, methodName: 'getFixed'},
-    FWORD       : {byteSize: 2, methodName: 'getFWord'},
-    UFWORD      : {byteSize: 2, methodName: 'getUFWord'},
+    BYTE: {byteSize: 1, methodName: 'getByte'},
+    CHAR: {byteSize: 1, methodName: 'getChar'},
+    USHORT: {byteSize: 2, methodName: 'getUshort'},
+    SHORT: {byteSize: 2, methodName: 'getShort'},
+    ULONG: {byteSize: 4, methodName: 'getUlong'},
+    LONG: {byteSize: 4, methodName: 'getLong'},
+    FIXED: {byteSize: 4, methodName: 'getFixed'},
+    FWORD: {byteSize: 2, methodName: 'getFWord'},
+    UFWORD: {byteSize: 2, methodName: 'getUFWord'},
     LONGDATETIME: {byteSize: 8, methodName: 'getLongDateTime'}
-  }
+  };
 
   // exports
   if (typeof module !== 'undefined') {
