@@ -267,6 +267,7 @@ if (!ttfjs) { var ttfjs = {}; }
    * Create Table insance from TTFDataView object.
    * @param {TTFDataView} view TTFDataView object.
    * @param {number} offset offset.
+   * @return {ttfjs.ttf.FontHeaderTable} incetance of FontHeaderTable. 
    */
   ttfjs.ttf.FontHeaderTable.createFromDataView = function(view, offset) {
     return ttfjs.Table.createFromDataView_(
