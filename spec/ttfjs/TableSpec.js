@@ -37,6 +37,47 @@
     require('../../src/Table.js') :
     global.ttfjs;
 
+  if (typeof ttfjs.util === 'undefined') {
+    ttfjs.util = {};
+  }
+  
+  ttfjs.util.TTFDataView = (typeof require !== 'undefined') ?
+    require('../../src/util/TTFDataView.js').util.TTFDataView :
+    global.ttfjs.util.TTFDataView
+
+  var jDataView = (typeof global.jDataView === 'undefined') ?
+  require('../../vendor/jdataview') :
+  global.jDataView;
+
+  // test table
+  function TestTable() {
+     
+    this.specs = [
+      {
+        name: 'v1_0',
+        dataSpec: [
+          {name: 'tableVersion', type: 'Fixed'},
+          {name: 'numGlyphs', type: 'USHORT'},
+          {name: 'flags', type: 'USHORT', isFlags: true}
+        ]
+      },
+      {
+        name: 'v2_0',
+        dataSpec: [
+          {name: 'tableVersion', type: 'Fixed'},
+          {name: 'numGlyphs', type: 'USHORT'},
+          {name: 'flags', type: 'USHORT', isFlags: true},
+          {name: 'maxPoints', type: 'USHORT'},
+          {name: 'maxContours', type: 'USHORT'}
+        ]
+      }
+    ];
+
+    ttfjs.Table.call(this)
+
+  };
+  TestTable.prototype = new ttfjs.Table();
+
   // spec
   describe('ttfjs.Table', function() {
 
@@ -44,14 +85,26 @@
       expect(ttfjs.Table).toEqual(jasmine.any(Function));
     });
 
-    describe('ttfjs.Table.createFromDataView()', function() {
+    describe('ttfjs.Table.createFromDataView_()', function() {
+
+      var testData = jDataView.createBuffer(
+        0x00, 0x01, 0x00, 0x00, // FIXED: 1.0
+        0x0b, 0x4a, // USHORT: 2890
+        0x00, 0x06, // SHORT: 00000000 00000110
+        0x02, 0x9f, // USHORT: 671
+        0x00, 0xb2  // USHORT: 178
+      );
+      var testDataView = new ttfjs.util.TTFDataView(new jDataView(testData));
+      var tableOffset = 0;
 
       it('is method.', function() {
-        expect(ttfjs.Table.createFromDataView).toEqual(jasmine.any(Function));
+        expect(ttfjs.Table.createFromDataView_).toEqual(jasmine.any(Function));
       });
 
-      it('throw err.', function() {
-        expect(ttfjs.Table.createFromDataView).toThrow();
+      it('create incetance from ttfDataView.', function() {
+        var testTable = ttfjs.Table.createFromDataView_(TestTable, testDataView, tableOffset);
+        expect(testTable.tableVersion).toEqual(1.0);
+        expect(testTable.numGlyphs).toEqual(2890);
       });
 
     });
@@ -278,6 +331,162 @@
         expect(ttfjs.Table.getShortName('VerticalMetrics')).toEqual('vmtx');
       });
 
+    });
+
+  });
+
+  describe('ttfjs.Table.specs', function() {
+
+    var table = new ttfjs.Table();
+
+    it('is Object', function() {
+      expect(table.specs).toEqual(jasmine.any(Object));
+    });
+
+  });
+
+  describe('ttfjs.Table.spec', function() {
+
+    var testTable = new TestTable();
+
+    it('is Object', function() {
+      expect(testTable.spec).toEqual(jasmine.any(Object));
+      expect(testTable.spec).toEqual({
+        dataList: ['tableVersion', 'numGlyphs', 'flags'],
+        dataSpec: {
+          'tableVersion': {
+            type: 'FIXED',
+            offset: 0,
+            isFlags: false
+          },
+          'numGlyphs': {
+            type: 'USHORT',
+            offset: 4,
+            isFlags: false
+          },
+          'flags': {
+             type: 'USHORT',
+             offset: 6,
+             isFlags: true
+          }
+        }
+      });
+    });
+
+  });
+
+  describe('ttfjs.Table.getSpecByName', function() {
+    
+    var testTable = new TestTable();
+
+    it('is Function', function() {
+      expect(testTable.getSpecByName).toEqual(jasmine.any(Function));
+    });
+
+    it('returns the specification of the given name.', function() {
+      expect(testTable.getSpecByName('v1_0')).toEqual(testTable.specs[0]);
+    });
+
+
+  });
+
+  describe('ttfjs.Table.setSpec', function(){
+
+    var testTable = new TestTable();
+          
+    it('is Function', function() {
+      expect(testTable.setSpec).toEqual(jasmine.any(Function));
+    });
+
+    it('init and set spec data', function() {
+
+      testTable.setSpec('v1_0');
+      expect(testTable.spec.dataList).toEqual(['tableVersion', 'numGlyphs', 'flags']);
+      expect(testTable.spec.dataSpec).toEqual({
+        'tableVersion': {
+          type: 'FIXED',
+          offset: 0,
+          isFlags: false
+        },
+        'numGlyphs': {
+          type: 'USHORT',
+          offset: 4,
+          isFlags: false
+        },
+        'flags': { 
+          type: 'USHORT',
+          offset: 6,
+          isFlags: true
+        }
+      });
+
+      testTable.setSpec('v2_0');
+      expect(testTable.spec.dataList).toEqual(['tableVersion', 'numGlyphs', 'flags', 'maxPoints', 'maxContours']);
+      expect(testTable.spec.dataSpec).toEqual({
+        'tableVersion': {
+          type: 'FIXED',
+          offset: 0,
+          isFlags: false
+        },
+        'numGlyphs': {
+          type: 'USHORT',
+          offset: 4,
+          isFlags: false
+        },
+        'flags': { 
+          type: 'USHORT',
+          offset: 6,
+          isFlags: true
+        },
+        'maxPoints': {
+          type: 'USHORT',
+          offset: 8,
+          isFlags: false
+        },
+        'maxContours': {
+          type: 'USHORT',
+          offset: 10,
+          isFlags: false
+        }
+      });
+
+    });
+
+  });
+
+  describe('ttfjs.Table.setDataFromDataView', function(){
+
+    var testTable = new TestTable();
+    testTable.setSpec('v2_0');
+
+    var testData = jDataView.createBuffer(
+      0x00, 0x01, 0x00, 0x00, // FIXED: 1.0
+      0x0b, 0x4a, // USHORT: 2890
+      0x00, 0x06, // SHORT: 00000000 00000110
+      0x02, 0x9f, // USHORT: 671
+      0x00, 0xb2  // USHORT: 178
+    );
+    var testDataView = new ttfjs.util.TTFDataView(new jDataView(testData));
+    var tableOffset = 0;
+          
+    it('is Function', function() {
+      expect(testTable.setSpec).toEqual(jasmine.any(Function));
+    });
+
+    it('set data based on the specified ttfDataView', function() {
+      testTable.setDataFromDataView('tableVersion', testDataView, tableOffset);
+      testTable.setDataFromDataView('numGlyphs', testDataView, tableOffset);
+      testTable.setDataFromDataView('flags', testDataView, tableOffset);
+      testTable.setDataFromDataView('maxPoints', testDataView, tableOffset);
+      testTable.setDataFromDataView('maxContours', testDataView, tableOffset);
+      expect(testTable.tableVersion).toEqual(1.0);
+      expect(testTable.numGlyphs).toEqual(2890);
+      expect(testTable.flags).toEqual([
+        false, true, true, false, false, false, false, false,
+        false, false, false, false, false, false, false, false,
+      ]);
+      expect(testTable.maxPoints).toEqual(671);
+      expect(testTable.maxContours).toEqual(178);
     });
 
   });
