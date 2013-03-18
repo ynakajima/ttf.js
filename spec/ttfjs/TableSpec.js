@@ -50,7 +50,7 @@
   global.jDataView;
 
   // test table
-  function TestTable() {
+  function TestTable(specName) {
      
     this.specs = [
       {
@@ -73,7 +73,7 @@
       }
     ];
 
-    ttfjs.Table.call(this)
+    ttfjs.Table.call(this, specName)
 
   };
   TestTable.prototype = new ttfjs.Table();
@@ -371,6 +371,39 @@
           }
         }
       });
+
+      testTable = new  TestTable('v2_0');
+      expect(testTable.spec).toEqual({
+        dataList: ['tableVersion', 'numGlyphs', 'flags', 'maxPoints', 'maxContours'],
+        dataSpec: {
+          'tableVersion': {
+            type: 'FIXED',
+            offset: 0,
+            isFlags: false
+          },
+          'numGlyphs': {
+            type: 'USHORT',
+            offset: 4,
+            isFlags: false
+          },
+          'flags': {
+             type: 'USHORT',
+             offset: 6,
+             isFlags: true
+          },
+          'maxPoints': {
+            type: 'USHORT',
+            offset: 8,
+            isFlags: false
+          },
+          'maxContours': {
+            type: 'USHORT',
+            offset: 10,
+            isFlags: false
+          }
+        }
+      });
+
     });
 
   });
