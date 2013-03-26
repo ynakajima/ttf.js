@@ -42,8 +42,9 @@ if (!ttfjs) { var ttfjs = {}; }
   /**
    * The Table class.
    * @constructor
+   * @param {String} specName name of table spec.
    */
-  ttfjs.Table = function() {
+  ttfjs.Table = function(specName) {
 
     /**
      * @private
@@ -62,9 +63,13 @@ if (!ttfjs) { var ttfjs = {}; }
      * @type Object
      */
     this.spec = {};
-
+     
+    // init spec
     if (this.specs.length > 0) {
       this.setSpec(this.specs[0].name);
+    }
+    if (typeof specName === 'string') {
+      this.setSpec(specName);
     }
 
   };
@@ -131,10 +136,11 @@ if (!ttfjs) { var ttfjs = {}; }
    * @param {ttfjs.Table} tableClass Table Class.
    * @param {TTFDataView} ttfDataview TTFDataView object.
    * @param {number} tableOffset Offset to a table.
+   * @param {String} specName name of table spec.
    */
   ttfjs.Table.createFromDataView_ = function(
-    tableClass, ttfDataview, tableOffset) {
-    var table = new tableClass();
+    tableClass, ttfDataview, tableOffset, specName) {
+    var table = new tableClass(specName);
     var tableDataList = table.spec.dataList;
     for (var i = 0, l = tableDataList.length; i < l; i++) {
       var dataName = tableDataList[i];

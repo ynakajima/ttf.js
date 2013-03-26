@@ -24,7 +24,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * </pre>
  *
- * @fileoverview FontHeaderTable Class file.
+ * @fileoverview head - FontHeaderTable Class file.
  * @author yuhta.nakajima@gmail.com (ynakajima)
  */
 
@@ -45,7 +45,7 @@ if (!ttfjs) { var ttfjs = {}; }
     global.ttfjs.Table;
 
   /**
-   * FontHeaderTable Class
+   * head - FontHeaderTable Class
    * @constructor
    */
   ttfjs.ttf.FontHeaderTable = function() {
