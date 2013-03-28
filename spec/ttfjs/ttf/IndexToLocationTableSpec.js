@@ -33,9 +33,42 @@
   var ttfjs = (typeof require !== 'undefined') ?
     require('../../../src/ttf/IndexToLocationTable.js') :
     global.ttfjs;
+
+  ttfjs.Table = (typeof require !== 'undefined') ?
+    require('../../../src/Table.js').Table :
+    global.ttfjs.Table;
+
+  ttfjs.util = ttfjs.util || {};
+  ttfjs.util.TTFDataView = (typeof require !== 'undefined') ?
+    require('../../../src/util/TTFDataView.js').util.TTFDataView :
+    global.ttfjs.util.TTFDataView;
+
   var jDataView = (typeof global.jDataView === 'undefined') ?
     require('../../../vendor/jdataview') :
     global.jDataView;
+  
+  var testFont = (typeof require !== 'undefined') ?
+    require('../../fonts/SourceCodePro-Medium.ttf.js') :
+    global.testFont;
+
+  var testFontTableDirectory = (typeof require !== 'undefined') ?
+    require('../../fonts/SourceCodePro-Medium.tabledirectory.js').tableDirectory :
+    global.testFontTableDirectory.tableDirectory;
+
+  var testFontSpec = (typeof require !== 'undefined') ?
+    require('../../fonts/SourceCodePro-Medium.ttx.js').ttFont :
+    global.testFontSpec.ttFont;
+
+  var tableShortName = ttfjs.Table.getShortName('IndexToLocation');
+  var tableOffset = testFontTableDirectory[tableShortName].offset;
+  var locaSpec = testFontSpec[tableShortName];
+  var fontDataView = new ttfjs.util.TTFDataView(testFont);
+  var indexToLocFormat = parseInt(testFontSpec.head.indexToLocFormat.value, 10);
+  var numGlyphs = parseInt(testFontSpec.maxp.numGlyphs.value, 10);
+
+  if (typeof ttfjs.ttf.IndexToLocationTable.createFromDataView === 'function') {
+    var testTable = ttfjs.ttf.IndexToLocationTable.createFromDataView(fontDataView, tableOffset, indexToLocFormat, numGlyphs);
+  }
 
   // spec
   describe('ttfjs.ttf.IndexToLocationTable', function() {
@@ -44,7 +77,36 @@
       expect(ttfjs.ttf.IndexToLocationTable).toEqual(jasmine.any(Function));
     });
 
-    // TODO(ynakajima) Add detail.
+    it('is inherited from Table.', function() {
+      expect(testTable).toEqual(jasmine.any(ttfjs.Table));
+    });
+
+    describe('ttfjs.ttf.MaximumProfileTable.specs', function() {
+     
+      it('is Array', function() {
+        expect(testTable.specs).toEqual([
+          {
+            name: 'short',
+            dataSpec: [
+              {name: 'indexToLoc', type: 'USHORT'}
+            ]
+          },
+          {
+            name: 'long',
+            dataSpec: [
+              {name: 'indexToLoc', type: 'ULONG'}
+            ]
+          }
+        ]);
+      });
+
+    });
+
+    it('has indexToLoc', function() {
+      expect(testTable.indexToLoc).toEqual(jasmine.any(Array));
+      expect(testTable.indexToLoc.length).toEqual(numGlyphs + 1);
+      expect(testTable.indexToLoc).toEqual(locaSpec);
+    });
 
   });
 

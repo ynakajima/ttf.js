@@ -24,7 +24,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * </pre>
  *
- * @fileoverview IndexToLocationTable Class file.
+ * @fileoverview loca - IndexToLocationTable Class file.
  * @author yuhta.nakajima@gmail.com (ynakajima)
  */
 
@@ -41,14 +41,84 @@ if (!ttfjs) { var ttfjs = {}; }
     require('../../vendor/jdataview') :
     global.jDataView;
 
+  ttfjs.Table = (typeof require !== 'undefined') ?
+    require('../Table.js').Table :
+    global.ttfjs.Table;
+
+
   /**
-   * IndexToLocationTable Class
+   * loca - IndexToLocationTable Class
    * @constructor
+   * @param {String} specName name of table spec.
    */
-  ttfjs.ttf.IndexToLocationTable = function() {
+  ttfjs.ttf.IndexToLocationTable = function(specName) {
+
+    /**
+     * Table Spec.
+     * @type {Array}
+     */
+    this.specs = [
+      {
+        name: 'short',
+        dataSpec: [
+          {name: 'indexToLoc', type: 'USHORT'}
+        ]
+      },
+      {
+        name: 'long',
+        dataSpec: [
+          {name: 'indexToLoc', type: 'ULONG'}
+        ]
+      }
+    ];
+
+    ttfjs.Table.call(this, specName);
+
+    /**
+     * The offsets to the locations of the glyphs in the font.
+     * <pre>short version : The actual local offset divided by 2 is stored.
+     * The value of n is numGlyphs + 1. The value for numGlyphs is
+     * found in the 'maxp' table.
+     * long version : The actual local offset is stored.
+     * The value of n is numGlyphs + 1.
+     * The value for numGlyphs is found in the 'maxp' table.
+     * </pre>
+     * @type {Array.<Number>}
+     */
+    this.indexToLoc = [];
+
   };
 
-  // TODO(ynakajima): Implement this.
+  // extends Table
+  ttfjs.ttf.IndexToLocationTable.prototype = new ttfjs.Table();
+
+  /**
+   * Create IndexToLocationTable insance from TTFDataView object.
+   * @param {TTFDataView} view TTFDataView object.
+   * @param {number} offset offset.
+   * @param {number} indexToLocFormat Index to Location format.
+   *                                  0: short, 1: long.
+   * @param {number} numGlyphs The number of glyphs in the font.
+   * @return {ttfjs.ttf.MaximumProfileTable} incetance of MaximumProfileTable.
+   */
+  ttfjs.ttf.IndexToLocationTable.createFromDataView =
+   function(view, offset, indexToLocFormat, numGlyphs) {
+
+    var specName = (indexToLocFormat === 1) ? 'long' : 'short';
+    var locaTable = new ttfjs.ttf.IndexToLocationTable(specName);
+
+    view.seek(offset);
+
+    for (var i = 0; i < numGlyphs + 1; i++) {
+      var index = (specName === 'short') ?
+                view.getUshort() * 2 : view.getUlong();
+      locaTable.indexToLoc.push(index);
+    }
+
+    return locaTable;
+
+  };
+
 
   // exports
   if (typeof module !== 'undefined') {
