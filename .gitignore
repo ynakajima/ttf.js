@@ -4,3 +4,4 @@ _
 *.swp
 *~
 *.swo
+node_modules
