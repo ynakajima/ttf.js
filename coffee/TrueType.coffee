@@ -88,5 +88,11 @@ class TrueType
     # return ttf
     ttf
 
+  # TODO: Implement this.
+  # Create TrueType instance from JSON
+  # @param {object} json
+  # @return {TrueType}
+  # @createFromJSON: (json) ->
+
 # exports
 module.exports = TrueType
