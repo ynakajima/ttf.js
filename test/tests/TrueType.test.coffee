@@ -4,6 +4,7 @@ TTFDataView = require '../../coffee/TTFDataView'
 TrueType = require '../../coffee/TrueType'
 HeadTable = require '../../coffee/table/HeadTable'
 MaxpTable = require '../../coffee/table/MaxpTable'
+LocaTable = require '../../coffee/table/LocaTable'
 
 # test data
 ttf = new TrueType()
@@ -157,6 +158,13 @@ exports.TrueType_createFromTTFDataView =
     test.ok ttf1.maxp instanceof MaxpTable
     test.strictEqual ttf.maxp.version, 0
     test.strictEqual ttf1.maxp.version, 1
+    test.done()
+
+  'test TrueType#loca': (test) ->
+    test.ok ttf.loca instanceof LocaTable
+    test.ok ttf1.loca instanceof LocaTable
+    test.strictEqual ttf.loca.offsets.length, 0
+    test.strictEqual ttf1.loca.offsets.length, ttf1.maxp.numGlyphs + 1
     test.done()
 
 
