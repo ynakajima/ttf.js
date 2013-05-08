@@ -4,11 +4,8 @@
 #
 # Released under the MIT license.
 
-# exports
-ttfjs = (module? and module.exports?) and module.exports or @ttfjs or @ttfjs = {}
-
 # ## TTFDataView Class
-class ttfjs.TTFDataView
+class TTFDataView
   constructor: (jDataView) ->
     @view = jDataView
 
@@ -100,3 +97,5 @@ class ttfjs.TTFDataView
 
   getFWord: (offset) -> @getShort offset
 
+# exports
+module.exports = TTFDataView
