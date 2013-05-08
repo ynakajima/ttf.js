@@ -18,7 +18,8 @@ testBuffer = jDataView.createBuffer(0xab # BYTE: 171, CHAR: -85
   0x00, 0x00, 0x00, 0x00, 0xba, 0xc2, 0x67, 0x91, # longDateTime: Wed Apr 16 10:51:13 2003
   0x00, 0x00, 0x00, 0x00, 0xcd, 0x15, 0xa0, 0x7d, # longDateTime: Fri Jan 11 19:57:01 2013
   0x00, 0x00, 0x00, 0x00, 0xcd, 0x16, 0x10, 0xfe, # longDateTime: Sat Jan 12 03:57:02 2013
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00) # longDateTime: Fri Jan 01 00:00:00 1904 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # longDateTime: Fri Jan 01 00:00:00 1904 
+  0x26, 0x10) # USHORT_Flags 0010011000010000
 
 testView = new jDataView testBuffer
 ttfDataView = new TTFDataView testView
@@ -119,5 +120,10 @@ exports.TTFDataViewTest =
   'test TTFDataView#getFWord': (test) ->
     test.ok typeof ttfDataView.getFWord is 'function'
     test.equal ttfDataView.getFWord(1), -8464
+    test.done()
+
+  'test TTFDataView#getUshortFlags': (test) ->
+    test.ok typeof ttfDataView.getUshortFlags is 'function'
+    test.deepEqual ttfDataView.getUshortFlags(73), [0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0]  # 0010011000010000
     test.done()
 

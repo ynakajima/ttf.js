@@ -97,5 +97,10 @@ class TTFDataView
 
   getFWord: (offset) -> @getShort offset
 
+  getUshortFlags: (offset) ->
+    flags = @getUshort offset
+    for i in [0..15]
+      num = if (flags & Math.pow(2, i)) is 0 then 0 else 1
+
 # exports
 module.exports = TTFDataView
