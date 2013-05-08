@@ -4,6 +4,10 @@
 #
 # Released under the MIT license.
 
+# require
+HeadTable = require ('./table/HeadTable')
+
+
 # ## TrueType Class
 class TrueType
   constructor: () ->
@@ -13,6 +17,7 @@ class TrueType
    @entrySelector = 0
    @rangeShift = 0
    @tableDirectory = []
+   @head = {}
 
   # https://developer.apple.com/fonts/TTRefMan/RM06/Chap6.html#ScalerTypeNote
   isMacTTF: () ->
@@ -52,13 +57,22 @@ class TrueType
       ttf.rangeShift = view.getUshort()
 
       # tableDirectory
-      ttf.tableDirectory = for i in [1..ttf.numTables]
-        {
-          tag: view.getString 4
-          checkSum: view.getUlong().toString(16)
-          offset: view.getUlong()
-          length: view.getUlong()
-        }
+      if ttf.numTables > 0
+        tableIndex = {}
+
+        ttf.tableDirectory = for i in [0..ttf.numTables-1]
+          tag = view.getString 4
+          tableIndex[tag] = i
+          {
+            tag: tag
+            checkSum: view.getUlong().toString(16)
+            offset: view.getUlong()
+            length: view.getUlong()
+          }
+
+        # head
+        if typeof tableIndex.head isnt 'undefined'
+          ttf.head = HeadTable.createFromTTFDataView(view, ttf.tableDirectory[tableIndex.head].offset)
 
     # return ttf
     ttf

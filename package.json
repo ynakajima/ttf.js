@@ -2,7 +2,7 @@
   "name": "ttfjs",
   "version": "0.2.0",
   "scripts": {
-    "test": "./node_modules/.bin/nodeunit test/tests"
+    "test": "./node_modules/.bin/nodeunit test/tests test/tests/table"
   },
   "dependencies": {
     "coffee-script": "~1.4.0",
