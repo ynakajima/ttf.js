@@ -35,7 +35,9 @@ exports.TTFDataViewTest =
     test.ok typeof ttfDataView.seek is 'function'
 
     ttfDataView.seek 12
-    test.ok do testView.tell is 12
+    test.equal do testView.tell, 12
+    ttfDataView.seek 0
+    test.equal do testView.tell, 0
     test.done()
 
   'test TTFDataView#tell': (test) ->

@@ -10,7 +10,7 @@ class TTFDataView
     @view = jDataView
 
   seek: (offset) ->
-    @view.seek offset if offset
+    @view.seek offset if typeof offset is 'number'
     this
 
   tell: () -> @view.tell()
@@ -34,13 +34,13 @@ class TTFDataView
    * @param {number} `offset` offset.
   ###
   getFixed: (offset) ->
-    @seek offset if offset
+    @seek offset if typeof offset is 'number'
     mantissa = @view.getInt16()
     fraction = @view.getUint16() / Math.pow(2, 16)
     Math.ceil((mantissa + fraction) * 1000) / 1000
 
   getF2dot14: (offset) ->
-    @seek offset if offset
+    @seek offset if typeof offset is 'number'
     value = @view.getUint16()
     mantissa = [0, 1, -2, -1][(value >>> 14)]
     fraction = (value & 0x3fff) / Math.pow(2, 14)
@@ -57,7 +57,7 @@ class TTFDataView
    * @return {Date} date.
   ###
   getLongDateTime: (offset) ->
-    @seek offset if offset
+    @seek offset if typeof offset is 'number'
     date = [0, 0, 0, 0]
     date1970 = [0, 0, 0, 0]
     year = []
