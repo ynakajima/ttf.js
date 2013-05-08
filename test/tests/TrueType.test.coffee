@@ -2,8 +2,11 @@ fs = require 'fs'
 jDataView = require 'jdataview'
 TTFDataView = require '../../coffee/TTFDataView'
 TrueType = require '../../coffee/TrueType'
+HeadTable = require '../../coffee/table/HeadTable'
+MaxpTable = require '../../coffee/table/MaxpTable'
 
 # test data
+ttf = new TrueType()
 ttf1 = TrueType.createFromTTFDataView new TTFDataView new jDataView fs.readFileSync __dirname + '/../resources/SourceCodePro-Medium.ttf'
 ttf1TableDirectory = JSON.parse """
 [
@@ -46,7 +49,6 @@ exports.TrueTypeTest =
   
   'test TrueType is Constructor': (test) ->
     test.strictEqual typeof TrueType, 'function'
-    ttf = new TrueType()
     test.strictEqual ttf.sfntVersion, 0
     test.strictEqual ttf.numTables, 0
     test.strictEqual ttf.searchRange, 0
@@ -141,6 +143,20 @@ exports.TrueType_createFromTTFDataView =
     test.equal macTTF.isCFF(), false
     test.equal ttcf.isCFF(), false
     test.equal otto.isCFF(), true
+    test.done()
+
+  'test TrueType#head': (test) ->
+    test.ok ttf.head instanceof HeadTable
+    test.ok ttf1.head instanceof HeadTable
+    test.strictEqual ttf.head.version, 0
+    test.strictEqual ttf1.head.version, 1
+    test.done()
+
+  'test TrueType#maxp': (test) ->
+    test.ok ttf.maxp instanceof MaxpTable
+    test.ok ttf1.maxp instanceof MaxpTable
+    test.strictEqual ttf.maxp.version, 0
+    test.strictEqual ttf1.maxp.version, 1
     test.done()
 
 
