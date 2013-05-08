@@ -41,8 +41,8 @@ exports.TrueType_createFromTTFDataView =
     test.ok ttf1 instanceof TrueType
     test.done()
 
-  'test TrueType#version': (test) ->
-    test.strictEqual ttf1.version, 1.0
+  'test TrueType#sfntVersion': (test) ->
+    test.strictEqual ttf1.sfntVersion, 1.0
     test.done()
 
   'test TrueType#numTables': (test) ->

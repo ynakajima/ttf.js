@@ -13,7 +13,7 @@ class TrueType
   # @return {TrueType}
   @createFromTTFDataView: (view) ->
     ttf = new TrueType
-    ttf.version = view.getFixed()
+    ttf.sfntVersion = view.getFixed()
     ttf.numTables = view.getUshort()
     ttf.searchRange = view.getUshort()
     ttf.entrySelector = view.getUshort()
