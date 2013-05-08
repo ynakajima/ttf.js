@@ -3,6 +3,7 @@ jDataView = require 'jdataview'
 TTFDataView = require '../../coffee/TTFDataView'
 TrueType = require '../../coffee/TrueType'
 
+# test data
 ttf1 = TrueType.createFromTTFDataView new TTFDataView new jDataView fs.readFileSync __dirname + '/../resources/SourceCodePro-Medium.ttf'
 ttf1TableDirectory = JSON.parse """
 [
@@ -27,11 +28,32 @@ ttf1TableDirectory = JSON.parse """
   {"tag": "prep", "checkSum":"28b81ab0", "offset":7360, "length":65}
 ]
 """
+macTTF = TrueType.createFromTTFDataView new TTFDataView new jDataView jDataView.createBuffer 0x74, 0x72, 0x75, 0x65, # true
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
+ttcf = TrueType.createFromTTFDataView new TTFDataView new jDataView jDataView.createBuffer 0x74, 0x74, 0x63, 0x66, # ttcf
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+
+otto = TrueType.createFromTTFDataView new TTFDataView new jDataView jDataView.createBuffer 0x4f, 0x54, 0x54, 0x4f, # OTTO
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+
+
+# test
 exports.TrueTypeTest =
   
   'test TrueType is Constructor': (test) ->
     test.strictEqual typeof TrueType, 'function'
+    ttf = new TrueType()
+    test.strictEqual ttf.sfntVersion, 0
+    test.strictEqual ttf.numTables, 0
+    test.strictEqual ttf.searchRange, 0
+    test.strictEqual ttf.entrySelector, 0
+    test.strictEqual ttf.rangeShift, 0
+    test.ok ttf.tableDirectory instanceof Array
+    test.strictEqual ttf.tableDirectory.length, 0
     test.done()
 
 exports.TrueType_createFromTTFDataView =
@@ -43,6 +65,9 @@ exports.TrueType_createFromTTFDataView =
 
   'test TrueType#sfntVersion': (test) ->
     test.strictEqual ttf1.sfntVersion, 1.0
+    test.strictEqual macTTF.sfntVersion, 'true'
+    test.strictEqual ttcf.sfntVersion, 'ttcf'
+    test.strictEqual otto.sfntVersion, 'OTTO'
     test.done()
 
   'test TrueType#numTables': (test) ->
@@ -69,3 +94,53 @@ exports.TrueType_createFromTTFDataView =
       test.ok _table.checkSum, table.checkSum
       test.ok _table.length, table.length
     test.done()
+
+  'test TrueType#isMacTTF()': (test) ->
+    test.equal typeof ttf1.isMacTTF, 'function'
+    test.equal ttf1.isMacTTF(), false
+    test.equal macTTF.isMacTTF(), true
+    test.equal ttcf.isMacTTF(), false
+    test.equal otto.isMacTTF(), false
+    test.done()
+
+  'test TrueType#isWinTTF()': (test) ->
+    test.equal typeof ttf1.isWinTTF, 'function'
+    test.equal ttf1.isWinTTF(), true
+    test.equal macTTF.isWinTTF(), false
+    test.equal ttcf.isWinTTF(), false
+    test.equal otto.isWinTTF(), false
+    test.done()
+
+  'test TrueType#isTTCF()': (test) ->
+    test.equal typeof ttf1.isTTCF, 'function'
+    test.equal ttf1.isTTCF(), false
+    test.equal macTTF.isTTCF(), false
+    test.equal ttcf.isTTCF(), true
+    test.equal otto.isTTCF(), false
+    test.done()
+
+  'test TrueType#isTTF()': (test) ->
+    test.equal typeof ttf1.isTTF, 'function'
+    test.equal ttf1.isTTF(), true
+    test.equal macTTF.isTTF(), true
+    test.equal ttcf.isTTF(), true
+    test.equal otto.isTTF(), false
+    test.done()
+
+  'test TrueType#isOTTO()': (test) ->
+    test.equal typeof ttf1.isOTTO, 'function'
+    test.equal ttf1.isOTTO(), false
+    test.equal macTTF.isOTTO(), false
+    test.equal ttcf.isOTTO(), false
+    test.equal otto.isOTTO(), true
+    test.done()
+
+  'test TrueType#isCFF()': (test) ->
+    test.equal typeof ttf1.isCFF, 'function'
+    test.equal ttf1.isCFF(), false
+    test.equal macTTF.isCFF(), false
+    test.equal ttcf.isCFF(), false
+    test.equal otto.isCFF(), true
+    test.done()
+
+
