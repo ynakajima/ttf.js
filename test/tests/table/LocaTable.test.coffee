@@ -2,10 +2,10 @@ fs = require 'fs'
 jDataView = require 'jdataview'
 TTFDataView = require '../../../src/TTFDataView'
 LocaTable = require '../../../src/table/LocaTable'
-ttf1Loca = require '../../resources/SourceCodePro-Medium.loca.json'
+ttf1Loca = require '../../resources/SourceCodePro/SourceCodePro-Medium.loca.json'
 
 # test data
-view = new TTFDataView new jDataView fs.readFileSync __dirname + '/../../resources/SourceCodePro-Medium.ttf'
+view = new TTFDataView new jDataView fs.readFileSync __dirname + '/../../resources/SourceCodePro/SourceCodePro-Medium.ttf'
 ttf1 = LocaTable.createFromTTFDataView(view, 7464, 965, false)
 
 # test

@@ -8,7 +8,7 @@ LocaTable = require '../../src/table/LocaTable'
 
 # test data
 ttf = new TrueType()
-ttf1 = TrueType.createFromTTFDataView new TTFDataView new jDataView fs.readFileSync __dirname + '/../resources/SourceCodePro-Medium.ttf'
+ttf1 = TrueType.createFromTTFDataView new TTFDataView new jDataView fs.readFileSync __dirname + '/../resources/SourceCodePro/SourceCodePro-Medium.ttf'
 ttf1TableDirectory = JSON.parse """
 [
   {"tag": "BASE", "checkSum":"8b1994b1", "offset":111904, "length":58},
