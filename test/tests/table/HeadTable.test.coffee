@@ -1,7 +1,7 @@
 fs = require 'fs'
 jDataView = require 'jdataview'
-TTFDataView = require '../../../coffee/TTFDataView'
-HeadTable = require '../../../coffee/table/HeadTable'
+TTFDataView = require '../../../src/TTFDataView'
+HeadTable = require '../../../src/table/HeadTable'
 
 # test data
 view = new TTFDataView new jDataView fs.readFileSync __dirname + '/../../resources/SourceCodePro-Medium.ttf'

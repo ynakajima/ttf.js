@@ -1,7 +1,7 @@
 fs = require 'fs'
 jDataView = require 'jdataview'
-TTFDataView = require '../../../coffee/TTFDataView'
-LocaTable = require '../../../coffee/table/LocaTable'
+TTFDataView = require '../../../src/TTFDataView'
+LocaTable = require '../../../src/table/LocaTable'
 ttf1Loca = require '../../resources/SourceCodePro-Medium.loca.json'
 
 # test data

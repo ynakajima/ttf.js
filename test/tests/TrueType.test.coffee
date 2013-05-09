@@ -1,10 +1,10 @@
 fs = require 'fs'
 jDataView = require 'jdataview'
-TTFDataView = require '../../coffee/TTFDataView'
-TrueType = require '../../coffee/TrueType'
-HeadTable = require '../../coffee/table/HeadTable'
-MaxpTable = require '../../coffee/table/MaxpTable'
-LocaTable = require '../../coffee/table/LocaTable'
+TTFDataView = require '../../src/TTFDataView'
+TrueType = require '../../src/TrueType'
+HeadTable = require '../../src/table/HeadTable'
+MaxpTable = require '../../src/table/MaxpTable'
+LocaTable = require '../../src/table/LocaTable'
 
 # test data
 ttf = new TrueType()
