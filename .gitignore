@@ -4,3 +4,7 @@ _
 *.swp
 *~
 *.swo
+node_modules
+out
+ttf.js
+ttf.min.js

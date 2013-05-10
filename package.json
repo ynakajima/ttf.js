@@ -1,0 +1,34 @@
+{
+  "name": "ttf",
+  "description": "A JavaScript TrueType font engine.",
+  "keywords": ["font", "truetype", "svg"],
+  "author": {
+    "name": "ynakajima",
+    "url": "https://github.com/ynakajima"
+  },
+  "maintainers": [
+    {"name": "ynakajima"}
+  ],
+  "version": "0.2.0",
+  "licenses": [
+    {"type": "MIT"}
+  ],
+  "dependencies": {
+    "jDataView": "~1.1.0"
+  },
+  "devDependencies": {
+    "coffee-script": "~1.4.0",
+    "nodeunit": "~0.7.4"
+  },
+  "homepage" : "https://github.com/ynakajima/ttf.js",
+  "repository" : {
+    "type" : "git",
+    "url" : "git://github.com/ynakajima/ttf.js"
+  },
+  "bugs" : {
+    "url" : "https://github.com/ynakajima/ttf.js/issues"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/nodeunit test/tests test/tests/table"
+  } 
+}
