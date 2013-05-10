@@ -8,6 +8,7 @@
 HeadTable = require ('./table/HeadTable')
 MaxpTable = require ('./table/MaxpTable')
 LocaTable = require ('./table/LocaTable')
+GlyfTable = require ('./table/GlyfTable')
 
 
 # ## TrueType Class
@@ -25,6 +26,7 @@ class TrueType
    @head = new HeadTable()
    @maxp = new MaxpTable()
    @loca = new LocaTable()
+   @glyf = new GlyfTable()
 
   # https://developer.apple.com/fonts/TTRefMan/RM06/Chap6.html#ScalerTypeNote
   isMacTTF: () ->
@@ -96,6 +98,10 @@ class TrueType
         # loca
         if typeof tableOffsets.loca isnt 'undefined'
           ttf.loca = LocaTable.createFromTTFDataView(view, tableOffsets.loca, ttf.getNumGlyphs(), ttf.isLocaLong())
+
+        # glyf
+        if typeof tableOffsets.glyf isnt 'undefined'
+          ttf.glyf = GlyfTable.createFromTTFDataView(view, tableOffsets.glyf, ttf.loca)
 
     # return ttf
     ttf
