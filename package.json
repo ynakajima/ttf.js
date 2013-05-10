@@ -13,12 +13,14 @@
   "licenses": [
     {"type": "MIT"}
   ],
+  "main": "ttf.js",
   "dependencies": {
     "jDataView": "~1.1.0"
   },
   "devDependencies": {
-    "coffee-script": "~1.4.0",
-    "nodeunit": "~0.7.4"
+    "coffee-script": "~1.4",
+    "nodeunit": "~0.7",
+    "uglify-js": "~2.2"
   },
   "homepage" : "https://github.com/ynakajima/ttf.js",
   "repository" : {

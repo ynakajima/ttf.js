@@ -4,8 +4,8 @@ jDataView = require 'jdataview'
 
 #ttfjs = require '../ttf'
 ttfjs = {
-  TTFDataView: require '../src/TTFDataView'
-  TrueType: require '../src/TrueType'
+  TTFDataView: require '../../src/TTFDataView'
+  TrueType: require '../../src/TrueType'
 }
 
 if process.argv.length > 2

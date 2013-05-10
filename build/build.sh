@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # Compile
-coffee -c --join ttf.tmp.js src/
+./node_modules/.bin/coffee -c --join ttf.tmp.js src/
 
 # Remove unnecessary statement.
 sed -i '' -e '/module.exports = [^t]/d' -e '/require(/d' ttf.tmp.js
 
 # minimam
-uglifyjs ttf.tmp.js > ttf.min.tmp.js
+./node_modules/.bin/uglifyjs ttf.tmp.js > ttf.min.tmp.js
 
 # add header
 cat build/header.js > ttf.js
