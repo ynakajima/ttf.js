@@ -91,6 +91,7 @@ class TrueType
         # head
         if typeof tableOffsets.head isnt 'undefined'
           ttf.head = HeadTable.createFromTTFDataView(view, tableOffsets.head, ttf)
+
         # maxp
         if typeof tableOffsets.maxp isnt 'undefined'
           ttf.maxp = MaxpTable.createFromTTFDataView(view, tableOffsets.maxp, ttf)
