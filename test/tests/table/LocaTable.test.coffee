@@ -6,7 +6,15 @@ ttf1Loca = require '../../resources/SourceCodePro/SourceCodePro-Medium.loca.json
 
 # test data
 view = new TTFDataView new jDataView fs.readFileSync __dirname + '/../../resources/SourceCodePro/SourceCodePro-Medium.ttf'
-ttf1 = LocaTable.createFromTTFDataView(view, 7464, 965, false)
+ttf1 = LocaTable.createFromTTFDataView(view,
+  7464,
+  {
+    getNumGlyphs: () ->
+      965
+    isLocaLong: () ->
+      false
+  }
+)
 
 # test
 exports.LocaTable =

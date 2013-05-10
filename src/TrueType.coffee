@@ -90,18 +90,18 @@ class TrueType
 
         # head
         if typeof tableOffsets.head isnt 'undefined'
-          ttf.head = HeadTable.createFromTTFDataView(view, tableOffsets.head)
+          ttf.head = HeadTable.createFromTTFDataView(view, tableOffsets.head, ttf)
         # maxp
         if typeof tableOffsets.maxp isnt 'undefined'
-          ttf.maxp = MaxpTable.createFromTTFDataView(view, tableOffsets.maxp)
+          ttf.maxp = MaxpTable.createFromTTFDataView(view, tableOffsets.maxp, ttf)
 
         # loca
         if typeof tableOffsets.loca isnt 'undefined'
-          ttf.loca = LocaTable.createFromTTFDataView(view, tableOffsets.loca, ttf.getNumGlyphs(), ttf.isLocaLong())
+          ttf.loca = LocaTable.createFromTTFDataView(view, tableOffsets.loca, ttf)
 
         # glyf
         if typeof tableOffsets.glyf isnt 'undefined'
-          ttf.glyf = GlyfTable.createFromTTFDataView(view, tableOffsets.glyf, ttf.loca)
+          ttf.glyf = GlyfTable.createFromTTFDataView(view, tableOffsets.glyf, ttf)
 
     # return ttf
     ttf

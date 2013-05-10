@@ -16,9 +16,10 @@ class GlyfTable
   # Create GlyfTable instance from TTFDataView
   # @param {TTFDataView} view
   # @param {Number} offset
-  # @param {LocaTable} loca 
+  # @param {TrueType} ttf 
   # @return {GlyfTable}
-  @createFromTTFDataView: (view, offset, loca) ->
+  @createFromTTFDataView: (view, offset, ttf) ->
+    loca = ttf.loca
     view.seek offset
     glyf = new GlyfTable()
 

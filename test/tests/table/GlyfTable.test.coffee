@@ -7,7 +7,7 @@ ttf1Glyf = require '../../resources/SourceCodePro/SourceCodePro-Medium.ttx.glyf.
 
 # test data
 view = new TTFDataView new jDataView fs.readFileSync __dirname + '/../../resources/SourceCodePro/SourceCodePro-Medium.ttf'
-ttf1 = GlyfTable.createFromTTFDataView(view, 9396, ttf1Loca)
+ttf1 = GlyfTable.createFromTTFDataView(view, 9396, {loca: ttf1Loca})
 
 # test
 exports.GlyfTableTest =

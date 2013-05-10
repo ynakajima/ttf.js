@@ -12,10 +12,11 @@ class LocaTable
   # Create LocaTable instance from TTFDataView
   # @param {TTFDataView} view
   # @param {Number} offset 
-  # @param {Number} numGlyphs
-  # @param {Boolean} long 
+  # @param {TrueType} ttf
   # @return {LocaTable}
-  @createFromTTFDataView: (view, offset, numGlyphs, long = false) ->
+  @createFromTTFDataView: (view, offset, ttf) ->
+    numGlyphs = ttf.getNumGlyphs()
+    long = ttf.isLocaLong()
     view.seek offset
     loca = new LocaTable()
     loca.offsets = for i in [0..numGlyphs]
