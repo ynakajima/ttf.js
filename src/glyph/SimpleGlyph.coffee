@@ -51,6 +51,18 @@ class SimpleGlyph
   # @param {Number} offset 
   # @return {SimpleGlyph}
   @createFromTTFDataView: (view, offset) ->
+    
+    # init flags
+    ON_CURVE          = Math.pow 2, 0
+    X_SHORT           = Math.pow 2, 1
+    Y_SHORT           = Math.pow 2, 2
+    REPEAT            = Math.pow 2, 3
+    X_IS_SAME         = Math.pow 2, 4 
+    POSITIVE_X_SHORT  = Math.pow 2, 4
+    Y_IS_SAME         = Math.pow 2, 5
+    POSITIVE_Y_SHORT  = Math.pow 2, 5
+    
+    # init glyph
     view.seek offset
     g = new SimpleGlyph()
     
@@ -90,7 +102,7 @@ class SimpleGlyph
       i++
 
       # repeat
-      if flag & Math.pow(2, 3)
+      if flag & REPEAT
         numRepeat = view.getByte()
         for j in [1..numRepeat]
           if i < numberOfCoordinates
@@ -102,18 +114,18 @@ class SimpleGlyph
     # xCoordinates
     g.xCoordinates = for flag in flags
       x = 0
-      if flag & Math.pow(2, 1) # short Vector
-        x = (if flag & Math.pow(2, 4) then 1 else -1) * view.getByte()
+      if flag & X_SHORT # short Vector
+        x = (if flag & POSITIVE_X_SHORT then 1 else -1) * view.getByte()
       else
-        x = if flag & Math.pow(2, 4) then 0 else view.getShort()
+        x = if flag & X_IS_SAME then 0 else view.getShort()
 
     # yCoordinates
     g.yCoordinates = for flag in flags
       y = 0
-      if flag & Math.pow(2, 2) # short Vector
-        y = (if flag & Math.pow(2, 5) then 1 else -1) * view.getByte()
+      if flag & Y_SHORT # short Vector
+        y = (if flag & POSITIVE_Y_SHORT then 1 else -1) * view.getByte()
       else
-        y = if flag & Math.pow(2, 5) then 0 else view.getShort()
+        y = if flag & Y_IS_SAME then 0 else view.getShort()
 
     # outline
     startPtOfContour = x = y = 0
@@ -124,7 +136,7 @@ class SimpleGlyph
         {
           x: x
           y: y
-          on: flags[i] & Math.pow(2, 0)
+          on: flags[i] & ON_CURVE
         }
       startPtOfContour = endPtOfcountour + 1
       contour
