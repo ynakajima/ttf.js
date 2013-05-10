@@ -3,7 +3,8 @@ jDataView = require 'jdataview'
 TTFDataView = require '../../../src/TTFDataView'
 GlyfTable = require '../../../src/table/GlyfTable'
 ttf1Loca = {offsets: require '../../resources/SourceCodePro/SourceCodePro-Medium.loca.json'}
-ttf1Glyf = require '../../resources/SourceCodePro/SourceCodePro-Medium.ttx.glyf.json'
+ttf1Glyphs = require '../../resources/SourceCodePro/SourceCodePro-Medium.ttx.glyf.json'
+ttf1Glyf = ttf1Glyphs.glyphOrder
 
 # test data
 view = new TTFDataView new jDataView fs.readFileSync __dirname + '/../../resources/SourceCodePro/SourceCodePro-Medium.ttf'
@@ -65,6 +66,26 @@ exports.GlyfTable_createFromTTFDataView =
         # numberOfCoordinates
         test.strictEqual glyph.numberOfContours, -1
 
+        # xMin, yMin, xMax, yMax
+        test.equal glyph.xMin, testGlyph.xMin, 'xMin: [' + i + '] ' + [glyph.xMin, testGlyph.xMin].join(' == ')
+        test.equal glyph.yMin, testGlyph.yMin, 'yMin: [' + i + '] ' + [glyph.yMin, testGlyph.yMin].join(' == ')
+        test.equal glyph.xMax, testGlyph.xMax, 'xMax: [' + i + '] ' + [glyph.xMax, testGlyph.xMax].join(' == ')
+        test.equal glyph.yMax, testGlyph.yMax, 'yMax: [' + i + '] ' + [glyph.yMax, testGlyph.yMax].join(' == ')
+
+        # componets
+        for testComponent, j in testGlyph.component
+          component = glyph.components[j]
+
+          # flags
+          # TODO: Research is needed because it seems there is a problem with the test data.
+          #test.equal '0x' + component.flags.toString(16), testComponent.flags, 'flags:  [' + i + '][' + j + ']'
+          
+          # glyphIndex
+          test.equal component.glyphIndex, ttf1Glyphs.glyphs[testComponent.glyphName].glyfIndex
+
+          # offset
+          test.equal component.offsetX, testComponent.x, 'offsetX: [' + i + '][' + j + ']: ' + [component.offsetX, testComponent.x].join(' == ')
+          test.equal component.offsetY, testComponent.y, 'offsetY: [' + i + '][' + j + ']: ' + [component.offsetY, testComponent.y].join(' == ')
 
     test.done()
 

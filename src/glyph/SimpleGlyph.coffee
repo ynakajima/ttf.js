@@ -57,7 +57,7 @@ class SimpleGlyph
     X_SHORT           = Math.pow 2, 1
     Y_SHORT           = Math.pow 2, 2
     REPEAT            = Math.pow 2, 3
-    X_IS_SAME         = Math.pow 2, 4 
+    X_IS_SAME         = Math.pow 2, 4
     POSITIVE_X_SHORT  = Math.pow 2, 4
     Y_IS_SAME         = Math.pow 2, 5
     POSITIVE_Y_SHORT  = Math.pow 2, 5
