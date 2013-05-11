@@ -5,6 +5,7 @@ TrueType = require '../../src/TrueType'
 HeadTable = require '../../src/table/HeadTable'
 MaxpTable = require '../../src/table/MaxpTable'
 LocaTable = require '../../src/table/LocaTable'
+GlyfTable = require '../../src/table/GlyfTable'
 
 # test data
 ttf = new TrueType()
@@ -146,6 +147,12 @@ exports.TrueType_createFromBuffer =
     test.equal otto.isCFF(), true
     test.done()
 
+  'test TrueType#getGlyphById()': (test) ->
+    test.strictEqual typeof ttf.getGlyphById, 'function'
+    test.strictEqual ttf.getGlyphById(37), false
+    test.strictEqual ttf1.getGlyphById(37).GID, 37
+    test.done()
+
   'test TrueType#head': (test) ->
     test.ok ttf.head instanceof HeadTable
     test.ok ttf1.head instanceof HeadTable
@@ -167,4 +174,10 @@ exports.TrueType_createFromBuffer =
     test.strictEqual ttf1.loca.offsets.length, ttf1.maxp.numGlyphs + 1
     test.done()
 
+  'test TrueType#glyf': (test) ->
+    test.ok ttf.glyf instanceof GlyfTable
+    test.ok ttf1.glyf instanceof GlyfTable
+    test.strictEqual ttf.glyf.glyphs.length, 0
+    test.strictEqual ttf1.glyf.glyphs.length, ttf1.maxp.numGlyphs
+    test.done()
 

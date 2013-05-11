@@ -6,7 +6,8 @@
 
 # ## Simple Glyph Class
 class SimpleGlyph
-  constructor: () ->
+  constructor: (GID = null) ->
+    @GID = GID
     @type = 'simple'
     @numberOfContours = 0
     @xMin = 0
@@ -49,8 +50,9 @@ class SimpleGlyph
   # Create SimpleGlyph instance from TTFDataView
   # @param {TTFDataView} view
   # @param {Number} offset 
+  # @param {Number} glyphID
   # @return {SimpleGlyph}
-  @createFromTTFDataView: (view, offset) ->
+  @createFromTTFDataView: (view, offset, glyphID) ->
     
     # init flags
     ON_CURVE          = Math.pow 2, 0
@@ -64,7 +66,7 @@ class SimpleGlyph
     
     # init glyph
     view.seek offset
-    g = new SimpleGlyph()
+    g = new SimpleGlyph(glyphID)
     
     # number of contours
     g.numberOfContours = view.getShort()

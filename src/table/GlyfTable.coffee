@@ -13,6 +13,12 @@ class GlyfTable
   constructor: () ->
     @glyphs = []
 
+  # Return Glyph at the specified id.
+  # @param {Number} id id of Glyph 
+  # @return {SimpleGlyph|CompositeGlyph|Boolean}
+  getGlyphById: (id) ->
+    if typeof @glyphs[id] isnt 'undefined' then @glyphs[id] else false
+
   # Create GlyfTable instance from TTFDataView
   # @param {TTFDataView} view
   # @param {Number} offset
@@ -30,13 +36,13 @@ class GlyfTable
 
       # If a glyph has no outlines, the offset loca[n] = loca[n+1].
       if loca.offsets[i + 1]? and location is loca.offsets[i + 1]
-        new SimpleGlyph()
+        new SimpleGlyph(i)
 
       else if view.getShort(glyphLocation) >= 0 # simple glyph
-        SimpleGlyph.createFromTTFDataView(view, glyphLocation)
+        SimpleGlyph.createFromTTFDataView(view, glyphLocation, i)
 
       else # composite glyph
-        CompositeGlyph.createFromTTFDataView(view, glyphLocation)
+        CompositeGlyph.createFromTTFDataView(view, glyphLocation, i)
 
     # return maxp
     glyf

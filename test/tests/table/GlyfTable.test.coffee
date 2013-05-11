@@ -19,6 +19,16 @@ exports.GlyfTableTest =
     test.ok head instanceof GlyfTable
     test.done()
 
+exports.GlyfTable_getGlyphById =
+  
+  'test GlyfTable#getGlyphById' : (test) ->
+    test.strictEqual typeof ttf1.getGlyphById, 'function'
+    test.strictEqual ttf1.getGlyphById(24), ttf1.glyphs[24]
+    test.strictEqual ttf1.getGlyphById(24).GID, 24
+    test.strictEqual ttf1.getGlyphById(-24), false
+    test.strictEqual ttf1.getGlyphById(8928), false
+    test.done()
+
 exports.GlyfTable_createFromTTFDataView =
   
   'GlyfTable#createFromTTFDataView() is function': (test) ->
@@ -30,6 +40,9 @@ exports.GlyfTable_createFromTTFDataView =
     for glyph, i in ttf1.glyphs
       
       testGlyph = ttf1Glyf[i]
+
+      # glyphID
+      test.strictEqual glyph.GID, i
 
       if typeof testGlyph.xMin is 'undefined'
         # NULL Glyph

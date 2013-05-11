@@ -212,6 +212,10 @@
       return this.head.isLocaLong();
     };
 
+    TrueType.prototype.getGlyphById = function(id) {
+      return this.glyf.getGlyphById(id);
+    };
+
     TrueType.createFromBuffer = function(buffer) {
       var checkSum, i, length, offset, sfntVersionNumber, sfntVersionString, tableOffsets, tag, ttf, view;
       ttf = new TrueType();
@@ -268,7 +272,11 @@
 
   CompositeGlyph = (function() {
 
-    function CompositeGlyph() {
+    function CompositeGlyph(GID) {
+      if (GID == null) {
+        GID = null;
+      }
+      this.GID = GID;
       this.type = 'composite';
       this.numberOfContours = 0;
       this.xMin = 0;
@@ -278,7 +286,7 @@
       this.components = [];
     }
 
-    CompositeGlyph.createFromTTFDataView = function(view, offset) {
+    CompositeGlyph.createFromTTFDataView = function(view, offset, glyphID) {
       var ARGS_ARE_XY_VALUES, ARG_1_AND_2_ARE_WORDS, MORE_COMPONENTS, OVERLAP_COMPOUND, RESERVED, ROUND_XY_TO_GRID, SCALED_COMPONENT_OFFSET, UNSCALED_COMPONENT_OFFSET, USE_MY_METRICS, WE_HAVE_AN_X_AND_Y_SCALE, WE_HAVE_A_SCALE, WE_HAVE_A_TWO_BY_TWO, WE_HAVE_INSTRUCTIONS, component, do_, flags, g, transform;
       ARG_1_AND_2_ARE_WORDS = Math.pow(2, 0);
       ARGS_ARE_XY_VALUES = Math.pow(2, 1);
@@ -294,7 +302,7 @@
       SCALED_COMPONENT_OFFSET = Math.pow(2, 11);
       UNSCALED_COMPONENT_OFFSET = Math.pow(2, 12);
       view.seek(offset);
-      g = new CompositeGlyph();
+      g = new CompositeGlyph(glyphID);
       g.numberOfContours = view.getShort();
       g.xMin = view.getShort();
       g.yMin = view.getShort();
@@ -354,7 +362,11 @@
 
   SimpleGlyph = (function() {
 
-    function SimpleGlyph() {
+    function SimpleGlyph(GID) {
+      if (GID == null) {
+        GID = null;
+      }
+      this.GID = GID;
       this.type = 'simple';
       this.numberOfContours = 0;
       this.xMin = 0;
@@ -377,7 +389,7 @@
       };
     }
 
-    SimpleGlyph.createFromTTFDataView = function(view, offset) {
+    SimpleGlyph.createFromTTFDataView = function(view, offset, glyphID) {
       var ON_CURVE, POSITIVE_X_SHORT, POSITIVE_Y_SHORT, REPEAT, X_IS_SAME, X_SHORT, Y_IS_SAME, Y_SHORT, contour, endPtOfcountour, flag, flags, g, i, j, numRepeat, numberOfCoordinates, outline, startPtOfContour, x, y, _i;
       ON_CURVE = Math.pow(2, 0);
       X_SHORT = Math.pow(2, 1);
@@ -388,7 +400,7 @@
       Y_IS_SAME = Math.pow(2, 5);
       POSITIVE_Y_SHORT = Math.pow(2, 5);
       view.seek(offset);
-      g = new SimpleGlyph();
+      g = new SimpleGlyph(glyphID);
       g.numberOfContours = view.getShort();
       if (g.numberOfContours === 0) {
         return g;
@@ -505,6 +517,14 @@
       this.glyphs = [];
     }
 
+    GlyfTable.prototype.getGlyphById = function(id) {
+      if (typeof this.glyphs[id] !== 'undefined') {
+        return this.glyphs[id];
+      } else {
+        return false;
+      }
+    };
+
     GlyfTable.createFromTTFDataView = function(view, offset, ttf) {
       var glyf, glyphLocation, i, loca, location;
       loca = ttf.loca;
@@ -517,11 +537,11 @@
           location = loca.offsets[i];
           glyphLocation = location + offset;
           if ((loca.offsets[i + 1] != null) && location === loca.offsets[i + 1]) {
-            _results.push(new SimpleGlyph());
+            _results.push(new SimpleGlyph(i));
           } else if (view.getShort(glyphLocation) >= 0) {
-            _results.push(SimpleGlyph.createFromTTFDataView(view, glyphLocation));
+            _results.push(SimpleGlyph.createFromTTFDataView(view, glyphLocation, i));
           } else {
-            _results.push(CompositeGlyph.createFromTTFDataView(view, glyphLocation));
+            _results.push(CompositeGlyph.createFromTTFDataView(view, glyphLocation, i));
           }
         }
         return _results;

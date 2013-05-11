@@ -54,6 +54,12 @@ class TrueType
   isLocaLong: () ->
     @head.isLocaLong()
 
+  # Return Glyph at the specified id.
+  # @param {Number} id id of Glyph 
+  # @return {SimpleGlyph|CompositeGlyph}
+  getGlyphById: (id) ->
+    @glyf.getGlyphById id
+
   # Create TrueType instance from TTFDataView
   # @param {Buffer|Array|String} buffer buffer can be either a binary String,
   #                                     any Array-like byte storage

@@ -6,7 +6,8 @@
 
 # ## Composite Glyph Class
 class CompositeGlyph
-  constructor: () ->
+  constructor: (GID = null) ->
+    @GID = GID
     @type = 'composite'
     @numberOfContours = 0
     @xMin = 0
@@ -39,8 +40,9 @@ class CompositeGlyph
   # Create CompositeGlyph instance from TTFDataView
   # @param {TTFDataView} view
   # @param {Number} offset 
+  # @param {Number} glyphID 
   # @return {CompositeGlyph}
-  @createFromTTFDataView: (view, offset) ->
+  @createFromTTFDataView: (view, offset, glyphID) ->
 
     # init flags
     ARG_1_AND_2_ARE_WORDS     = Math.pow 2, 0  # If this is set, the arguments are words; otherwise, they are bytes.
@@ -61,7 +63,7 @@ class CompositeGlyph
                                                # (designed for the Microsoft TrueType rasterizer).
     # init composite glyph
     view.seek offset
-    g = new CompositeGlyph()
+    g = new CompositeGlyph(glyphID)
 
     # read number of contours
     g.numberOfContours = view.getShort()
