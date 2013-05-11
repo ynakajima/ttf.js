@@ -7,7 +7,7 @@ ttf1Glyphs = require '../../resources/SourceCodePro/SourceCodePro-Medium.ttx.gly
 ttf1Glyf = ttf1Glyphs.glyphOrder
 
 # test data
-view = new TTFDataView new jDataView fs.readFileSync __dirname + '/../../resources/SourceCodePro/SourceCodePro-Medium.ttf'
+view = new TTFDataView fs.readFileSync __dirname + '/../../resources/SourceCodePro/SourceCodePro-Medium.ttf'
 ttf1 = GlyfTable.createFromTTFDataView(view, 9396, {loca: ttf1Loca})
 
 # test

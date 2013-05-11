@@ -4,7 +4,7 @@
 ./node_modules/.bin/coffee -c --join ttf.tmp.js src/
 
 # Remove unnecessary statement.
-sed -i '' -e '/module.exports = [^t]/d' -e '/require(/d' ttf.tmp.js
+sed -i "" -e "/module.exports = [^t]/d" -e "/require('\./d" ttf.tmp.js
 
 # minimam
 ./node_modules/.bin/uglifyjs ttf.tmp.js > ttf.min.tmp.js

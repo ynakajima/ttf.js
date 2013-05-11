@@ -5,7 +5,7 @@ LocaTable = require '../../../src/table/LocaTable'
 ttf1Loca = require '../../resources/SourceCodePro/SourceCodePro-Medium.loca.json'
 
 # test data
-view = new TTFDataView new jDataView fs.readFileSync __dirname + '/../../resources/SourceCodePro/SourceCodePro-Medium.ttf'
+view = new TTFDataView fs.readFileSync __dirname + '/../../resources/SourceCodePro/SourceCodePro-Medium.ttf'
 ttf1 = LocaTable.createFromTTFDataView(view,
   7464,
   {

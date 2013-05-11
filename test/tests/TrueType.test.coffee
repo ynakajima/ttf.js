@@ -8,7 +8,7 @@ LocaTable = require '../../src/table/LocaTable'
 
 # test data
 ttf = new TrueType()
-ttf1 = TrueType.createFromTTFDataView new TTFDataView new jDataView fs.readFileSync __dirname + '/../resources/SourceCodePro/SourceCodePro-Medium.ttf'
+ttf1 = TrueType.createFromBuffer fs.readFileSync __dirname + '/../resources/SourceCodePro/SourceCodePro-Medium.ttf'
 ttf1TableDirectory = JSON.parse """
 [
   {"tag": "BASE", "checkSum":"8b1994b1", "offset":111904, "length":58},
@@ -32,15 +32,15 @@ ttf1TableDirectory = JSON.parse """
   {"tag": "prep", "checkSum":"28b81ab0", "offset":7360, "length":65}
 ]
 """
-macTTF = TrueType.createFromTTFDataView new TTFDataView new jDataView jDataView.createBuffer 0x74, 0x72, 0x75, 0x65, # true
+macTTF = TrueType.createFromBuffer jDataView.createBuffer 0x74, 0x72, 0x75, 0x65, # true
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
-ttcf = TrueType.createFromTTFDataView new TTFDataView new jDataView jDataView.createBuffer 0x74, 0x74, 0x63, 0x66, # ttcf
+ttcf = TrueType.createFromBuffer jDataView.createBuffer 0x74, 0x74, 0x63, 0x66, # ttcf
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
-otto = TrueType.createFromTTFDataView new TTFDataView new jDataView jDataView.createBuffer 0x4f, 0x54, 0x54, 0x4f, # OTTO
+otto = TrueType.createFromBuffer jDataView.createBuffer 0x4f, 0x54, 0x54, 0x4f, # OTTO
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
@@ -59,10 +59,10 @@ exports.TrueTypeTest =
     test.strictEqual ttf.tableDirectory.length, 0
     test.done()
 
-exports.TrueType_createFromTTFDataView =
+exports.TrueType_createFromBuffer =
   
-  'TrueTypecreateFromTTFDataView is function': (test) ->
-    test.strictEqual typeof TrueType.createFromTTFDataView, 'function'
+  'TrueType#createFromBuffer is function': (test) ->
+    test.strictEqual typeof TrueType.createFromBuffer, 'function'
     test.ok ttf1 instanceof TrueType
     test.done()
 

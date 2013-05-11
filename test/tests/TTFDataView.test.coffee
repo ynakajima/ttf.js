@@ -21,9 +21,8 @@ testBuffer = jDataView.createBuffer(0xab # BYTE: 171, CHAR: -85
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # longDateTime: Fri Jan 01 00:00:00 1904 
   0x26, 0x10) # USHORT_Flags 0010011000010000
 
-testView = new jDataView testBuffer
-ttfDataView = new TTFDataView testView
-ttfDataView2 = new TTFDataView new jDataView testBuffer
+ttfDataView = new TTFDataView testBuffer
+ttfDataView2 = new TTFDataView testBuffer
 
 
 exports.TTFDataViewTest =
@@ -36,9 +35,9 @@ exports.TTFDataViewTest =
     test.ok typeof ttfDataView.seek is 'function'
 
     ttfDataView.seek 12
-    test.equal do testView.tell, 12
+    test.equal do ttfDataView.view.tell, 12
     ttfDataView.seek 0
-    test.equal do testView.tell, 0
+    test.equal do ttfDataView.view.tell, 0
     test.done()
 
   'test TTFDataView#tell': (test) ->

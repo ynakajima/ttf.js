@@ -35,10 +35,19 @@
 #  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# ## TTFDataView Class
+# require
+jDataView = if typeof require isnt 'undefined' then require('jdataview') else jDataView
+
+# TTFDataView Class
 class TTFDataView
-  constructor: (jDataView) ->
-    @view = jDataView
+  
+  # Create TTFDataView
+  # @param {Buffer|String|Array} buffer buffer buffer can be either a binary String,
+  #                                     any Array-like byte storage
+  #                                     (Array, Uint8Array, Arguments, jQuery(Array), ...)
+  constructor: (buffer) ->
+    @buffer = buffer
+    @view = new jDataView @buffer
 
   seek: (offset) ->
     @view.seek offset if typeof offset is 'number'

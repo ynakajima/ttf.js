@@ -5,6 +5,7 @@
 # Released under the MIT license.
 
 # require
+TTFDataView = require ('./TTFDataView')
 HeadTable = require ('./table/HeadTable')
 MaxpTable = require ('./table/MaxpTable')
 LocaTable = require ('./table/LocaTable')
@@ -54,10 +55,15 @@ class TrueType
     @head.isLocaLong()
 
   # Create TrueType instance from TTFDataView
-  # @param {TTFDataView} view
+  # @param {Buffer|Array|String} buffer buffer can be either a binary String,
+  #                                     any Array-like byte storage
+  #                                     (Array, Uint8Array, Arguments, jQuery(Array), ...)
   # @return {TrueType}
-  @createFromTTFDataView: (view) ->
+  @createFromBuffer: (buffer) ->
     ttf = new TrueType()
+
+    # create TTFDataView
+    view = new TTFDataView buffer
     
     # sfntVersion
     sfntVersionString = view.getString 4, 0

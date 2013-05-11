@@ -4,7 +4,7 @@ TTFDataView = require '../../../src/TTFDataView'
 HeadTable = require '../../../src/table/HeadTable'
 
 # test data
-view = new TTFDataView new jDataView fs.readFileSync __dirname + '/../../resources/SourceCodePro/SourceCodePro-Medium.ttf'
+view = new TTFDataView fs.readFileSync __dirname + '/../../resources/SourceCodePro/SourceCodePro-Medium.ttf'
 ttf1 = HeadTable.createFromTTFDataView(view, 316)
 
 # test

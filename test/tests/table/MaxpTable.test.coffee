@@ -4,7 +4,7 @@ TTFDataView = require '../../../src/TTFDataView'
 MaxpTable = require '../../../src/table/MaxpTable'
 
 # test data
-view = new TTFDataView new jDataView fs.readFileSync __dirname + '/../../resources/SourceCodePro/SourceCodePro-Medium.ttf'
+view = new TTFDataView fs.readFileSync __dirname + '/../../resources/SourceCodePro/SourceCodePro-Medium.ttf'
 ttf1 = MaxpTable.createFromTTFDataView(view, 408)
 
 # test
