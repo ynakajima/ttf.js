@@ -60,7 +60,7 @@ class SimpleGlyph
     if @_svgPathStringCache isnt ''
       return @_svgPathStringCache
 
-    outline = @getTramsformedOutlin(matrix)
+    outline = @getTramsformedOutline(matrix)
     pathString = []
     
     for contour, i in outline
@@ -165,7 +165,7 @@ class SimpleGlyph
   #                        b, d, f
   #                        0, 0, 1}
   # @return {Array} Outline
-  getTramsformedOutlin: (matrix) ->
+  getTramsformedOutline: (matrix) ->
     if typeof matrix is 'undefined'
       matrix = {
         a: 1, c: 0, e: 0,
