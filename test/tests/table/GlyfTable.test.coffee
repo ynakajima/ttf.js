@@ -5,7 +5,6 @@ GlyfTable = require '../../../src/table/GlyfTable'
 ttf1Loca = {offsets: require '../../resources/SourceCodePro/SourceCodePro-Medium.loca.json'}
 ttf1Glyphs = require '../../resources/SourceCodePro/SourceCodePro-Medium.ttx.glyf.json'
 ttf1Glyf = ttf1Glyphs.glyphOrder
-ttf1Svg = require '../../resources/SourceCodePro/SourceCodePro-Medium.svg.json'
 
 # test data
 view = new TTFDataView fs.readFileSync __dirname + '/../../resources/SourceCodePro/SourceCodePro-Medium.ttf'
