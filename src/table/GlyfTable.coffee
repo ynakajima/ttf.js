@@ -27,25 +27,25 @@ class GlyfTable
   @createFromTTFDataView: (view, offset, ttf) ->
     loca = ttf.loca
     view.seek offset
-    glyf = new GlyfTable()
+    glyfTable = new GlyfTable()
 
     # read glyphs
-    glyf.glyphs = for i in [0..loca.offsets.length - 2] # loca last entry is extra.
+    glyfTable.glyphs = for i in [0..loca.offsets.length - 2] # loca last entry is extra.
       location = loca.offsets[i]
       glyphLocation = location + offset
 
       # If a glyph has no outlines, the offset loca[n] = loca[n+1].
       if loca.offsets[i + 1]? and location is loca.offsets[i + 1]
-        new SimpleGlyph(i)
+        new SimpleGlyph(i, glyfTable)
 
       else if view.getShort(glyphLocation) >= 0 # simple glyph
-        SimpleGlyph.createFromTTFDataView(view, glyphLocation, i)
+        SimpleGlyph.createFromTTFDataView(view, glyphLocation, i, glyfTable)
 
       else # composite glyph
-        CompositeGlyph.createFromTTFDataView(view, glyphLocation, i)
+        CompositeGlyph.createFromTTFDataView(view, glyphLocation, i, glyfTable)
 
     # return maxp
-    glyf
+    glyfTable
 
 # exports
 module.exports = GlyfTable

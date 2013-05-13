@@ -272,9 +272,12 @@
 
   CompositeGlyph = (function() {
 
-    function CompositeGlyph(GID) {
+    function CompositeGlyph(GID, glyfTable) {
       if (GID == null) {
         GID = null;
+      }
+      if (glyfTable == null) {
+        glyfTable = null;
       }
       this.GID = GID;
       this.type = 'composite';
@@ -283,10 +286,55 @@
       this.yMin = 0;
       this.xMax = 0;
       this.yMax = 0;
+      this.glyfTable = glyfTable;
       this.components = [];
+      this._svgPathStringCache = '';
     }
 
-    CompositeGlyph.createFromTTFDataView = function(view, offset, glyphID) {
+    CompositeGlyph.prototype.toSVGPathString = function() {
+      var component, glyph, matrix, pathString, t;
+      if (this._svgPathStringCache !== '') {
+        return this._svgPathStringCache;
+      }
+      pathString = (function() {
+        var _i, _len, _ref, _results;
+        _ref = this.components;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          component = _ref[_i];
+          t = component.transform;
+          glyph = this.glyfTable.getGlyphById(component.glyphIndex);
+          matrix = {
+            a: 1,
+            c: 0,
+            e: component.offsetX,
+            b: 0,
+            d: 1,
+            f: component.offsetY
+          };
+          if (typeof t.scale !== 'undefined') {
+            matrix.a = matrix.d = t.scale;
+          }
+          if (typeof t.xScale !== 'undefined') {
+            matrix.a = t.xScale;
+          }
+          if (typeof t.xScale !== 'undefined') {
+            matrix.d = t.yScale;
+          }
+          if (typeof t.scale01 !== 'undefined') {
+            matrix.c = t.scale01;
+          }
+          if (typeof t.scale10 !== 'undefined') {
+            matrix.b = t.scale10;
+          }
+          _results.push(glyph.toSVGPathString(matrix));
+        }
+        return _results;
+      }).call(this);
+      return this._svgPathStringCache = pathString.join(' ');
+    };
+
+    CompositeGlyph.createFromTTFDataView = function(view, offset, glyphID, glyfTable) {
       var ARGS_ARE_XY_VALUES, ARG_1_AND_2_ARE_WORDS, MORE_COMPONENTS, OVERLAP_COMPOUND, RESERVED, ROUND_XY_TO_GRID, SCALED_COMPONENT_OFFSET, UNSCALED_COMPONENT_OFFSET, USE_MY_METRICS, WE_HAVE_AN_X_AND_Y_SCALE, WE_HAVE_A_SCALE, WE_HAVE_A_TWO_BY_TWO, WE_HAVE_INSTRUCTIONS, component, do_, flags, g, transform;
       ARG_1_AND_2_ARE_WORDS = Math.pow(2, 0);
       ARGS_ARE_XY_VALUES = Math.pow(2, 1);
@@ -302,7 +350,7 @@
       SCALED_COMPONENT_OFFSET = Math.pow(2, 11);
       UNSCALED_COMPONENT_OFFSET = Math.pow(2, 12);
       view.seek(offset);
-      g = new CompositeGlyph(glyphID);
+      g = new CompositeGlyph(glyphID, glyfTable);
       g.numberOfContours = view.getShort();
       g.xMin = view.getShort();
       g.yMin = view.getShort();
@@ -362,9 +410,12 @@
 
   SimpleGlyph = (function() {
 
-    function SimpleGlyph(GID) {
+    function SimpleGlyph(GID, glyfTable) {
       if (GID == null) {
         GID = null;
+      }
+      if (glyfTable == null) {
+        glyfTable = null;
       }
       this.GID = GID;
       this.type = 'simple';
@@ -379,7 +430,9 @@
       this.flags = [];
       this.xCoordinates = [];
       this.yCoordinates = [];
+      this.glyfTable = glyfTable;
       this._outline = [];
+      this._svgPathStringCache = '';
       this.setOutline = function(outline) {
         this._outline = outline != null ? outline : [];
         return this;
@@ -389,8 +442,133 @@
       };
     }
 
-    SimpleGlyph.createFromTTFDataView = function(view, offset, glyphID) {
-      var ON_CURVE, POSITIVE_X_SHORT, POSITIVE_Y_SHORT, REPEAT, X_IS_SAME, X_SHORT, Y_IS_SAME, Y_SHORT, contour, endPtOfcountour, flag, flags, g, i, j, numRepeat, numberOfCoordinates, outline, startPtOfContour, x, y, _i;
+    SimpleGlyph.prototype.toSVGPathString = function(matrix) {
+      var after_contour, c, contour, coordinate, distance, end, i, j, k, midPoint, next, outline, pathString, prev, start, startIndex, _contour, _i, _j, _len, _len1;
+      if (this._svgPathStringCache !== '') {
+        return this._svgPathStringCache;
+      }
+      outline = this.getTramsformedOutlin(matrix);
+      pathString = [];
+      for (i = _i = 0, _len = outline.length; _i < _len; i = ++_i) {
+        contour = outline[i];
+        _contour = [];
+        startIndex = 0;
+        start = contour[0];
+        if (!start.on) {
+          if (contor.length > 1) {
+            startIndex = 1;
+            next = contour[1];
+            if (!next.on) {
+              _contour.push({
+                x: (next.x - start.x) / 2,
+                y: (next.x - start.x) / 2,
+                relX: (next.relX - start.relX) / 2,
+                relY: (next.relY - start.relY) / 2,
+                on: true
+              });
+            }
+          }
+        }
+        after_contour = [];
+        _contour = (function() {
+          var _j, _len1, _results;
+          _results = [];
+          for (j = _j = 0, _len1 = contour.length; _j < _len1; j = ++_j) {
+            coordinate = contour[j];
+            coordinate = {
+              x: coordinate.x,
+              y: coordinate.y,
+              relX: coordinate.relX,
+              relY: coordinate.relY,
+              on: coordinate.on
+            };
+            if (j < startIndex) {
+              _results.push(after_contour.push(coordinate));
+            } else {
+              _results.push(coordinate);
+            }
+          }
+          return _results;
+        })();
+        _contour = _contour.concat(after_contour);
+        start = _contour[0];
+        end = _contour[_contour.length - 1];
+        for (k = _j = 0, _len1 = _contour.length; _j < _len1; k = ++_j) {
+          c = _contour[k];
+          if (k === 0) {
+            pathString.push('M ' + [c.x, c.y].join(','));
+          } else {
+            prev = _contour[k - 1];
+            distance = {
+              x: c.x - prev.x,
+              y: c.y - prev.y
+            };
+            if (distance.x === 0 && distance.y === 0) {
+              continue;
+            } else if (prev.on && c.on) {
+              if (distance.y === 0) {
+                pathString.push('H ' + c.x);
+              } else if (distance.x === 0) {
+                pathString.push('V ' + c.y);
+              } else {
+                pathString.push('L ' + [c.x, c.y].join(','));
+              }
+            } else if (prev.on && !c.on) {
+              pathString.push('Q ' + [c.x, c.y].join(','));
+            } else if (!prev.on && !c.on) {
+              midPoint = {
+                x: prev.x + (distance.x / 2),
+                y: prev.y + (distance.y / 2),
+                on: true
+              };
+              pathString.push([midPoint.x, midPoint.y].join(',') + ' T');
+            } else {
+              pathString.push([c.x, c.y].join(','));
+            }
+          }
+        }
+        pathString.push(end.on ? 'Z' : [start.x, start.y].join(',') + ' Z');
+      }
+      return this._svgPathStringCache = pathString.join(' ');
+    };
+
+    SimpleGlyph.prototype.getTramsformedOutlin = function(matrix) {
+      var contour, coordinate, _i, _len, _ref, _results;
+      if (typeof matrix === 'undefined') {
+        matrix = {
+          a: 1,
+          c: 0,
+          e: 0,
+          b: 0,
+          d: 1,
+          f: 0
+        };
+      }
+      _ref = this.getOutline();
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        contour = _ref[_i];
+        _results.push((function() {
+          var _j, _len1, _results1;
+          _results1 = [];
+          for (_j = 0, _len1 = contour.length; _j < _len1; _j++) {
+            coordinate = contour[_j];
+            _results1.push({
+              x: matrix.a * coordinate.x + matrix.c * coordinate.y + matrix.e,
+              y: matrix.b * coordinate.x + matrix.d * coordinate.y + matrix.f,
+              relX: matrix.a * coordinate.relX + matrix.c * coordinate.relY + matrix.e,
+              relY: matrix.b * coordinate.relX + matrix.d * coordinate.relY + matrix.f,
+              on: coordinate.on
+            });
+          }
+          return _results1;
+        })());
+      }
+      return _results;
+    };
+
+    SimpleGlyph.createFromTTFDataView = function(view, offset, glyphID, glyfTable) {
+      var ON_CURVE, POSITIVE_X_SHORT, POSITIVE_Y_SHORT, REPEAT, X_IS_SAME, X_SHORT, Y_IS_SAME, Y_SHORT, contour, endPtOfcountour, flag, flags, g, i, j, numRepeat, numberOfCoordinates, outline, relX, relY, startPtOfContour, x, y, _i;
       ON_CURVE = Math.pow(2, 0);
       X_SHORT = Math.pow(2, 1);
       Y_SHORT = Math.pow(2, 2);
@@ -400,7 +578,7 @@
       Y_IS_SAME = Math.pow(2, 5);
       POSITIVE_Y_SHORT = Math.pow(2, 5);
       view.seek(offset);
-      g = new SimpleGlyph(glyphID);
+      g = new SimpleGlyph(glyphID, glyfTable);
       g.numberOfContours = view.getShort();
       if (g.numberOfContours === 0) {
         return g;
@@ -485,12 +663,14 @@
             var _k, _results1;
             _results1 = [];
             for (i = _k = startPtOfContour; startPtOfContour <= endPtOfcountour ? _k <= endPtOfcountour : _k >= endPtOfcountour; i = startPtOfContour <= endPtOfcountour ? ++_k : --_k) {
-              x += g.xCoordinates[i];
-              y += g.yCoordinates[i];
+              x += relX = g.xCoordinates[i];
+              y += relY = g.yCoordinates[i];
               _results1.push({
                 x: x,
                 y: y,
-                on: flags[i] & ON_CURVE
+                relX: relX,
+                relY: relY,
+                on: flags[i] & ON_CURVE === ON_CURVE
               });
             }
             return _results1;
@@ -526,27 +706,27 @@
     };
 
     GlyfTable.createFromTTFDataView = function(view, offset, ttf) {
-      var glyf, glyphLocation, i, loca, location;
+      var glyfTable, glyphLocation, i, loca, location;
       loca = ttf.loca;
       view.seek(offset);
-      glyf = new GlyfTable();
-      glyf.glyphs = (function() {
+      glyfTable = new GlyfTable();
+      glyfTable.glyphs = (function() {
         var _i, _ref, _results;
         _results = [];
         for (i = _i = 0, _ref = loca.offsets.length - 2; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
           location = loca.offsets[i];
           glyphLocation = location + offset;
           if ((loca.offsets[i + 1] != null) && location === loca.offsets[i + 1]) {
-            _results.push(new SimpleGlyph(i));
+            _results.push(new SimpleGlyph(i, glyfTable));
           } else if (view.getShort(glyphLocation) >= 0) {
-            _results.push(SimpleGlyph.createFromTTFDataView(view, glyphLocation, i));
+            _results.push(SimpleGlyph.createFromTTFDataView(view, glyphLocation, i, glyfTable));
           } else {
-            _results.push(CompositeGlyph.createFromTTFDataView(view, glyphLocation, i));
+            _results.push(CompositeGlyph.createFromTTFDataView(view, glyphLocation, i, glyfTable));
           }
         }
         return _results;
       })();
-      return glyf;
+      return glyfTable;
     };
 
     return GlyfTable;

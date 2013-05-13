@@ -6,7 +6,7 @@
 
 # ## Composite Glyph Class
 class CompositeGlyph
-  constructor: (GID = null) ->
+  constructor: (GID = null, glyfTable = null) ->
     @GID = GID
     @type = 'composite'
     @numberOfContours = 0
@@ -14,13 +14,14 @@ class CompositeGlyph
     @yMin = 0
     @xMax = 0
     @yMax = 0
+    @glyfTable = glyfTable
 
     # components = [
     #   { # first component
     #     flags : 0x204
     #     glyphIndex: 1
-    #     xOffset: 0
-    #     yOffset: 0
+    #     offsetX: 0
+    #     offsetY: 0
     #     points: [10, 20]
     #     transform: {
     #       scale: 1
@@ -37,12 +38,48 @@ class CompositeGlyph
     # ]
     @components = []
 
+    # Cache of svg path string
+    @_svgPathStringCache = ''
+
+  # Return SVG Path Data
+  # @return {String}
+  toSVGPathString: () ->
+    if @_svgPathStringCache isnt ''
+      return @_svgPathStringCache
+
+    pathString = for component in @components
+      # create matrix
+      t = component.transform
+      glyph = @glyfTable.getGlyphById component.glyphIndex
+      matrix = {
+        a: 1, c: 0, e: component.offsetX,
+        b: 0, d: 1, f: component.offsetY
+      }
+      if typeof t.scale isnt 'undefined'
+        matrix.a = matrix.d = t.scale
+      if typeof t.xScale isnt 'undefined'
+        matrix.a = t.xScale
+      if typeof t.xScale isnt 'undefined'
+        matrix.d = t.yScale
+      if typeof t.scale01 isnt 'undefined'
+        matrix.c = t.scale01
+      if typeof t.scale10 isnt 'undefined'
+        matrix.b = t.scale10
+      
+      # get path string
+      glyph.toSVGPathString(matrix)
+
+    # return Path
+    @_svgPathStringCache = pathString.join(' ')
+  
+
   # Create CompositeGlyph instance from TTFDataView
   # @param {TTFDataView} view
   # @param {Number} offset 
   # @param {Number} glyphID 
+  # @param {GlyfTable} glyfTable
   # @return {CompositeGlyph}
-  @createFromTTFDataView: (view, offset, glyphID) ->
+  @createFromTTFDataView: (view, offset, glyphID, glyfTable) ->
 
     # init flags
     ARG_1_AND_2_ARE_WORDS     = Math.pow 2, 0  # If this is set, the arguments are words; otherwise, they are bytes.
@@ -63,7 +100,7 @@ class CompositeGlyph
                                                # (designed for the Microsoft TrueType rasterizer).
     # init composite glyph
     view.seek offset
-    g = new CompositeGlyph(glyphID)
+    g = new CompositeGlyph(glyphID, glyfTable)
 
     # read number of contours
     g.numberOfContours = view.getShort()
