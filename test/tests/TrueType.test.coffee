@@ -7,6 +7,7 @@ MaxpTable = require '../../src/table/MaxpTable'
 LocaTable = require '../../src/table/LocaTable'
 GlyfTable = require '../../src/table/GlyfTable'
 HheaTable = require '../../src/table/HheaTable'
+HmtxTable = require '../../src/table/HmtxTable'
 
 # test data
 ttf = new TrueType()
@@ -186,5 +187,12 @@ exports.TrueType_createFromBuffer =
     test.ok ttf.hhea instanceof HheaTable
     test.ok ttf1.hhea instanceof HheaTable
     test.strictEqual ttf1.hhea.version, 1.0
+    test.done()
+
+  'test TrueType#hmtx': (test) ->
+    test.ok ttf.hmtx instanceof HmtxTable
+    test.ok ttf1.hmtx instanceof HmtxTable
+    test.strictEqual ttf1.hmtx.hMetrics.length, 965
+    test.strictEqual ttf1.hmtx.leftSideBearing.length, 0
     test.done()
 
