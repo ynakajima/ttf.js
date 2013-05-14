@@ -43,6 +43,10 @@ exports.HeadTableTest_createFromTTFDataView =
     test.deepEqual ttf1.flags, [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     test.done()
 
+  'test HeadTable#unitsPerEm': (test) ->
+    test.strictEqual ttf1.unitsPerEm, 1000
+    test.done()
+
   'test HeadTable#created': (test) ->
     test.strictEqual ttf1.created.getTime(), Date.parse 'Fri Jan 11 19:57:01 2013'
     test.done()
