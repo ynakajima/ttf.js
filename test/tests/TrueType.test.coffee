@@ -6,6 +6,7 @@ HeadTable = require '../../src/table/HeadTable'
 MaxpTable = require '../../src/table/MaxpTable'
 LocaTable = require '../../src/table/LocaTable'
 GlyfTable = require '../../src/table/GlyfTable'
+HheaTable = require '../../src/table/HheaTable'
 
 # test data
 ttf = new TrueType()
@@ -179,5 +180,11 @@ exports.TrueType_createFromBuffer =
     test.ok ttf1.glyf instanceof GlyfTable
     test.strictEqual ttf.glyf.glyphs.length, 0
     test.strictEqual ttf1.glyf.glyphs.length, ttf1.maxp.numGlyphs
+    test.done()
+
+  'test TrueType#hhea': (test) ->
+    test.ok ttf.hhea instanceof HheaTable
+    test.ok ttf1.hhea instanceof HheaTable
+    test.strictEqual ttf1.hhea.version, 1.0
     test.done()
 

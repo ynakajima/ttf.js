@@ -15,6 +15,7 @@ ttfjs = {
     LocaTable: LocaTable
     MaxpTable: MaxpTable
     GlyfTable: GlyfTable
+    HheaTable: HheaTable
   }
   glyph: {
     SimpleGlyph: SimpleGlyph
