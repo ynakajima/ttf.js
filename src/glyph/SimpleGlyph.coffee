@@ -24,8 +24,8 @@ class SimpleGlyph
 
     # _outline = [
     #   [ # first countour
-    #     {x:  0, y: 10, relX: 0, relY: 10, on: true}, # coordinate
-    #     {x: 40, y: 10, relX: 40, relY: 0, on: true },
+    #     {x:  0, y: 10, on: true}, # coordinate
+    #     {x: 40, y: 10, on: false},
     #     ...
     #   ],
     #   [ # second countour
@@ -34,9 +34,6 @@ class SimpleGlyph
     #   [....]
     # ]
     @_outline = []
-
-    # Cache of svg path string
-    @_svgPathStringCache = ''
 
     # set outline
     # @param {Object} outline
@@ -51,14 +48,17 @@ class SimpleGlyph
       @_outline
   
   # Return SVG Path Data
-  # @param {Array} matrix Matrix Array
-  #                       [a, c, e]
-  #                       [b, d, f]
-  #                       [0, 0, 1]
+  # @param {Object} options = {
+  #                   matrix: {
+  #                     a, b, c
+  #                     d, e, f
+  #                   }
+  #                   relative: false
+  #                 }                                
   # @return {String}
-  toSVGPathString: (matrix) ->
-    if @_svgPathStringCache isnt ''
-      return @_svgPathStringCache
+  toSVGPathString: (options) ->
+    matrix = options?.matrix ? undefined
+    relative = options?.relative ? false
 
     outline = @getTramsformedOutline(matrix)
     pathString = []
@@ -67,7 +67,7 @@ class SimpleGlyph
       _contour = []
       startIndex = 0
       start = contour[0]
-
+      
       # if start is off curve
       if not start.on
         if contor.length > 1
@@ -79,8 +79,6 @@ class SimpleGlyph
             _contour.push {
               x: (next.x - start.x) / 2
               y: (next.x - start.x) / 2
-              relX: (next.relX - start.relX) / 2
-              relY: (next.relY - start.relY) / 2
               on: true
             }
 
@@ -90,8 +88,6 @@ class SimpleGlyph
         coordinate = {
           x: coordinate.x
           y: coordinate.y
-          relX: coordinate.relX
-          relY: coordinate.relY
           on: coordinate.on
         }
 
@@ -108,6 +104,7 @@ class SimpleGlyph
         # start point
         if k is 0
           pathString.push 'M ' + [c.x, c.y].join(',')
+          currentPoint = c
        
         # other point
         else
@@ -115,48 +112,60 @@ class SimpleGlyph
           distance ={
             x: c.x - prev.x
             y: c.y - prev.y
+            relX: c.x - currentPoint.x
+            relY: c.y - currentPoint.y
           }
 
-          # nothing to do
-          if distance.x is 0 and distance.y is 0
-            continue
-
           # line
-          else if prev.on and c.on
+          if prev.on and c.on
             # h
             if distance.y is 0
-              pathString.push 'H ' + c.x
+              segment = if relative then 'h ' + distance.relX else 'H ' + c.x
+              pathString.push segment
             # v
             else if distance.x is 0
-              pathString.push 'V ' + c.y
+              segment = if relative then 'v ' + distance.relY else 'V ' + c.y
+              pathString.push segment
             # l
             else
-              pathString.push 'L ' + [c.x, c.y].join(',')
+              segment = if relative then 'l ' + [distance.relX, distance.relY].join(',') else  'L ' + [c.x, c.y].join(',')
+              pathString.push segment
+
+            currentPoint = c
           
           # q curve
           else if prev.on and not c.on
-            pathString.push 'Q ' + [c.x, c.y].join(',')
+            segment = if relative then 'q ' + [distance.relX, distance.relY].join(',') else 'Q ' + [c.x, c.y].join(',')
+            pathString.push segment
 
           # t curve
           else if not prev.on and not c.on
-            
             midPoint = {
               x: prev.x + (distance.x / 2)
               y: prev.y + (distance.y / 2)
               on: true
             }
-            pathString.push [midPoint.x, midPoint.y].join(',') + ' T'
+            segment = if relative then [midPoint.x - currentPoint.x, midPoint.y - currentPoint.y].join(',') + ' t' else [midPoint.x, midPoint.y].join(',') + ' T'
+            pathString.push segment
+            currentPoint = midPoint
 
           # end curve
           else
-            pathString.push [c.x, c.y].join(',')
+            segment = if relative then [distance.relX, distance.relY].join(',') else [c.x, c.y].join(',')
+            pathString.push segment
+            currentPoint = c
 
           
       # close contour
-      pathString.push if end.on then 'Z' else [start.x, start.y].join(',') + ' Z'
+      if end.on
+        pathString.push 'Z'
+      else if relative
+        pathString.push [start.x - currentPoint.x, start.y - currentPoint.y].join(',') + ' Z'
+      else
+        pathString.push [start.x, start.y].join(',') + ' Z'
 
     # return Path
-    @_svgPathStringCache = pathString.join(' ')
+    pathString.join(' ')
 
     
   # Return Matrix Tranformed Ouline
@@ -177,8 +186,6 @@ class SimpleGlyph
         {
           x: matrix.a * coordinate.x + matrix.c * coordinate.y + matrix.e
           y: matrix.b * coordinate.x + matrix.d * coordinate.y + matrix.f
-          relX: matrix.a * coordinate.relX + matrix.c * coordinate.relY + matrix.e
-          relY: matrix.b * coordinate.relX + matrix.d * coordinate.relY + matrix.f
           on: coordinate.on
         }
 
@@ -275,8 +282,6 @@ class SimpleGlyph
         {
           x: x
           y: y
-          relX: relX
-          relY: relY
           on: flags[i] & ON_CURVE is ON_CURVE
         }
       startPtOfContour = endPtOfcountour + 1

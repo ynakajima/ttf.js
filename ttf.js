@@ -288,23 +288,21 @@
       this.yMax = 0;
       this.glyfTable = glyfTable;
       this.components = [];
-      this._svgPathStringCache = '';
     }
 
-    CompositeGlyph.prototype.toSVGPathString = function() {
-      var component, glyph, matrix, pathString, t;
-      if (this._svgPathStringCache !== '') {
-        return this._svgPathStringCache;
-      }
+    CompositeGlyph.prototype.toSVGPathString = function(options) {
+      var component, glyph, m, matrix, newMatrix, pathString, relative, t, _m, _matrix, _ref, _ref1;
+      matrix = (_ref = options != null ? options.matrix : void 0) != null ? _ref : void 0;
+      relative = (_ref1 = options != null ? options.relative : void 0) != null ? _ref1 : false;
       pathString = (function() {
-        var _i, _len, _ref, _results;
-        _ref = this.components;
+        var _i, _len, _ref2, _results;
+        _ref2 = this.components;
         _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          component = _ref[_i];
+        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+          component = _ref2[_i];
           t = component.transform;
           glyph = this.glyfTable.getGlyphById(component.glyphIndex);
-          matrix = {
+          _matrix = {
             a: 1,
             c: 0,
             e: component.offsetX,
@@ -313,25 +311,41 @@
             f: component.offsetY
           };
           if (typeof t.scale !== 'undefined') {
-            matrix.a = matrix.d = t.scale;
+            _matrix.a = _matrix.d = t.scale;
           }
           if (typeof t.xScale !== 'undefined') {
-            matrix.a = t.xScale;
+            _matrix.a = t.xScale;
           }
           if (typeof t.xScale !== 'undefined') {
-            matrix.d = t.yScale;
+            _matrix.d = t.yScale;
           }
           if (typeof t.scale01 !== 'undefined') {
-            matrix.c = t.scale01;
+            _matrix.c = t.scale01;
           }
           if (typeof t.scale10 !== 'undefined') {
-            matrix.b = t.scale10;
+            _matrix.b = t.scale10;
           }
-          _results.push(glyph.toSVGPathString(matrix));
+          if (typeof matrix !== 'undefined') {
+            m = matrix;
+            _m = _matrix;
+            newMatrix = {
+              a: m.a * _m.a + m.c * _m.b,
+              c: m.a * _m.c + m.c * _m.d,
+              e: m.a * _m.e + m.c * _m.f + m.e,
+              b: m.b * _m.a + m.d * _m.b,
+              d: m.b * _m.c + m.d * _m.d,
+              f: m.b * _m.e + m.d * _m.f + m.f
+            };
+            _matrix = newMatrix;
+          }
+          _results.push(glyph.toSVGPathString({
+            matrix: _matrix,
+            relative: relative
+          }));
         }
         return _results;
       }).call(this);
-      return this._svgPathStringCache = pathString.join(' ');
+      return pathString.join(' ');
     };
 
     CompositeGlyph.createFromTTFDataView = function(view, offset, glyphID, glyfTable) {
@@ -432,7 +446,6 @@
       this.yCoordinates = [];
       this.glyfTable = glyfTable;
       this._outline = [];
-      this._svgPathStringCache = '';
       this.setOutline = function(outline) {
         this._outline = outline != null ? outline : [];
         return this;
@@ -442,12 +455,11 @@
       };
     }
 
-    SimpleGlyph.prototype.toSVGPathString = function(matrix) {
-      var after_contour, c, contour, coordinate, distance, end, i, j, k, midPoint, next, outline, pathString, prev, start, startIndex, _contour, _i, _j, _len, _len1;
-      if (this._svgPathStringCache !== '') {
-        return this._svgPathStringCache;
-      }
-      outline = this.getTramsformedOutlin(matrix);
+    SimpleGlyph.prototype.toSVGPathString = function(options) {
+      var after_contour, c, contour, coordinate, currentPoint, distance, end, i, j, k, matrix, midPoint, next, outline, pathString, prev, relative, segment, start, startIndex, _contour, _i, _j, _len, _len1, _ref, _ref1;
+      matrix = (_ref = options != null ? options.matrix : void 0) != null ? _ref : void 0;
+      relative = (_ref1 = options != null ? options.relative : void 0) != null ? _ref1 : false;
+      outline = this.getTramsformedOutline(matrix);
       pathString = [];
       for (i = _i = 0, _len = outline.length; _i < _len; i = ++_i) {
         contour = outline[i];
@@ -462,8 +474,6 @@
               _contour.push({
                 x: (next.x - start.x) / 2,
                 y: (next.x - start.x) / 2,
-                relX: (next.relX - start.relX) / 2,
-                relY: (next.relY - start.relY) / 2,
                 on: true
               });
             }
@@ -478,8 +488,6 @@
             coordinate = {
               x: coordinate.x,
               y: coordinate.y,
-              relX: coordinate.relX,
-              relY: coordinate.relY,
               on: coordinate.on
             };
             if (j < startIndex) {
@@ -497,42 +505,58 @@
           c = _contour[k];
           if (k === 0) {
             pathString.push('M ' + [c.x, c.y].join(','));
+            currentPoint = c;
           } else {
             prev = _contour[k - 1];
             distance = {
               x: c.x - prev.x,
-              y: c.y - prev.y
+              y: c.y - prev.y,
+              relX: c.x - currentPoint.x,
+              relY: c.y - currentPoint.y
             };
-            if (distance.x === 0 && distance.y === 0) {
-              continue;
-            } else if (prev.on && c.on) {
+            if (prev.on && c.on) {
               if (distance.y === 0) {
-                pathString.push('H ' + c.x);
+                segment = relative ? 'h ' + distance.relX : 'H ' + c.x;
+                pathString.push(segment);
               } else if (distance.x === 0) {
-                pathString.push('V ' + c.y);
+                segment = relative ? 'v ' + distance.relY : 'V ' + c.y;
+                pathString.push(segment);
               } else {
-                pathString.push('L ' + [c.x, c.y].join(','));
+                segment = relative ? 'l ' + [distance.relX, distance.relY].join(',') : 'L ' + [c.x, c.y].join(',');
+                pathString.push(segment);
               }
+              currentPoint = c;
             } else if (prev.on && !c.on) {
-              pathString.push('Q ' + [c.x, c.y].join(','));
+              segment = relative ? 'q ' + [distance.relX, distance.relY].join(',') : 'Q ' + [c.x, c.y].join(',');
+              pathString.push(segment);
             } else if (!prev.on && !c.on) {
               midPoint = {
                 x: prev.x + (distance.x / 2),
                 y: prev.y + (distance.y / 2),
                 on: true
               };
-              pathString.push([midPoint.x, midPoint.y].join(',') + ' T');
+              segment = relative ? [midPoint.x - currentPoint.x, midPoint.y - currentPoint.y].join(',') + ' t' : [midPoint.x, midPoint.y].join(',') + ' T';
+              pathString.push(segment);
+              currentPoint = midPoint;
             } else {
-              pathString.push([c.x, c.y].join(','));
+              segment = relative ? [distance.relX, distance.relY].join(',') : [c.x, c.y].join(',');
+              pathString.push(segment);
+              currentPoint = c;
             }
           }
         }
-        pathString.push(end.on ? 'Z' : [start.x, start.y].join(',') + ' Z');
+        if (end.on) {
+          pathString.push('Z');
+        } else if (relative) {
+          pathString.push([start.x - currentPoint.x, start.y - currentPoint.y].join(',') + ' Z');
+        } else {
+          pathString.push([start.x, start.y].join(',') + ' Z');
+        }
       }
-      return this._svgPathStringCache = pathString.join(' ');
+      return pathString.join(' ');
     };
 
-    SimpleGlyph.prototype.getTramsformedOutlin = function(matrix) {
+    SimpleGlyph.prototype.getTramsformedOutline = function(matrix) {
       var contour, coordinate, _i, _len, _ref, _results;
       if (typeof matrix === 'undefined') {
         matrix = {
@@ -556,8 +580,6 @@
             _results1.push({
               x: matrix.a * coordinate.x + matrix.c * coordinate.y + matrix.e,
               y: matrix.b * coordinate.x + matrix.d * coordinate.y + matrix.f,
-              relX: matrix.a * coordinate.relX + matrix.c * coordinate.relY + matrix.e,
-              relY: matrix.b * coordinate.relX + matrix.d * coordinate.relY + matrix.f,
               on: coordinate.on
             });
           }
@@ -668,8 +690,6 @@
               _results1.push({
                 x: x,
                 y: y,
-                relX: relX,
-                relY: relY,
                 on: flags[i] & ON_CURVE === ON_CURVE
               });
             }

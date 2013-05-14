@@ -38,39 +38,53 @@ class CompositeGlyph
     # ]
     @components = []
 
-    # Cache of svg path string
-    @_svgPathStringCache = ''
-
   # Return SVG Path Data
+  # @param {Object} options = {
+  #                   matrix: {
+  #                     a, b, c
+  #                     d, e, f
+  #                   }
+  #                   relative: false
+  #                 }                  
   # @return {String}
-  toSVGPathString: () ->
-    if @_svgPathStringCache isnt ''
-      return @_svgPathStringCache
+  toSVGPathString: (options) ->
+    matrix = options?.matrix ? undefined
+    relative = options?.relative ? false
 
     pathString = for component in @components
       # create matrix
       t = component.transform
       glyph = @glyfTable.getGlyphById component.glyphIndex
-      matrix = {
+      _matrix = {
         a: 1, c: 0, e: component.offsetX,
         b: 0, d: 1, f: component.offsetY
       }
       if typeof t.scale isnt 'undefined'
-        matrix.a = matrix.d = t.scale
+        _matrix.a = _matrix.d = t.scale
       if typeof t.xScale isnt 'undefined'
-        matrix.a = t.xScale
+        _matrix.a = t.xScale
       if typeof t.xScale isnt 'undefined'
-        matrix.d = t.yScale
+        _matrix.d = t.yScale
       if typeof t.scale01 isnt 'undefined'
-        matrix.c = t.scale01
+        _matrix.c = t.scale01
       if typeof t.scale10 isnt 'undefined'
-        matrix.b = t.scale10
-      
+        _matrix.b = t.scale10
+
+      # multiple matrix
+      if typeof matrix isnt 'undefined'
+        m = matrix
+        _m = _matrix
+        newMatrix = {
+          a: m.a * _m.a + m.c * _m.b, c: m.a * _m.c + m.c * _m.d, e: m.a * _m.e + m.c * _m.f + m.e,
+          b: m.b * _m.a + m.d * _m.b, d: m.b * _m.c + m.d * _m.d, f: m.b * _m.e + m.d * _m.f + m.f
+        }
+        _matrix = newMatrix
+
       # get path string
-      glyph.toSVGPathString(matrix)
+      glyph.toSVGPathString({matrix: _matrix, relative: relative})
 
     # return Path
-    @_svgPathStringCache = pathString.join(' ')
+    pathString.join(' ')
   
 
   # Create CompositeGlyph instance from TTFDataView
