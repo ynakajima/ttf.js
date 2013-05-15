@@ -70,7 +70,7 @@ class SimpleGlyph
       
       # if start is off curve
       if not start.on
-        if contor.length > 1
+        if contour.length > 1
           startIndex = 1
           next = contour[1]
 
