@@ -330,10 +330,10 @@
             _matrix.d = t.yScale;
           }
           if (typeof t.scale01 !== 'undefined') {
-            _matrix.c = t.scale01;
+            _matrix.b = t.scale01;
           }
           if (typeof t.scale10 !== 'undefined') {
-            _matrix.b = t.scale10;
+            _matrix.c = t.scale10;
           }
           if (typeof matrix !== 'undefined') {
             m = matrix;
@@ -466,7 +466,7 @@
     }
 
     SimpleGlyph.prototype.toSVGPathString = function(options) {
-      var after_contour, c, contour, coordinate, currentPoint, distance, end, i, j, k, matrix, midPoint, next, outline, pathString, prev, relative, segment, start, startIndex, _contour, _i, _j, _len, _len1, _ref, _ref1;
+      var after_contour, c, contour, coordinate, currentPoint, distance, end, i, j, k, matrix, midPoint, next, outline, pathString, prev, relative, segment, start, startIndex, _contour, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
       matrix = (_ref = options != null ? options.matrix : void 0) != null ? _ref : void 0;
       relative = (_ref1 = options != null ? options.relative : void 0) != null ? _ref1 : false;
       outline = this.getTramsformedOutline(matrix);
@@ -477,41 +477,36 @@
         startIndex = 0;
         start = contour[0];
         if (!start.on) {
-          if (contor.length > 1) {
+          if (contour.length > 1) {
             startIndex = 1;
             next = contour[1];
             if (!next.on) {
               _contour.push({
-                x: (next.x - start.x) / 2,
-                y: (next.x - start.x) / 2,
+                x: start.x + (next.x - start.x) / 2,
+                y: start.y + (next.y - start.y) / 2,
                 on: true
               });
             }
           }
         }
         after_contour = [];
-        _contour = (function() {
-          var _j, _len1, _results;
-          _results = [];
-          for (j = _j = 0, _len1 = contour.length; _j < _len1; j = ++_j) {
-            coordinate = contour[j];
-            coordinate = {
-              x: coordinate.x,
-              y: coordinate.y,
-              on: coordinate.on
-            };
-            if (j < startIndex) {
-              _results.push(after_contour.push(coordinate));
-            } else {
-              _results.push(coordinate);
-            }
+        for (j = _j = 0, _len1 = contour.length; _j < _len1; j = ++_j) {
+          coordinate = contour[j];
+          coordinate = {
+            x: coordinate.x,
+            y: coordinate.y,
+            on: coordinate.on
+          };
+          if (j < startIndex) {
+            after_contour.push(coordinate);
+          } else {
+            _contour.push(coordinate);
           }
-          return _results;
-        })();
+        }
         _contour = _contour.concat(after_contour);
         start = _contour[0];
         end = _contour[_contour.length - 1];
-        for (k = _j = 0, _len1 = _contour.length; _j < _len1; k = ++_j) {
+        for (k = _k = 0, _len2 = _contour.length; _k < _len2; k = ++_k) {
           c = _contour[k];
           if (k === 0) {
             pathString.push('M ' + [c.x, c.y].join(','));

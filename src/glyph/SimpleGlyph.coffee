@@ -77,14 +77,14 @@ class SimpleGlyph
           # if next is off curve
           if not next.on
             _contour.push {
-              x: (next.x - start.x) / 2
-              y: (next.x - start.x) / 2
+              x: start.x + (next.x - start.x) / 2
+              y: start.y + (next.y - start.y) / 2
               on: true
             }
 
       # copy contour
       after_contour = []
-      _contour = for coordinate, j in contour
+      for coordinate, j in contour
         coordinate = {
           x: coordinate.x
           y: coordinate.y
@@ -94,7 +94,7 @@ class SimpleGlyph
         if j < startIndex
           after_contour.push coordinate
         else
-          coordinate
+          _contour.push coordinate
 
       _contour = _contour.concat after_contour
       start = _contour[0]

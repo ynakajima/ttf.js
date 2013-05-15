@@ -66,9 +66,9 @@ class CompositeGlyph
       if typeof t.xScale isnt 'undefined'
         _matrix.d = t.yScale
       if typeof t.scale01 isnt 'undefined'
-        _matrix.c = t.scale01
+        _matrix.b = t.scale01
       if typeof t.scale10 isnt 'undefined'
-        _matrix.b = t.scale10
+        _matrix.c = t.scale10
 
       # multiple matrix
       if typeof matrix isnt 'undefined'
