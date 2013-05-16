@@ -5,8 +5,8 @@
 # Released under the MIT license.
 
 # require
-SimpleGlyph = require '../glyph/SimpleGlyph'
-CompositeGlyph = require '../glyph/CompositeGlyph'
+SimpleGlyphData = require '../glyph/SimpleGlyphData'
+CompositeGlyphData = require '../glyph/CompositeGlyphData'
 
 # ## Glyf table Class
 class GlyfTable
@@ -36,13 +36,13 @@ class GlyfTable
 
       # If a glyph has no outlines, the offset loca[n] = loca[n+1].
       if loca.offsets[i + 1]? and location is loca.offsets[i + 1]
-        new SimpleGlyph(i, glyfTable)
+        new SimpleGlyphData(i, glyfTable)
 
       else if view.getShort(glyphLocation) >= 0 # simple glyph
-        SimpleGlyph.createFromTTFDataView(view, glyphLocation, i, glyfTable)
+        SimpleGlyphData.createFromTTFDataView(view, glyphLocation, i, glyfTable)
 
       else # composite glyph
-        CompositeGlyph.createFromTTFDataView(view, glyphLocation, i, glyfTable)
+        CompositeGlyphData.createFromTTFDataView(view, glyphLocation, i, glyfTable)
 
     # return maxp
     glyfTable

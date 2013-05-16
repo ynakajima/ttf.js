@@ -19,8 +19,8 @@ ttfjs = {
     HmtxTable: HmtxTable
   }
   glyph: {
-    SimpleGlyph: SimpleGlyph
-    CompositeGlyph: CompositeGlyph
+    SimpleGlyphData: SimpleGlyphData
+    CompositeGlyphData: CompositeGlyphData
   }
 }
 

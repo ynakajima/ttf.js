@@ -4,8 +4,8 @@
 #
 # Released under the MIT license.
 
-# ## Simple Glyph Class
-class SimpleGlyph
+# ## Simple Glyph Data Class
+class SimpleGlyphData
   constructor: (GID = null, glyfTable = null) ->
     @GID = GID
     @type = 'simple'
@@ -37,7 +37,7 @@ class SimpleGlyph
 
     # set outline
     # @param {Object} outline
-    # @return {SimpleGlyph} this
+    # @return {SimpleGlyphData} this
     @setOutline = (outline) ->
       @_outline = outline ? []
       @
@@ -190,12 +190,12 @@ class SimpleGlyph
         }
 
 
-  # Create SimpleGlyph instance from TTFDataView
+  # Create SimpleGlyphData instance from TTFDataView
   # @param {TTFDataView} view
   # @param {Number} offset 
   # @param {Number} glyphID
   # @param {GlyfTable} glyfTable
-  # @return {SimpleGlyph}
+  # @return {SimpleGlyphData}
   @createFromTTFDataView: (view, offset, glyphID, glyfTable) ->
     
     # init flags
@@ -210,7 +210,7 @@ class SimpleGlyph
     
     # init glyph
     view.seek offset
-    g = new SimpleGlyph(glyphID, glyfTable)
+    g = new SimpleGlyphData(glyphID, glyfTable)
     
     # number of contours
     g.numberOfContours = view.getShort()
@@ -293,4 +293,4 @@ class SimpleGlyph
     g
 
 # exports
-module.exports = SimpleGlyph
+module.exports = SimpleGlyphData

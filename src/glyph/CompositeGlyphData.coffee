@@ -4,8 +4,8 @@
 #
 # Released under the MIT license.
 
-# ## Composite Glyph Class
-class CompositeGlyph
+# ## Composite Glyph Data Class
+class CompositeGlyphData
   constructor: (GID = null, glyfTable = null) ->
     @GID = GID
     @type = 'composite'
@@ -87,12 +87,12 @@ class CompositeGlyph
     pathString.join(' ')
   
 
-  # Create CompositeGlyph instance from TTFDataView
+  # Create CompositeGlyphData instance from TTFDataView
   # @param {TTFDataView} view
   # @param {Number} offset 
   # @param {Number} glyphID 
   # @param {GlyfTable} glyfTable
-  # @return {CompositeGlyph}
+  # @return {CompositeGlyphData}
   @createFromTTFDataView: (view, offset, glyphID, glyfTable) ->
 
     # init flags
@@ -114,7 +114,7 @@ class CompositeGlyph
                                                # (designed for the Microsoft TrueType rasterizer).
     # init composite glyph
     view.seek offset
-    g = new CompositeGlyph(glyphID, glyfTable)
+    g = new CompositeGlyphData(glyphID, glyfTable)
 
     # read number of contours
     g.numberOfContours = view.getShort()
@@ -186,4 +186,4 @@ class CompositeGlyph
     g
 
 # exports
-module.exports = CompositeGlyph
+module.exports = CompositeGlyphData
