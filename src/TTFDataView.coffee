@@ -36,7 +36,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # require
-jDataView = if typeof require isnt 'undefined' then require('jdataview') else jDataView
+jDataView = if typeof require isnt 'undefined' then require('jdataview') else this.jDataView
 
 # TTFDataView Class
 class TTFDataView

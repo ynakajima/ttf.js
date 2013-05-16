@@ -13,7 +13,7 @@
 (function() {
   var CompositeGlyph, GlyfTable, HeadTable, HheaTable, HmtxTable, LocaTable, MaxpTable, SimpleGlyph, TTFDataView, TrueType, jDataView, ttfjs;
 
-  jDataView = typeof require !== 'undefined' ? require('jdataview') : jDataView;
+  jDataView = typeof require !== 'undefined' ? require('jdataview') : this.jDataView;
 
   TTFDataView = (function() {
 

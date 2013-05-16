@@ -1,0 +1,71 @@
+html, body {
+  font-family: sans-serif;
+}
+
+h1 {
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  padding: 15px;
+  padding-left: 40px;
+  color: #fff;
+  background-color: #45AEEA;
+  background-color: rgba(69, 174, 234, 0.9);
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.4);
+  font-weight: normal;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+h1 .title {
+  font-weight: bold;
+}
+
+header div.selector {
+  margin: 10px;
+  margin-top: 70px;
+  text-align: center;
+  padding: 20px;
+  background-color: #eee;
+}
+
+header div.selector p {
+  margin: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #2F3E8B;
+}
+
+#loading {
+  font-style: italic;
+}
+
+#glyphList {
+  margin: 10px;
+}
+
+#glyphList li {
+  float: left;
+  width: 110px;
+  border: 1px solid #eee;
+}
+
+#glyphList li dl {
+  padding: 5px;
+}
+
+#glyphList::after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+#glyphList dt {
+  height: 20px;
+  text-align: center;
+  font-size: 10px;
+}
+
+#glyphList dd svg:hover {
+  fill: none;
+  stroke: #111;
+}
