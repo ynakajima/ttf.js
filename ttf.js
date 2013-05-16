@@ -170,12 +170,14 @@
   TrueType = (function() {
 
     function TrueType() {
-      this.sfntVersion = 0;
-      this.numTables = 0;
-      this.searchRange = 0;
-      this.entrySelector = 0;
-      this.rangeShift = 0;
-      this.tableDirectory = [];
+      this.sfntHeader = {
+        sfntVersion: 0,
+        numTables: 0,
+        searchRange: 0,
+        entrySelector: 0,
+        rangeShift: 0
+      };
+      this.offsetTable = [];
       this.head = new HeadTable();
       this.maxp = new MaxpTable();
       this.loca = new LocaTable();
@@ -185,15 +187,15 @@
     }
 
     TrueType.prototype.isMacTTF = function() {
-      return this.sfntVersion === 'true';
+      return this.sfntHeader.sfntVersion === 'true';
     };
 
     TrueType.prototype.isWinTTF = function() {
-      return this.sfntVersion === 1.0;
+      return this.sfntHeader.sfntVersion === 1.0;
     };
 
     TrueType.prototype.isTTCF = function() {
-      return this.sfntVersion === 'ttcf';
+      return this.sfntHeader.sfntVersion === 'ttcf';
     };
 
     TrueType.prototype.isTTF = function() {
@@ -201,7 +203,7 @@
     };
 
     TrueType.prototype.isOTTO = function() {
-      return this.sfntVersion === 'OTTO';
+      return this.sfntHeader.sfntVersion === 'OTTO';
     };
 
     TrueType.prototype.isCFF = function() {
@@ -226,18 +228,18 @@
       view = new TTFDataView(buffer);
       sfntVersionString = view.getString(4, 0);
       sfntVersionNumber = view.getFixed(0);
-      ttf.sfntVersion = sfntVersionNumber === 1.0 ? sfntVersionNumber : sfntVersionString;
+      ttf.sfntHeader.sfntVersion = sfntVersionNumber === 1.0 ? sfntVersionNumber : sfntVersionString;
       if (ttf.isTTF() && !ttf.isTTCF() || ttf.isOTTO()) {
-        ttf.numTables = view.getUshort(4);
-        ttf.searchRange = view.getUshort();
-        ttf.entrySelector = view.getUshort();
-        ttf.rangeShift = view.getUshort();
-        if (ttf.numTables > 0) {
+        ttf.sfntHeader.numTables = view.getUshort(4);
+        ttf.sfntHeader.searchRange = view.getUshort();
+        ttf.sfntHeader.entrySelector = view.getUshort();
+        ttf.sfntHeader.rangeShift = view.getUshort();
+        if (ttf.sfntHeader.numTables > 0) {
           tableOffsets = {};
-          ttf.tableDirectory = (function() {
+          ttf.offsetTable = (function() {
             var _i, _ref, _results;
             _results = [];
-            for (i = _i = 0, _ref = ttf.numTables - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+            for (i = _i = 0, _ref = ttf.sfntHeader.numTables - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
               tag = view.getString(4);
               checkSum = view.getUlong().toString(16);
               offset = view.getUlong();

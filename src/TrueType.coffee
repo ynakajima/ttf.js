@@ -17,37 +17,41 @@ HmtxTable = require ('./table/HmtxTable')
 # ## TrueType Class
 class TrueType
   constructor: () ->
-   # offset table
-   @sfntVersion = 0
-   @numTables = 0
-   @searchRange = 0
-   @entrySelector = 0
-   @rangeShift = 0
-   @tableDirectory = []
+    # sfntHeader 
+    @sfntHeader = {
+      sfntVersion:   0
+      numTables:     0
+      searchRange:   0
+      entrySelector: 0
+      rangeShift:    0
+    }
 
-   # tables
-   @head = new HeadTable()
-   @maxp = new MaxpTable()
-   @loca = new LocaTable()
-   @glyf = new GlyfTable()
-   @hhea = new HheaTable()
-   @hmtx = new HmtxTable()
+    # offset table
+    @offsetTable = []
+
+    # tables
+    @head = new HeadTable()
+    @maxp = new MaxpTable()
+    @loca = new LocaTable()
+    @glyf = new GlyfTable()
+    @hhea = new HheaTable()
+    @hmtx = new HmtxTable()
 
   # https://developer.apple.com/fonts/TTRefMan/RM06/Chap6.html#ScalerTypeNote
   isMacTTF: () ->
-    @sfntVersion is 'true'
+    @sfntHeader.sfntVersion is 'true'
 
   isWinTTF: () ->
-    @sfntVersion is 1.0
+    @sfntHeader.sfntVersion is 1.0
 
   isTTCF: () ->
-    @sfntVersion is 'ttcf'
+    @sfntHeader.sfntVersion is 'ttcf'
 
   isTTF: () ->
     @isMacTTF() or @isWinTTF() or @isTTCF()
 
   isOTTO: () ->
-    @sfntVersion is 'OTTO'
+    @sfntHeader.sfntVersion is 'OTTO'
 
   isCFF: () ->
     @isOTTO()
@@ -75,23 +79,23 @@ class TrueType
     # create TTFDataView
     view = new TTFDataView buffer
     
-    # sfntVersion
+    # sfntHeader.sfntVersion
     sfntVersionString = view.getString 4, 0
     sfntVersionNumber = view.getFixed 0
-    ttf.sfntVersion = if (sfntVersionNumber == 1.0) then sfntVersionNumber else sfntVersionString
+    ttf.sfntHeader.sfntVersion = if (sfntVersionNumber == 1.0) then sfntVersionNumber else sfntVersionString
     
     # offset table
     if ttf.isTTF() and not ttf.isTTCF() or ttf.isOTTO()
-      ttf.numTables = view.getUshort 4
-      ttf.searchRange = view.getUshort()
-      ttf.entrySelector = view.getUshort()
-      ttf.rangeShift = view.getUshort()
+      ttf.sfntHeader.numTables = view.getUshort 4
+      ttf.sfntHeader.searchRange = view.getUshort()
+      ttf.sfntHeader.entrySelector = view.getUshort()
+      ttf.sfntHeader.rangeShift = view.getUshort()
 
-      # tableDirectory
-      if ttf.numTables > 0
+      # offsetTable
+      if ttf.sfntHeader.numTables > 0
         tableOffsets = {}
 
-        ttf.tableDirectory = for i in [0..ttf.numTables-1]
+        ttf.offsetTable = for i in [0..ttf.sfntHeader.numTables-1]
           tag = view.getString 4
           checkSum = view.getUlong().toString(16)
           offset = view.getUlong()
