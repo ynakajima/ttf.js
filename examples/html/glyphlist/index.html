@@ -6,26 +6,35 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
   <script type="text/javascript" src="../../../vendor/jdataview/src/jdataview.js"></script>
   <script type="text/javascript" src="../../../ttf.js"></script>
-  <script type="text/javascript" src="./glyphlist.js"></script>
+  <script type="text/javascript" src="./js/readfont.js"></script>
+  <script type="text/javascript" src="./js/glyphlist.js"></script>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,800' rel='stylesheet' type='text/css' />
   <link rel="stylesheet" href="http://yui.yahooapis.com/3.5.0/build/cssreset/cssreset-min.css" />
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
   <header>
-   <h1><span class="title">ttf.js Demo</span> - TrueType Glyph List</h1>
-   <div class="selector">
-     <p>Select a TrueType Font file from your PC.</p>
-     <p style="font-size: 10px;"><input id="read" type="file" size="12" /></p>
-    </div>
+    <h1><span class="title">ttf.js Demo</span> - TrueType Glyph List  <span id="fileName"></span></h1>
   </header>
+
+  <nav id="tabMenu"><ol><li title="main" class="tag">Glyph List</li></ol></nav>
   
-  <section>
-    <p style="display: none; text-align: center;" id="loading"><img src="./loading.gif" /> Loading...</p>
-    <ul id="glyphList"></ul>
+  <section id="tabs">
+    
+    <section id="main" class="tab">
+      <div class="selector">
+       <p>Select a TrueType Font file from your PC.</p>
+       <p style="font-size: 10px;"><input id="read" type="file" size="12" /></p>
+      </div>
+
+      <p style="display: none; text-align: center;" id="loading"><img src="./loading.gif" /> Loading...</p>
+      <ul id="glyphList"></ul>
+    </section>
+
   </section>
 
   <footer>
-    <p style="position: fixed; top: 0; right: 0; border: 0;"><a href="https://github.com/ynakajima/ttf.js" target="_blank"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub" /></a></p>
+    <p style="position: fixed; top: 0; right: 0; border: 0; z-index: 99999"><a href="https://github.com/ynakajima/ttf.js" target="_blank"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub" /></a></p>
   </footer>
 </body>
 </html>

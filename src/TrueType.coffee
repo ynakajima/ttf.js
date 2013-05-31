@@ -13,6 +13,8 @@ GlyfTable = require ('./table/GlyfTable')
 HheaTable = require ('./table/HheaTable')
 HmtxTable = require ('./table/HmtxTable')
 
+Glyph = require ('./glyph/Glyph')
+
 
 # ## TrueType Class
 class TrueType
@@ -66,7 +68,14 @@ class TrueType
   # @param {Number} id id of Glyph 
   # @return {SimpleGlyph|CompositeGlyph}
   getGlyphById: (id) ->
-    @glyf.getGlyphById id
+    if @getNumGlyphs() is 0
+      return false
+
+    glyphData = @glyf.getGlyphById id
+    if glyphData is false
+      return false
+
+    new Glyph glyphData, @
 
   # Create TrueType instance from TTFDataView
   # @param {Buffer|Array|String} buffer buffer can be either a binary String,
@@ -135,6 +144,18 @@ class TrueType
 
     # return ttf
     ttf
+
+  # To JSON String
+  # @return {String}
+  toJSONString: () ->
+    for glyph in @glyf.glyphs
+      glyph.glyfTable = '[GlyfTable]'
+    
+    json = JSON.stringify.apply null, [@].concat(arguments)
+    for glyph in @glyf.glyphs
+      glyph.glyfTable = @glyf
+
+    json
 
   # TODO: Implement this.
   # Create TrueType instance from JSON
