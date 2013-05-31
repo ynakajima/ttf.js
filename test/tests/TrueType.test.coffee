@@ -53,13 +53,13 @@ exports.TrueTypeTest =
   
   'test TrueType is Constructor': (test) ->
     test.strictEqual typeof TrueType, 'function'
-    test.strictEqual ttf.sfntVersion, 0
-    test.strictEqual ttf.numTables, 0
-    test.strictEqual ttf.searchRange, 0
-    test.strictEqual ttf.entrySelector, 0
-    test.strictEqual ttf.rangeShift, 0
-    test.ok ttf.tableDirectory instanceof Array
-    test.strictEqual ttf.tableDirectory.length, 0
+    test.strictEqual ttf.sfntHeader.sfntVersion, 0, 'sfntVersion'
+    test.strictEqual ttf.sfntHeader.numTables, 0, 'numTables'
+    test.strictEqual ttf.sfntHeader.searchRange, 0, 'searchRange'
+    test.strictEqual ttf.sfntHeader.entrySelector, 0, 'entrySelector'
+    test.strictEqual ttf.sfntHeader.rangeShift, 0, 'rangeShift'
+    test.ok ttf.offsetTable instanceof Array
+    test.strictEqual ttf.offsetTable.length, 0, 'offsetTable'
     test.done()
 
 exports.TrueType_createFromBuffer =
@@ -70,32 +70,32 @@ exports.TrueType_createFromBuffer =
     test.done()
 
   'test TrueType#sfntVersion': (test) ->
-    test.strictEqual ttf1.sfntVersion, 1.0
-    test.strictEqual macTTF.sfntVersion, 'true'
-    test.strictEqual ttcf.sfntVersion, 'ttcf'
-    test.strictEqual otto.sfntVersion, 'OTTO'
+    test.strictEqual ttf1.sfntHeader.sfntVersion, 1.0
+    test.strictEqual macTTF.sfntHeader.sfntVersion, 'true'
+    test.strictEqual ttcf.sfntHeader.sfntVersion, 'ttcf'
+    test.strictEqual otto.sfntHeader.sfntVersion, 'OTTO'
     test.done()
 
   'test TrueType#numTables': (test) ->
-    test.strictEqual ttf1.numTables, 19
+    test.strictEqual ttf1.sfntHeader.numTables, 19
     test.done()
 
   'test TrueType#searchRange': (test) ->
-    test.strictEqual ttf1.searchRange, 256
+    test.strictEqual ttf1.sfntHeader.searchRange, 256
     test.done()
 
   'test TrueType#entrySelector': (test) ->
-    test.strictEqual ttf1.entrySelector, 4
+    test.strictEqual ttf1.sfntHeader.entrySelector, 4
     test.done()
 
   'test TrueType#rangeShift': (test) ->
-    test.strictEqual ttf1.rangeShift, 48
+    test.strictEqual ttf1.sfntHeader.rangeShift, 48
     test.done()
 
-  'test TrueType#tableDirectory': (test) ->
-    test.ok ttf1.tableDirectory instanceof Array
+  'test TrueType#offsetTable': (test) ->
+    test.ok ttf1.offsetTable instanceof Array
     for table, i in ttf1TableDirectory
-      _table = ttf1.tableDirectory[i]
+      _table = ttf1.offsetTable[i]
       test.ok _table.tag, table.tag
       test.ok _table.checkSum, table.checkSum
       test.ok _table.length, table.length
