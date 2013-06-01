@@ -15,6 +15,9 @@ ttf1 = LocaTable.createFromTTFDataView(view,
       false
   }
 )
+json = require('../../resources/SourceCodePro/SourceCodePro-Medium.ttf.json').loca
+ttf1_json = LocaTable.createFromJSON(json)
+
 
 # test
 exports.LocaTable =
@@ -32,7 +35,13 @@ exports.LocaTable_createFromTTFDataView =
     test.ok ttf1 instanceof LocaTable
     test.done()
 
+  'LocaTable#createFromJSON() is function': (test) ->
+    test.strictEqual typeof LocaTable.createFromJSON, 'function'
+    test.ok ttf1_json instanceof LocaTable
+    test.done()
+
   'test LocaTable#offsets': (test) ->
     test.deepEqual ttf1.offsets, ttf1Loca
+    test.deepEqual ttf1_json.offsets, ttf1Loca
     test.done()
 

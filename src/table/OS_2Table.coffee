@@ -60,6 +60,12 @@ class OS_2Table
     @ulCodePageRange2 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
+    @sxHeight = undefined
+    @sCapHeight = undefined
+    @usDefaultChar = undefined
+    @usBreakChar = undefined
+    @usMaxContext = undefined
+
   getUsWeightClassString: () ->
     OS_2Table.US_WEIGHT_CLASS[@usWeightClass]
 
@@ -648,6 +654,62 @@ class OS_2Table
 
     # return OS2
     OS2
+
+  # Create OS_2Table from JSON
+  # @param {Object|String} json
+  # @return {OS_2Table}
+  @createFromJSON: (json) ->
+    # init
+    if typeof json == 'string'
+      json = JSON.parse json
+
+    OS2 = new OS_2Table()
+
+    OS2.version = json.version
+    OS2.xAvgCharWidth = json.xAvgCharWidth
+    OS2.xAvgCharWidth = json.xAvgCharWidth
+    OS2.usWeightClass = json.usWeightClass
+    OS2.usWidthClass = json.usWidthClass
+    OS2.fsType = json.fsType
+    OS2.ySubscriptXSize = json.ySubscriptXSize
+    OS2.ySubscriptYSize = json.ySubscriptYSize
+    OS2.ySubscriptXOffset = json.ySubscriptXOffset
+    OS2.ySubscriptYOffset = json.ySubscriptYOffset
+    OS2.ySuperscriptXSize = json.ySuperscriptXSize
+    OS2.ySuperscriptYSize = json.ySuperscriptYSize
+    OS2.ySuperscriptXOffset = json.ySuperscriptXOffset
+    OS2.ySuperscriptYOffset = json.ySuperscriptYOffset
+    OS2.yStrikeoutSize = json.yStrikeoutSize
+    OS2.yStrikeoutPosition = json.yStrikeoutPosition
+    OS2.sFamilyClass = json.sFamilyClass
+
+    OS2.panose = json.panose
+
+    OS2.ulUnicodeRange1 = json.ulUnicodeRange1
+    OS2.ulUnicodeRange2 = json.ulUnicodeRange2
+    OS2.ulUnicodeRange3 = json.ulUnicodeRange3
+    OS2.ulUnicodeRange4 = json.ulUnicodeRange4
+
+    OS2.achVendID = json.achVendID
+    OS2.fsSelection = json.fsSelection
+    OS2.usFirstCharIndex = json.usFirstCharIndex
+    OS2.usLastCharIndex = json.usLastCharIndex
+    OS2.sTypoAscender = json.sTypoAscender
+    OS2.sTypoDescender = json.sTypoDescender
+    OS2.sTypoLineGap = json.sTypoLineGap
+    OS2.usWinAscent = json.usWinAscent
+    OS2.usWinDescent = json.usWinDescent
+    OS2.ulCodePageRange1 = json.ulCodePageRange1
+    OS2.ulCodePageRange2 = json.ulCodePageRange2
+    OS2.sxHeight = json.sxHeight
+    OS2.sCapHeight = json.sCapHeight
+    OS2.usDefaultChar = json.usDefaultChar
+    OS2.usBreakChar = json.usBreakChar
+    OS2.usMaxContext = json.usMaxContext
+
+    # return OS2
+    OS2
+
 
 # exports
 module.exports = OS_2Table

@@ -59,5 +59,37 @@ class HeadTable
     # return head
     head
 
+  # Create HeadTable from JSON
+  # @param {Object|String} json
+  # @return {HeadTable}
+  @createFromJSON: (json) ->
+    # init
+    if typeof json == 'string'
+      json = JSON.parse json
+
+    head = new HeadTable()
+
+    head.version = json.version
+    head.fontRevision = json.fontRevision
+    head.checkSumAdjustment = json.checkSumAdjustment
+    head.magicNumber = json.magicNumber
+    head.flags = json.flags
+    head.unitsPerEm = json.unitsPerEm
+    head.created = new Date json.created
+    head.modified = new Date json.modified
+    head.xMin = json.xMin
+    head.yMin = json.yMin
+    head.xMax = json.xMax
+    head.yMax = json.yMax
+    head.macStyle = json.macStyle
+    head.lowestRecPPEM = json.lowestRecPPEM
+    head.fontDirectionHint = json.fontDirectionHint
+    head.indexToLocFormat = json.indexToLocFormat
+    head.glyphDataFormat = json.glyphDataFormat
+
+    # return head
+    head
+
+
 # exports
 module.exports = HeadTable

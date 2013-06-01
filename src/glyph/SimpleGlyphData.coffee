@@ -292,5 +292,35 @@ class SimpleGlyphData
     # return glyph
     g
 
+
+  # Create SimpleGlyphData instance from JSON
+  # @param {Object|String} json
+  # @param {GlyfTable} glyfTable
+  # @return {SimpleGlyphData}
+  @createFromJSON: (json, glyfTable) ->
+    # init
+    if typeof json == 'string'
+      json = JSON.parse json
+ 
+    g = new SimpleGlyphData(json.GID, glyfTable)
+
+    g.numberOfContours = json.numberOfContours
+    g.xMin = json.xMin
+    g.yMin = json.yMin
+    g.xMax = json.xMax
+    g.yMax = json.yMax
+    g.endPtsOfContours = json.endPtsOfContours
+    g.instructionLength = json.instructionLength
+    g.instructions = json.instructions
+    g.flags = json.flags
+    g.xCoordinates = json.xCoordinates
+    g.yCoordinates = json.yCoordinates
+
+    g.setOutline json._outline
+
+    # return glyph
+    g
+
+
 # exports
 module.exports = SimpleGlyphData

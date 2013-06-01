@@ -6,6 +6,8 @@ OS_2Table = require '../../../src/table/OS_2Table'
 # test data
 view = new TTFDataView fs.readFileSync __dirname + '/../../resources/SourceCodePro/SourceCodePro-Medium.ttf'
 ttf1 = OS_2Table.createFromTTFDataView(view, 440)
+json = require('../../resources/SourceCodePro/SourceCodePro-Medium.ttf.json').OS_2
+ttf1_json = OS_2Table.createFromJSON(json)
 
 # test
 exports.OS_2TableTest =
@@ -20,40 +22,48 @@ exports.OS_2Table_getUsWeightClassString =
   
   'OS_2Table#getUsWeightClassString() is function': (test) ->
     test.strictEqual typeof ttf1.getUsWeightClassString, 'function'
+    test.strictEqual typeof ttf1_json.getUsWeightClassString, 'function'
     test.done()
 
   'OS_2Table#getUsWeightClassString() returns usWeightClass String.': (test) ->
     test.strictEqual ttf1.getUsWeightClassString(), 'Medium'
+    test.strictEqual ttf1_json.getUsWeightClassString(), 'Medium'
     test.done()
 
 exports.OS_2Table_getUsWidthClassString =
   
   'OS_2Table#getUsWidthClassString() is function': (test) ->
     test.strictEqual typeof ttf1.getUsWidthClassString, 'function'
+    test.strictEqual typeof ttf1_json.getUsWidthClassString, 'function'
     test.done()
 
   'OS_2Table#getUsWidthClassString() returns usWidthClass String.': (test) ->
     test.strictEqual ttf1.getUsWidthClassString(), 'Medium'
+    test.strictEqual ttf1_json.getUsWidthClassString(), 'Medium'
     test.done()
 
 exports.OS_2Table_getFamilyClass =
   
   'OS_2Table#getFamilyClass() is function': (test) ->
     test.strictEqual typeof ttf1.getFamilyClass, 'function'
+    test.strictEqual typeof ttf1_json.getFamilyClass, 'function'
     test.done()
 
   'OS_2Table#getFamilyClass() returns Family Class.': (test) ->
     test.strictEqual ttf1.getFamilyClass(), 'No Classification'
+    test.strictEqual ttf1_json.getFamilyClass(), 'No Classification'
     test.done()
 
 exports.OS_2Table_getFamilySubclass =
   
   'OS_2Table#getFamilySubclass() is function': (test) ->
     test.strictEqual typeof ttf1.getFamilySubclass, 'function'
+    test.strictEqual typeof ttf1_json.getFamilySubclass, 'function'
     test.done()
 
   'OS_2Table#getFamilySubclass() returns Family Subclass.': (test) ->
     test.strictEqual ttf1.getFamilySubclass(), false
+    test.strictEqual ttf1_json.getFamilySubclass(), false
     test.done()
 
 
@@ -101,73 +111,97 @@ exports.OS_2Table_createFromTTFDataView =
     test.ok ttf1 instanceof OS_2Table
     test.done()
 
+  'OS_2Table#createFromJSON() is function': (test) ->
+    test.strictEqual typeof OS_2Table.createFromJSON, 'function'
+    test.ok ttf1_json instanceof OS_2Table
+    test.done()
+
   'test OS_2Table#version': (test) ->
     test.strictEqual ttf1.version, 3, 'version'
+    test.strictEqual ttf1_json.version, 3, 'version'
     test.done()
 
   'test OS_2Table#xAvgCharWidth': (test) ->
     test.strictEqual ttf1.xAvgCharWidth, 599, 'xAvgCharWidth'
+    test.strictEqual ttf1_json.xAvgCharWidth, 599, 'xAvgCharWidth'
     test.done()
 
   'test OS_2Table#usWeightClass': (test) ->
     test.strictEqual ttf1.usWeightClass, 500, 'usWeightClass'
+    test.strictEqual ttf1_json.usWeightClass, 500, 'usWeightClass'
     test.done()
 
   'test OS_2Table#usWidthClass': (test) ->
     test.strictEqual ttf1.usWidthClass, 5, 'usWidthClass'
+    test.strictEqual ttf1_json.usWidthClass, 5, 'usWidthClass'
     test.done()
 
   'test OS_2Table#fsType': (test) ->
     test.deepEqual ttf1.fsType, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 'fsType'
+    test.deepEqual ttf1_json.fsType, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 'fsType'
     test.done()
 
   'test OS_2Table#ySubscriptXSize': (test) ->
     test.strictEqual ttf1.ySubscriptXSize, 650, 'ySubscriptXSize'
+    test.strictEqual ttf1_json.ySubscriptXSize, 650, 'ySubscriptXSize'
     test.done()
 
   'test OS_2Table#ySubscriptXSize': (test) ->
     test.strictEqual ttf1.ySubscriptXSize, 650, 'ySubscriptXSize'
+    test.strictEqual ttf1_json.ySubscriptXSize, 650, 'ySubscriptXSize'
     test.done()
 
   'test OS_2Table#ySubscriptYSize': (test) ->
     test.strictEqual ttf1.ySubscriptYSize, 600, 'ySubscriptYSize'
+    test.strictEqual ttf1_json.ySubscriptYSize, 600, 'ySubscriptYSize'
     test.done()
 
   'test OS_2Table#ySubscriptXOffset': (test) ->
     test.strictEqual ttf1.ySubscriptXOffset, 0, 'ySubscriptXOffset'
+    test.strictEqual ttf1_json.ySubscriptXOffset, 0, 'ySubscriptXOffset'
     test.done()
 
   'test OS_2Table#ySubscriptYOffset': (test) ->
     test.strictEqual ttf1.ySubscriptYOffset, 75, 'ySubscriptYOffset'
+    test.strictEqual ttf1_json.ySubscriptYOffset, 75, 'ySubscriptYOffset'
     test.done()
 
   'test OS_2Table#ySuperscriptXSize': (test) ->
     test.strictEqual ttf1.ySuperscriptXSize, 650, 'ySuperscriptXSize'
+    test.strictEqual ttf1_json.ySuperscriptXSize, 650, 'ySuperscriptXSize'
     test.done()
 
   'test OS_2Table#ySuperscriptYSize': (test) ->
     test.strictEqual ttf1.ySuperscriptYSize, 600, 'ySuperscriptYSize'
+    test.strictEqual ttf1_json.ySuperscriptYSize, 600, 'ySuperscriptYSize'
     test.done()
 
   'test OS_2Table#ySuperscriptXOffset': (test) ->
     test.strictEqual ttf1.ySuperscriptXOffset, 0, 'ySuperscriptXOffset'
+    test.strictEqual ttf1_json.ySuperscriptXOffset, 0, 'ySuperscriptXOffset'
     test.done()
 
   'test OS_2Table#ySuperscriptYOffset': (test) ->
     test.strictEqual ttf1.ySuperscriptYOffset, 350, 'ySuperscriptYOffset'
+    test.strictEqual ttf1_json.ySuperscriptYOffset, 350, 'ySuperscriptYOffset'
     test.done()
 
   'test OS_2Table#yStrikeoutSize': (test) ->
     test.strictEqual ttf1.yStrikeoutSize, 50, 'yStrikeoutSize'
+    test.strictEqual ttf1_json.yStrikeoutSize, 50, 'yStrikeoutSize'
     test.done()
 
   'test OS_2Table#yStrikeoutPosition': (test) ->
     test.strictEqual ttf1.yStrikeoutPosition, 288, 'yStrikeoutPosition'
+    test.strictEqual ttf1_json.yStrikeoutPosition, 288, 'yStrikeoutPosition'
     test.done()
 
   'test OS_2Table#sFamilyClass': (test) ->
     test.strictEqual ttf1.sFamilyClass.class, 0, 'sFamilyClass.class'
+    test.strictEqual ttf1_json.sFamilyClass.class, 0, 'sFamilyClass.class'
+
     test.strictEqual ttf1.sFamilyClass.subclass, 0, 'sFamilyClass.subclass'
+    test.strictEqual ttf1_json.sFamilyClass.subclass, 0, 'sFamilyClass.subclass'
     test.done()
 
   'test OS_2Table#panose': (test) ->
@@ -181,6 +215,17 @@ exports.OS_2Table_createFromTTFDataView =
     test.strictEqual ttf1.panose.bLetterForm, 2, 'panose.bLetterForm'
     test.strictEqual ttf1.panose.bMidline, 2, 'panose.bMidline'
     test.strictEqual ttf1.panose.bXHeight, 4, 'panose.bXHeight'
+
+    test.strictEqual ttf1_json.panose.bFamilyType, 2, 'panose.bFamilyType'
+    test.strictEqual ttf1_json.panose.bSerifStyle, 11, 'panose.bSerifStyle'
+    test.strictEqual ttf1_json.panose.bWeight, 5, 'panose.bWeight'
+    test.strictEqual ttf1_json.panose.bProportion, 9, 'panose.bProportion'
+    test.strictEqual ttf1_json.panose.bContrast, 3, 'panose.bContrast'
+    test.strictEqual ttf1_json.panose.bStrokeVariation, 4, 'panose.bStrokeVariation'
+    test.strictEqual ttf1_json.panose.bArmStyle, 3, 'panose.bArmStyle'
+    test.strictEqual ttf1_json.panose.bLetterForm, 2, 'panose.bLetterForm'
+    test.strictEqual ttf1_json.panose.bMidline, 2, 'panose.bMidline'
+    test.strictEqual ttf1_json.panose.bXHeight, 4, 'panose.bXHeight'
     test.done()
 
   'test OS_2Table unicode range': (test) ->
@@ -192,42 +237,60 @@ exports.OS_2Table_createFromTTFDataView =
                                           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] , 'ulUnicodeRange3'
     test.deepEqual ttf1.ulUnicodeRange4, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] , 'ulUnicodeRange4'
+
+    test.deepEqual ttf1_json.ulUnicodeRange1, [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0] , 'ulUnicodeRange1'
+    test.deepEqual ttf1_json.ulUnicodeRange2, [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] , 'ulUnicodeRange2'
+    test.deepEqual ttf1_json.ulUnicodeRange3, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] , 'ulUnicodeRange3'
+    test.deepEqual ttf1_json.ulUnicodeRange4, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] , 'ulUnicodeRange4'
     test.done()
 
   'test OS_2Table#achVendID': (test) ->
     test.strictEqual ttf1.achVendID, 'ADBE', 'achVendID'
+    test.strictEqual ttf1_json.achVendID, 'ADBE', 'achVendID'
     test.done()
 
   'test OS_2Table#fsSelection': (test) ->
     test.deepEqual ttf1.fsSelection, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 'fsSelection'
+    test.deepEqual ttf1_json.fsSelection, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 'fsSelection'
     test.done()
 
   'test OS_2Table#usFirstCharIndex': (test) ->
     test.strictEqual ttf1.usFirstCharIndex, 0, 'usFirstCharIndex'
+    test.strictEqual ttf1_json.usFirstCharIndex, 0, 'usFirstCharIndex'
     test.done()
 
   'test OS_2Table#fsLastCharIndex': (test) ->
     test.strictEqual ttf1.usLastCharIndex, 64258, 'usLastCharIndex'
+    test.strictEqual ttf1_json.usLastCharIndex, 64258, 'usLastCharIndex'
     test.done()
 
   'test OS_2Table#sTypoAscender': (test) ->
     test.strictEqual ttf1.sTypoAscender, 750, 'sTypoAscender'
+    test.strictEqual ttf1_json.sTypoAscender, 750, 'sTypoAscender'
     test.done()
 
   'test OS_2Table#sTypoDescender': (test) ->
     test.strictEqual ttf1.sTypoDescender, -250, 'sTypoDescender'
+    test.strictEqual ttf1_json.sTypoDescender, -250, 'sTypoDescender'
     test.done()
 
   'test OS_2Table#sTypoLineGap': (test) ->
     test.strictEqual ttf1.sTypoLineGap, 0, 'sTypoLineGap'
+    test.strictEqual ttf1_json.sTypoLineGap, 0, 'sTypoLineGap'
     test.done()
 
   'test OS_2Table#usWinAscent': (test) ->
     test.strictEqual ttf1.usWinAscent, 984, 'usWinAscent'
+    test.strictEqual ttf1_json.usWinAscent, 984, 'usWinAscent'
     test.done()
 
   'test OS_2Table#usWinDescent': (test) ->
     test.strictEqual ttf1.usWinDescent, 273, 'usWinDescent'
+    test.strictEqual ttf1_json.usWinDescent, 273, 'usWinDescent'
     test.done()
 
   'test OS_2Table CodePageRange': (test) ->
@@ -235,26 +298,36 @@ exports.OS_2Table_createFromTTFDataView =
                                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0] , 'ulCodePageRange1'
     test.deepEqual ttf1.ulCodePageRange2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] , 'ulCodePageRange2'
+
+    test.deepEqual ttf1_json.ulCodePageRange1, [1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+                                           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0] , 'ulCodePageRange1'
+    test.deepEqual ttf1_json.ulCodePageRange2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] , 'ulCodePageRange2'
     test.done()
   
   'test OS_2Table#sxHeight': (test) ->
     test.strictEqual ttf1.sxHeight, 480, 'sxHeight'
+    test.strictEqual ttf1_json.sxHeight, 480, 'sxHeight'
     test.done()
 
   'test OS_2Table#sCapHeight': (test) ->
     test.strictEqual ttf1.sCapHeight, 660, 'sCapHeight'
+    test.strictEqual ttf1_json.sCapHeight, 660, 'sCapHeight'
     test.done()
 
   'test OS_2Table#usDefaultChar': (test) ->
     test.strictEqual ttf1.usDefaultChar, 0, 'usDefaultChar'
+    test.strictEqual ttf1_json.usDefaultChar, 0, 'usDefaultChar'
     test.done()
 
   'test OS_2Table#usBreakChar': (test) ->
     test.strictEqual ttf1.usBreakChar, 32, 'usBreakChar'
+    test.strictEqual ttf1_json.usBreakChar, 32, 'usBreakChar'
     test.done()
 
   'test OS_2Table#usMaxContext': (test) ->
     test.strictEqual ttf1.usMaxContext, 3, 'usMaxContext'
+    test.strictEqual ttf1_json.usMaxContext, 3, 'usMaxContext'
     test.done()
 
 

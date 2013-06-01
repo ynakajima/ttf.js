@@ -25,5 +25,19 @@ class LocaTable
     # return loca
     loca
 
+  # Create LocaTable from JSON
+  # @param {Object|String} json
+  # @return {LocaTable}
+  @createFromJSON: (json) ->
+    # init
+    if typeof json == 'string'
+      json = JSON.parse json
+
+    loca = new LocaTable()
+    loca.offsets = json.offsets
+
+    # return loca
+    loca
+
 # exports
 module.exports = LocaTable

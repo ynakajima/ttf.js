@@ -301,6 +301,46 @@
       return ttf;
     };
 
+    TrueType.createFromJSON = function(json) {
+      var ttf;
+      if (typeof json === 'string') {
+        json = JSON.parse(json);
+      }
+      ttf = new TrueType();
+      ttf.sfntHeader.sfntVersion = json.sfntHeader.sfntVersion;
+      if (ttf.isTTF() && !ttf.isTTCF() || ttf.isOTTO()) {
+        ttf.sfntHeader.numTables = json.sfntHeader.numTables;
+        ttf.sfntHeader.searchRange = json.sfntHeader.searchRange;
+        ttf.sfntHeader.entrySelector = json.sfntHeader.entrySelector;
+        ttf.sfntHeader.rangeShift = json.sfntHeader.rangeShift;
+        if (ttf.sfntHeader.numTables > 0) {
+          ttf.offsetTable = json.offsetTable;
+          if (typeof json.head !== 'undefined') {
+            ttf.head = HeadTable.createFromJSON(json.head);
+          }
+          if (typeof json.maxp !== 'undefined') {
+            ttf.maxp = MaxpTable.createFromJSON(json.maxp);
+          }
+          if (typeof json.loca !== 'undefined') {
+            ttf.loca = LocaTable.createFromJSON(json.loca);
+          }
+          if (typeof json.glyf !== 'undefined') {
+            ttf.glyf = GlyfTable.createFromJSON(json.glyf);
+          }
+          if (typeof json.hhea !== 'undefined') {
+            ttf.hhea = HheaTable.createFromJSON(json.hhea);
+          }
+          if (typeof json.hmtx !== 'undefined') {
+            ttf.hmtx = HmtxTable.createFromJSON(json.hmtx);
+          }
+          if (typeof json.OS_2 !== 'undefined') {
+            ttf.OS_2 = OS_2Table.createFromJSON(json.OS_2);
+          }
+        }
+      }
+      return ttf;
+    };
+
     TrueType.prototype.toJSONString = function() {
       var glyph, json, _i, _j, _len, _len1, _ref, _ref1;
       _ref = this.glyf.glyphs;
@@ -466,6 +506,21 @@
         }
         return _results;
       })();
+      return g;
+    };
+
+    CompositeGlyphData.createFromJSON = function(json, glyfTable) {
+      var g;
+      if (typeof json === 'string') {
+        json = JSON.parse(json);
+      }
+      g = new CompositeGlyphData(json.GID, glyfTable);
+      g.numberOfContours = json.numberOfContours;
+      g.xMin = json.xMin;
+      g.yMin = json.yMin;
+      g.xMax = json.xMax;
+      g.yMax = json.yMax;
+      g.components = json.components;
       return g;
     };
 
@@ -780,6 +835,27 @@
       return g;
     };
 
+    SimpleGlyphData.createFromJSON = function(json, glyfTable) {
+      var g;
+      if (typeof json === 'string') {
+        json = JSON.parse(json);
+      }
+      g = new SimpleGlyphData(json.GID, glyfTable);
+      g.numberOfContours = json.numberOfContours;
+      g.xMin = json.xMin;
+      g.yMin = json.yMin;
+      g.xMax = json.xMax;
+      g.yMax = json.yMax;
+      g.endPtsOfContours = json.endPtsOfContours;
+      g.instructionLength = json.instructionLength;
+      g.instructions = json.instructions;
+      g.flags = json.flags;
+      g.xCoordinates = json.xCoordinates;
+      g.yCoordinates = json.yCoordinates;
+      g.setOutline(json._outline);
+      return g;
+    };
+
     return SimpleGlyphData;
 
   })();
@@ -822,6 +898,24 @@
         }
         return _results;
       })();
+      return glyfTable;
+    };
+
+    GlyfTable.createFromJSON = function(json) {
+      var glyfTable, glyph, _i, _len, _ref;
+      if (typeof json === 'string') {
+        json = JSON.parse(json);
+      }
+      glyfTable = new GlyfTable();
+      _ref = json.glyphs;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        glyph = _ref[_i];
+        if (glyph.type === 'simple') {
+          glyfTable.glyphs.push(SimpleGlyphData.createFromJSON(glyph, glyfTable));
+        } else {
+          glyfTable.glyphs.push(CompositeGlyphData.createFromJSON(glyph, glyfTable));
+        }
+      }
       return glyfTable;
     };
 
@@ -880,6 +974,32 @@
       return head;
     };
 
+    HeadTable.createFromJSON = function(json) {
+      var head;
+      if (typeof json === 'string') {
+        json = JSON.parse(json);
+      }
+      head = new HeadTable();
+      head.version = json.version;
+      head.fontRevision = json.fontRevision;
+      head.checkSumAdjustment = json.checkSumAdjustment;
+      head.magicNumber = json.magicNumber;
+      head.flags = json.flags;
+      head.unitsPerEm = json.unitsPerEm;
+      head.created = new Date(json.created);
+      head.modified = new Date(json.modified);
+      head.xMin = json.xMin;
+      head.yMin = json.yMin;
+      head.xMax = json.xMax;
+      head.yMax = json.yMax;
+      head.macStyle = json.macStyle;
+      head.lowestRecPPEM = json.lowestRecPPEM;
+      head.fontDirectionHint = json.fontDirectionHint;
+      head.indexToLocFormat = json.indexToLocFormat;
+      head.glyphDataFormat = json.glyphDataFormat;
+      return head;
+    };
+
     return HeadTable;
 
   })();
@@ -897,6 +1017,7 @@
       this.minRightSideBearing = 0;
       this.xMaxExtent = 0;
       this.caretSlopeRise = 0;
+      this.caretSlopeRun = 0;
       this.caretOffset = 0;
       this.reserved_0 = 0;
       this.reserved_1 = 0;
@@ -927,6 +1048,32 @@
       hhea.reserved_3 = view.getShort();
       hhea.metricDataFormat = view.getShort();
       hhea.numberOfHMetrics = view.getUshort();
+      return hhea;
+    };
+
+    HheaTable.createFromJSON = function(json) {
+      var hhea;
+      if (typeof json === 'string') {
+        json = JSON.parse(json);
+      }
+      hhea = new HheaTable();
+      hhea.version = json.version;
+      hhea.ascender = json.ascender;
+      hhea.descender = json.descender;
+      hhea.lineGap = json.lineGap;
+      hhea.advanceWidthMax = json.advanceWidthMax;
+      hhea.minLeftSideBearing = json.minLeftSideBearing;
+      hhea.minRightSideBearing = json.minRightSideBearing;
+      hhea.xMaxExtent = json.xMaxExtent;
+      hhea.caretSlopeRise = json.caretSlopeRise;
+      hhea.caretSlopeRun = json.caretSlopeRun;
+      hhea.caretOffset = json.caretOffset;
+      hhea.reserved_0 = json.reserved_0;
+      hhea.reserved_1 = json.reserved_1;
+      hhea.reserved_2 = json.reserved_2;
+      hhea.reserved_3 = json.reserved_3;
+      hhea.metricDataFormat = json.metricDataFormat;
+      hhea.numberOfHMetrics = json.numberOfHMetrics;
       return hhea;
     };
 
@@ -973,6 +1120,17 @@
       return hmtx;
     };
 
+    HmtxTable.createFromJSON = function(json) {
+      var hmtx;
+      if (typeof json === 'string') {
+        json = JSON.parse(json);
+      }
+      hmtx = new HmtxTable();
+      hmtx.hMetrics = json.hMetrics;
+      hmtx.leftSideBearing = json.leftSideBearing;
+      return hmtx;
+    };
+
     return HmtxTable;
 
   })();
@@ -1002,6 +1160,16 @@
         }
         return _results;
       })();
+      return loca;
+    };
+
+    LocaTable.createFromJSON = function(json) {
+      var loca;
+      if (typeof json === 'string') {
+        json = JSON.parse(json);
+      }
+      loca = new LocaTable();
+      loca.offsets = json.offsets;
       return loca;
     };
 
@@ -1049,6 +1217,30 @@
       maxp.maxSizeOfInstructions = view.getUshort();
       maxp.maxComponentElements = view.getUshort();
       maxp.maxComponentDepth = view.getUshort();
+      return maxp;
+    };
+
+    MaxpTable.createFromJSON = function(json) {
+      var maxp;
+      if (typeof json === 'string') {
+        json = JSON.parse(json);
+      }
+      maxp = new MaxpTable();
+      maxp.version = json.version;
+      maxp.numGlyphs = json.numGlyphs;
+      maxp.maxPoints = json.maxPoints;
+      maxp.maxContours = json.maxContours;
+      maxp.maxCompositPoints = json.maxCompositPoints;
+      maxp.maxCompositContours = json.maxCompositContours;
+      maxp.maxZones = json.maxZones;
+      maxp.maxTwilightPoints = json.maxTwilightPoints;
+      maxp.maxStorage = json.maxStorage;
+      maxp.maxFunctionDefs = json.maxFunctionDefs;
+      maxp.maxInstructionDefs = json.maxInstructionDefs;
+      maxp.maxStackElements = json.maxStackElements;
+      maxp.maxSizeOfInstructions = json.maxSizeOfInstructions;
+      maxp.maxComponentElements = json.maxComponentElements;
+      maxp.maxComponentDepth = json.maxComponentDepth;
       return maxp;
     };
 
@@ -1106,6 +1298,11 @@
       this.usWinDescent = 0;
       this.ulCodePageRange1 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       this.ulCodePageRange2 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      this.sxHeight = void 0;
+      this.sCapHeight = void 0;
+      this.usDefaultChar = void 0;
+      this.usBreakChar = void 0;
+      this.usMaxContext = void 0;
     }
 
     OS_2Table.prototype.getUsWeightClassString = function() {
@@ -1789,6 +1986,53 @@
         OS2.usBreakChar = view.getUshort();
         OS2.usMaxContext = view.getUshort();
       }
+      return OS2;
+    };
+
+    OS_2Table.createFromJSON = function(json) {
+      var OS2;
+      if (typeof json === 'string') {
+        json = JSON.parse(json);
+      }
+      OS2 = new OS_2Table();
+      OS2.version = json.version;
+      OS2.xAvgCharWidth = json.xAvgCharWidth;
+      OS2.xAvgCharWidth = json.xAvgCharWidth;
+      OS2.usWeightClass = json.usWeightClass;
+      OS2.usWidthClass = json.usWidthClass;
+      OS2.fsType = json.fsType;
+      OS2.ySubscriptXSize = json.ySubscriptXSize;
+      OS2.ySubscriptYSize = json.ySubscriptYSize;
+      OS2.ySubscriptXOffset = json.ySubscriptXOffset;
+      OS2.ySubscriptYOffset = json.ySubscriptYOffset;
+      OS2.ySuperscriptXSize = json.ySuperscriptXSize;
+      OS2.ySuperscriptYSize = json.ySuperscriptYSize;
+      OS2.ySuperscriptXOffset = json.ySuperscriptXOffset;
+      OS2.ySuperscriptYOffset = json.ySuperscriptYOffset;
+      OS2.yStrikeoutSize = json.yStrikeoutSize;
+      OS2.yStrikeoutPosition = json.yStrikeoutPosition;
+      OS2.sFamilyClass = json.sFamilyClass;
+      OS2.panose = json.panose;
+      OS2.ulUnicodeRange1 = json.ulUnicodeRange1;
+      OS2.ulUnicodeRange2 = json.ulUnicodeRange2;
+      OS2.ulUnicodeRange3 = json.ulUnicodeRange3;
+      OS2.ulUnicodeRange4 = json.ulUnicodeRange4;
+      OS2.achVendID = json.achVendID;
+      OS2.fsSelection = json.fsSelection;
+      OS2.usFirstCharIndex = json.usFirstCharIndex;
+      OS2.usLastCharIndex = json.usLastCharIndex;
+      OS2.sTypoAscender = json.sTypoAscender;
+      OS2.sTypoDescender = json.sTypoDescender;
+      OS2.sTypoLineGap = json.sTypoLineGap;
+      OS2.usWinAscent = json.usWinAscent;
+      OS2.usWinDescent = json.usWinDescent;
+      OS2.ulCodePageRange1 = json.ulCodePageRange1;
+      OS2.ulCodePageRange2 = json.ulCodePageRange2;
+      OS2.sxHeight = json.sxHeight;
+      OS2.sCapHeight = json.sCapHeight;
+      OS2.usDefaultChar = json.usDefaultChar;
+      OS2.usBreakChar = json.usBreakChar;
+      OS2.usMaxContext = json.usMaxContext;
       return OS2;
     };
 

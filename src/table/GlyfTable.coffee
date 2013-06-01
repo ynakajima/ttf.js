@@ -44,8 +44,28 @@ class GlyfTable
       else # composite glyph
         CompositeGlyphData.createFromTTFDataView(view, glyphLocation, i, glyfTable)
 
-    # return maxp
+    # return glyfTable
     glyfTable
+
+  # Create GlyfTable from JSON
+  # @param {Object|String} json
+  # @return {LocaTable}
+  @createFromJSON: (json) ->
+    # init
+    if typeof json == 'string'
+      json = JSON.parse json
+
+    glyfTable = new GlyfTable()
+
+    for glyph in json.glyphs
+      if glyph.type == 'simple'
+        glyfTable.glyphs.push(SimpleGlyphData.createFromJSON(glyph, glyfTable))
+      else
+        glyfTable.glyphs.push(CompositeGlyphData.createFromJSON(glyph, glyfTable))
+
+    # return glyfTable
+    glyfTable
+
 
 # exports
 module.exports = GlyfTable

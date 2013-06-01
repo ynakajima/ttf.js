@@ -13,6 +13,10 @@ OS_2Table = require '../../src/table/OS_2Table'
 # test data
 ttf = new TrueType()
 ttf1 = TrueType.createFromBuffer fs.readFileSync __dirname + '/../resources/SourceCodePro/SourceCodePro-Medium.ttf'
+
+json = require '../resources/SourceCodePro/SourceCodePro-Medium.ttf.json'
+ttf1_json = TrueType.createFromJSON(json)
+
 ttf1TableDirectory = JSON.parse """
 [
   {"tag": "BASE", "checkSum":"8b1994b1", "offset":111904, "length":58},
@@ -70,8 +74,14 @@ exports.TrueType_createFromBuffer =
     test.ok ttf1 instanceof TrueType
     test.done()
 
+  'TrueType#createFromJSON is function': (test) ->
+    test.strictEqual typeof TrueType.createFromJSON, 'function'
+    test.ok ttf1_json instanceof TrueType
+    test.done()
+
   'test TrueType#sfntVersion': (test) ->
     test.strictEqual ttf1.sfntHeader.sfntVersion, 1.0
+    test.strictEqual ttf1_json.sfntHeader.sfntVersion, 1.0
     test.strictEqual macTTF.sfntHeader.sfntVersion, 'true'
     test.strictEqual ttcf.sfntHeader.sfntVersion, 'ttcf'
     test.strictEqual otto.sfntHeader.sfntVersion, 'OTTO'
@@ -79,18 +89,22 @@ exports.TrueType_createFromBuffer =
 
   'test TrueType#numTables': (test) ->
     test.strictEqual ttf1.sfntHeader.numTables, 19
+    test.strictEqual ttf1_json.sfntHeader.numTables, 19
     test.done()
 
   'test TrueType#searchRange': (test) ->
     test.strictEqual ttf1.sfntHeader.searchRange, 256
+    test.strictEqual ttf1_json.sfntHeader.searchRange, 256
     test.done()
 
   'test TrueType#entrySelector': (test) ->
     test.strictEqual ttf1.sfntHeader.entrySelector, 4
+    test.strictEqual ttf1_json.sfntHeader.entrySelector, 4
     test.done()
 
   'test TrueType#rangeShift': (test) ->
     test.strictEqual ttf1.sfntHeader.rangeShift, 48
+    test.strictEqual ttf1_json.sfntHeader.rangeShift, 48
     test.done()
 
   'test TrueType#offsetTable': (test) ->
@@ -100,11 +114,20 @@ exports.TrueType_createFromBuffer =
       test.ok _table.tag, table.tag
       test.ok _table.checkSum, table.checkSum
       test.ok _table.length, table.length
+
+    test.ok ttf1_json.offsetTable instanceof Array
+    for table, i in ttf1TableDirectory
+      _table = ttf1_json.offsetTable[i]
+      test.ok _table.tag, table.tag
+      test.ok _table.checkSum, table.checkSum
+      test.ok _table.length, table.length
     test.done()
 
   'test TrueType#isMacTTF()': (test) ->
     test.equal typeof ttf1.isMacTTF, 'function'
+    test.equal typeof ttf1_json.isMacTTF, 'function'
     test.equal ttf1.isMacTTF(), false
+    test.equal ttf1_json.isMacTTF(), false
     test.equal macTTF.isMacTTF(), true
     test.equal ttcf.isMacTTF(), false
     test.equal otto.isMacTTF(), false
@@ -112,7 +135,9 @@ exports.TrueType_createFromBuffer =
 
   'test TrueType#isWinTTF()': (test) ->
     test.equal typeof ttf1.isWinTTF, 'function'
+    test.equal typeof ttf1_json.isWinTTF, 'function'
     test.equal ttf1.isWinTTF(), true
+    test.equal ttf1_json.isWinTTF(), true
     test.equal macTTF.isWinTTF(), false
     test.equal ttcf.isWinTTF(), false
     test.equal otto.isWinTTF(), false
@@ -128,7 +153,9 @@ exports.TrueType_createFromBuffer =
 
   'test TrueType#isTTF()': (test) ->
     test.equal typeof ttf1.isTTF, 'function'
+    test.equal typeof ttf1_json.isTTF, 'function'
     test.equal ttf1.isTTF(), true
+    test.equal ttf1_json.isTTF(), true
     test.equal macTTF.isTTF(), true
     test.equal ttcf.isTTF(), true
     test.equal otto.isTTF(), false
@@ -144,7 +171,8 @@ exports.TrueType_createFromBuffer =
 
   'test TrueType#isCFF()': (test) ->
     test.equal typeof ttf1.isCFF, 'function'
-    test.equal ttf1.isCFF(), false
+    test.equal typeof ttf1_json.isCFF, 'function'
+    test.equal ttf1_json.isCFF(), false
     test.equal macTTF.isCFF(), false
     test.equal ttcf.isCFF(), false
     test.equal otto.isCFF(), true
@@ -154,52 +182,73 @@ exports.TrueType_createFromBuffer =
     test.strictEqual typeof ttf.getGlyphById, 'function'
     test.strictEqual ttf.getGlyphById(37), false
     test.strictEqual ttf1.getGlyphById(37).GID, 37
+    test.strictEqual ttf1_json.getGlyphById(37).GID, 37
     test.done()
 
   'test TrueType#head': (test) ->
     test.ok ttf.head instanceof HeadTable
     test.ok ttf1.head instanceof HeadTable
+    test.ok ttf1_json.head instanceof HeadTable
     test.strictEqual ttf.head.version, 0
     test.strictEqual ttf1.head.version, 1
+    test.strictEqual ttf1_json.head.version, 1
     test.done()
 
   'test TrueType#maxp': (test) ->
     test.ok ttf.maxp instanceof MaxpTable
     test.ok ttf1.maxp instanceof MaxpTable
+    test.ok ttf1_json.maxp instanceof MaxpTable
     test.strictEqual ttf.maxp.version, 0
     test.strictEqual ttf1.maxp.version, 1
+    test.strictEqual ttf1_json.maxp.version, 1
     test.done()
 
   'test TrueType#loca': (test) ->
     test.ok ttf.loca instanceof LocaTable
     test.ok ttf1.loca instanceof LocaTable
+    test.ok ttf1_json.loca instanceof LocaTable
     test.strictEqual ttf.loca.offsets.length, 0
     test.strictEqual ttf1.loca.offsets.length, ttf1.maxp.numGlyphs + 1
+    test.strictEqual ttf1_json.loca.offsets.length, ttf1_json.maxp.numGlyphs + 1
     test.done()
 
   'test TrueType#glyf': (test) ->
     test.ok ttf.glyf instanceof GlyfTable
     test.ok ttf1.glyf instanceof GlyfTable
+    test.ok ttf1_json.glyf instanceof GlyfTable
     test.strictEqual ttf.glyf.glyphs.length, 0
     test.strictEqual ttf1.glyf.glyphs.length, ttf1.maxp.numGlyphs
+    test.strictEqual ttf1_json.glyf.glyphs.length, ttf1.maxp.numGlyphs
     test.done()
 
   'test TrueType#hhea': (test) ->
     test.ok ttf.hhea instanceof HheaTable
     test.ok ttf1.hhea instanceof HheaTable
+    test.ok ttf1_json.hhea instanceof HheaTable
     test.strictEqual ttf1.hhea.version, 1.0
+    test.strictEqual ttf1_json.hhea.version, 1.0
     test.done()
 
   'test TrueType#hmtx': (test) ->
     test.ok ttf.hmtx instanceof HmtxTable
     test.ok ttf1.hmtx instanceof HmtxTable
+    test.ok ttf1_json.hmtx instanceof HmtxTable
+
     test.strictEqual ttf1.hmtx.hMetrics.length, 965
+    test.strictEqual ttf1_json.hmtx.hMetrics.length, 965
+
     test.strictEqual ttf1.hmtx.leftSideBearing.length, 0
+    test.strictEqual ttf1_json.hmtx.leftSideBearing.length, 0
     test.done()
 
   'test TrueType#OS_2': (test) ->
     test.ok ttf.OS_2 instanceof OS_2Table
     test.ok ttf1.OS_2 instanceof OS_2Table
+    test.ok ttf1_json.OS_2 instanceof OS_2Table
+
     test.strictEqual ttf1.OS_2.version, 3
+    test.strictEqual ttf1_json.OS_2.version, 3
+
     test.strictEqual ttf1.OS_2.usMaxContext, 3
+    test.strictEqual ttf1_json.OS_2.usMaxContext, 3
     test.done()

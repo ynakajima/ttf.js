@@ -50,5 +50,35 @@ class MaxpTable
     # return maxp
     maxp
 
+  # Create HeadTable from JSON
+  # @param {Object|String} json
+  # @return {HeadTable}
+  @createFromJSON: (json) ->
+    # init
+    if typeof json == 'string'
+      json = JSON.parse json
+
+    maxp = new MaxpTable()
+
+    maxp.version = json.version
+    maxp.numGlyphs = json.numGlyphs
+    maxp.maxPoints = json.maxPoints
+    maxp.maxContours = json.maxContours
+    maxp.maxCompositPoints = json.maxCompositPoints
+    maxp.maxCompositContours = json.maxCompositContours
+    maxp.maxZones = json.maxZones
+    maxp.maxTwilightPoints = json.maxTwilightPoints
+    maxp.maxStorage = json.maxStorage
+    maxp.maxFunctionDefs = json.maxFunctionDefs
+    maxp.maxInstructionDefs = json.maxInstructionDefs
+    maxp.maxStackElements = json.maxStackElements
+    maxp.maxSizeOfInstructions = json.maxSizeOfInstructions
+    maxp.maxComponentElements = json.maxComponentElements
+    maxp.maxComponentDepth = json.maxComponentDepth
+      
+    # return maxp
+    maxp
+
+
 # exports
 module.exports = MaxpTable

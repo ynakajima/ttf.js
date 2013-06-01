@@ -35,5 +35,23 @@ class HmtxTable
     # return hmtx
     hmtx
 
+  # Create HmtxTable from JSON
+  # @param {Object|String} json
+  # @return {HmtxTable}
+  @createFromJSON: (json) ->
+    # init
+    if typeof json == 'string'
+      json = JSON.parse json
+
+    hmtx = new HmtxTable()
+
+    hmtx.hMetrics = json.hMetrics
+    hmtx.leftSideBearing = json.leftSideBearing
+
+    # return hmtx
+    hmtx
+
+
+
 # exports
 module.exports = HmtxTable

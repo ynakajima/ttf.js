@@ -19,11 +19,14 @@ ttf1 = HmtxTable.createFromTTFDataView(view,
     }
   }
 )
+json = require('../../resources/SourceCodePro/SourceCodePro-Medium.ttf.json').hmtx
+ttf1_json = HmtxTable.createFromJSON(json)
+
 
 # test
 exports.HmtxTable =
   
-  'test LocaTable is Constructor': (test) ->
+  'test HmtxTable is Constructor': (test) ->
     test.strictEqual typeof HmtxTable, 'function'
     head = new HmtxTable()
     test.ok head instanceof HmtxTable
@@ -36,12 +39,23 @@ exports.HmtxTable_createFromTTFDataView =
     test.ok ttf1 instanceof HmtxTable
     test.done()
 
+  'HmtxTable#createFromJSON() is function': (test) ->
+    test.strictEqual typeof HmtxTable.createFromTTFDataView, 'function'
+    test.ok ttf1 instanceof HmtxTable
+    test.ok ttf1_json instanceof HmtxTable
+    test.done()
+
   'test HmtxTable#hMetrics': (test) ->
 
     for mtx in ttf1hmtx.glyphOrder
       hmtx = ttf1.hMetrics[mtx.glyfIndex]
+      hmtx_json = ttf1_json.hMetrics[mtx.glyfIndex]
+
       test.equal hmtx.advanceWidth, mtx.width, 'width [' + mtx.glyfIndex + ']: ' + hmtx.advanceWidth + ' == ' + mtx.width
+      test.equal hmtx_json.advanceWidth, mtx.width, 'width [' + mtx.glyfIndex + ']: ' + hmtx.advanceWidth + ' == ' + mtx.width
+
       test.equal hmtx.lsb, mtx.lsb, 'lsb [' + mtx.glyfIndex + ']: ' + hmtx.lsb + ' == ' + mtx.lsb
+      test.equal hmtx_json.lsb, mtx.lsb, 'lsb [' + mtx.glyfIndex + ']: ' + hmtx.lsb + ' == ' + mtx.lsb
     
     test.done()
 

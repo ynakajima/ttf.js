@@ -151,6 +151,64 @@ class TrueType
     # return ttf
     ttf
 
+
+  # Create TrueType instance from JSON
+  # @param {Object|String} json
+  # @return {TrueType}
+  @createFromJSON: (json) ->
+    # init
+    if typeof json == 'string'
+      json = JSON.parse json
+
+    ttf = new TrueType()
+
+    # sfntHeader.sfntVersion
+    ttf.sfntHeader.sfntVersion = json.sfntHeader.sfntVersion
+    
+    # offset table
+    if ttf.isTTF() and not ttf.isTTCF() or ttf.isOTTO()
+      ttf.sfntHeader.numTables = json.sfntHeader.numTables
+      ttf.sfntHeader.searchRange = json.sfntHeader.searchRange
+      ttf.sfntHeader.entrySelector = json.sfntHeader.entrySelector
+      ttf.sfntHeader.rangeShift = json.sfntHeader.rangeShift
+
+      # offsetTable
+      if ttf.sfntHeader.numTables > 0
+        
+        ttf.offsetTable = json.offsetTable
+
+        # head
+        if typeof json.head isnt 'undefined'
+          ttf.head = HeadTable.createFromJSON(json.head)
+
+        # maxp
+        if typeof json.maxp isnt 'undefined'
+          ttf.maxp = MaxpTable.createFromJSON(json.maxp)
+
+        # loca
+        if typeof json.loca isnt 'undefined'
+          ttf.loca = LocaTable.createFromJSON(json.loca)
+
+        # glyf 
+        if typeof json.glyf isnt 'undefined'
+          ttf.glyf = GlyfTable.createFromJSON(json.glyf)
+
+        # hhea
+        if typeof json.hhea isnt 'undefined'
+          ttf.hhea = HheaTable.createFromJSON(json.hhea)
+
+        # hmtx
+        if typeof json.hmtx isnt 'undefined'
+          ttf.hmtx = HmtxTable.createFromJSON(json.hmtx)
+
+        # OS_2
+        if typeof json.OS_2 isnt 'undefined'
+          ttf.OS_2 = OS_2Table.createFromJSON(json.OS_2)
+
+    # return ttf
+    ttf
+
+
   # To JSON String
   # @return {String}
   toJSONString: () ->
@@ -163,11 +221,7 @@ class TrueType
 
     json
 
-  # TODO: Implement this.
-  # Create TrueType instance from JSON
-  # @param {object} json
-  # @return {TrueType}
-  # @createFromJSON: (json) ->
+  
 
 # exports
 module.exports = TrueType

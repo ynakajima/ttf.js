@@ -185,5 +185,28 @@ class CompositeGlyphData
     # return glyph
     g
 
+  # Create CompositeGlyphData instance from JSON
+  # @param {Object|String} json
+  # @param {GlyfTable} glyfTable
+  # @return {CompositeGlyphData}
+  @createFromJSON: (json, glyfTable) ->
+    # init
+    if typeof json == 'string'
+      json = JSON.parse json
+ 
+    g = new CompositeGlyphData(json.GID, glyfTable)
+
+    g.numberOfContours = json.numberOfContours
+    g.xMin = json.xMin
+    g.yMin = json.yMin
+    g.xMax = json.xMax
+    g.yMax = json.yMax
+    
+    g.components = json.components
+
+    # return glyph
+    g
+
+
 # exports
 module.exports = CompositeGlyphData

@@ -183,7 +183,7 @@ function renderFontList(e) {
     return;
   }
 
-  font = JSON.parse(e.data.font);
+  font = ttfjs.TrueType.createFromJSON(e.data.font);
 
   // show glyphlist
   $("#loading").stop().fadeOut(200, function(){
