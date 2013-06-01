@@ -142,5 +142,10 @@ class TTFDataView
     for i in [0..15]
       num = if (flags & Math.pow(2, i)) is 0 then 0 else 1
 
+  getUlongFlags: (offset) ->
+    flags = @getUlong offset
+    for i in [0..31]
+      num = if (flags & Math.pow(2, i)) is 0 then 0 else 1
+
 # exports
 module.exports = TTFDataView

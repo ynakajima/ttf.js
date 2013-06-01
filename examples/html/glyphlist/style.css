@@ -1,12 +1,14 @@
 html, body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Dosis', sans-serif;
   background-color: #ddd;
+  font-weight: 700;
 }
 
 h1 {
   position: fixed;
   top: 0px;
   width: 100%;
+  height: 23px;
   padding: 15px;
   padding-left: 40px;
   color: #fff; /* #424242; */
@@ -55,7 +57,7 @@ h1 #fileName {
   border-right: 1px solid #aaa;
   color: #333;
   font-size: 10px;
-  font-weight: bold;
+  font-weight: 800;
   line-height: 25px;
   background: #eee;
   background: linear-gradient(to bottom, #ddd 90%, #ccc 100%);
@@ -80,7 +82,8 @@ h1 #fileName {
   top: 7px;
   border-radius: 15px;
   line-height: 12px;
-  font-weight: bold;
+  font-family: sans-serif;
+  font-weight: 800;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
   text-align: center;
   right: 5px;
@@ -129,7 +132,7 @@ h1 #fileName {
 #main div.selector p {
   margin: 10px;
   font-size: 24px;
-  font-weight: bold;
+  font-weight: 800;
   color: #333;
 }
 

@@ -12,6 +12,7 @@ LocaTable = require ('./table/LocaTable')
 GlyfTable = require ('./table/GlyfTable')
 HheaTable = require ('./table/HheaTable')
 HmtxTable = require ('./table/HmtxTable')
+OS_2Table = require ('./table/OS_2Table')
 
 Glyph = require ('./glyph/Glyph')
 
@@ -38,6 +39,7 @@ class TrueType
     @glyf = new GlyfTable()
     @hhea = new HheaTable()
     @hmtx = new HmtxTable()
+    @OS_2 = new OS_2Table()
 
   # https://developer.apple.com/fonts/TTRefMan/RM06/Chap6.html#ScalerTypeNote
   isMacTTF: () ->
@@ -140,6 +142,10 @@ class TrueType
         # hmtx
         if typeof tableOffsets.hmtx isnt 'undefined'
           ttf.hmtx = HmtxTable.createFromTTFDataView(view, tableOffsets.hmtx, ttf)
+        
+        # OS/2
+        if typeof tableOffsets['OS/2'] isnt 'undefined'
+          ttf.OS_2 = OS_2Table.createFromTTFDataView(view, tableOffsets['OS/2'], ttf)
 
 
     # return ttf

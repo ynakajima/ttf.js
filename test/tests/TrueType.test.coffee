@@ -8,6 +8,7 @@ LocaTable = require '../../src/table/LocaTable'
 GlyfTable = require '../../src/table/GlyfTable'
 HheaTable = require '../../src/table/HheaTable'
 HmtxTable = require '../../src/table/HmtxTable'
+OS_2Table = require '../../src/table/OS_2Table'
 
 # test data
 ttf = new TrueType()
@@ -196,3 +197,9 @@ exports.TrueType_createFromBuffer =
     test.strictEqual ttf1.hmtx.leftSideBearing.length, 0
     test.done()
 
+  'test TrueType#OS_2': (test) ->
+    test.ok ttf.OS_2 instanceof OS_2Table
+    test.ok ttf1.OS_2 instanceof OS_2Table
+    test.strictEqual ttf1.OS_2.version, 3
+    test.strictEqual ttf1.OS_2.usMaxContext, 3
+    test.done()

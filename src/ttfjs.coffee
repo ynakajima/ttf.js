@@ -17,6 +17,7 @@ ttfjs = {
     GlyfTable: GlyfTable
     HheaTable: HheaTable
     HmtxTable: HmtxTable
+    OS_2Table: OS_2Table
   }
   glyph: {
     SimpleGlyphData: SimpleGlyphData
