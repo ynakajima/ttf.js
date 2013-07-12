@@ -38,7 +38,7 @@ work in progress...
 #### Required Tables
 <table>
   <tbody>
-    <tr><th>cmap</th><td>-</td></tr>
+    <tr><th>cmap</th><td>Part Implemented</td></tr>
     <tr><th>glyf</th><td>Almost</td></tr>
     <tr><th>head</th><td>Almost</td></tr>
     <tr><th>hhea</th><td>-</td></tr>
