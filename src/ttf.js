@@ -235,6 +235,8 @@
         this.format = view.getUint16(offset, false );
         if( this['_initFormat'+this.format] ){
             this['_initFormat'+this.format]( view, offset );
+        }else{
+            throw 'Not support cmap format'+format+' yet! Please submit an issue at github';
         }
     }
 
@@ -306,6 +308,7 @@
                     return 0;
                 }
             }else{
+                throw 'Not support cmap format4 with idRangeOffset is not zero yet! Please submit an issue at github';
                 // Not implement yet
             }
         }

@@ -72,6 +72,17 @@ work in progress...
 </table>
 
 
+API
+------------
+
+* **ttf.cmap.getGlyphIndex**(charactor)
+    * Return glyph index array of the given charactor . The array's length equals to number of the font's cmap subtables.
+    * The param charactor only accept a single charactor, if you use multiple charactors , only return the result of the first charactor.
+    * This API is working in process , only support cmap format0 and part format4. You can try your font with this , if not support, contact me;
+    
+
+
+
 TrueType Specifications
 ------
 
