@@ -158,6 +158,31 @@
 			this.glyf[i] = this._glyfDataList[offset];
 		}
 
+        // cmap
+        var cmapOffset = this.tableDirectory.cmap.offset;
+
+        this.cmap.version = view.getUint16( cmapOffset , false );
+        this.cmap.numberSubtables = view.getUint16(cmapOffset + 2 , false );
+        this.cmap.tables = [];
+        for( var i =0 ; i < this.cmap.numberSubtables; i++){
+            var table = {};
+            table.platformID = view.getUint16( cmapOffset + 8*i + 4 , false );
+            table.platformSpecificID = view.getUint16( cmapOffset + 8*i + 6, false );
+            table.offset = view.getUint32( cmapOffset + 8*i + 8, false );
+
+            //table.format = view.getUint16( cmapOffset + table.offset, false );
+            table.data = new TTFCmap( view, cmapOffset + table.offset );
+
+            this.cmap.tables.push( table );
+        }
+
+        var self = this;
+        this.cmap.getGlyphIndex = function ( c ) {
+            return self.cmap.tables.map( function ( item ) {
+                return item.data._getGlyphIndex( c );
+            });
+        }
+
 	};
 
 	/**
@@ -200,6 +225,95 @@
 
 		}
 	};
+
+    /**
+     * cmap Constructor
+     * @param {jDataView} view
+     * @param {Number} offset
+     */
+    function TTFCmap( view, offset ) {
+        this.format = view.getUint16(offset, false );
+        if( this['_initFormat'+this.format] ){
+            this['_initFormat'+this.format]( view, offset );
+        }else{
+            throw 'Not support cmap format'+format+' yet! Please submit an issue at github';
+        }
+    }
+
+    /**
+     * init format 0
+     */
+    TTFCmap.prototype._initFormat0 = function ( view, offset ) {
+        this.length = view.getUint16( offset+2, false )
+        this.language = view.getUint16( offset+4, false )
+        this.glyphIndexArray = [];
+        this.offset = offset;
+        for( var i = 6 ; i< this.length ; i++ ){
+            this.glyphIndexArray.push( view.getUint8( offset + i ) );
+        }
+
+        this._getGlyphIndex = function ( c ) {
+            var code = c.charCodeAt(0);
+            if( code < 256 ){
+                return this.glyphIndexArray[code];
+            }else{
+                return 0;
+            }
+        }
+    }
+
+    TTFCmap.prototype._initFormat4 = function ( view, offset ) {
+        this.length = view.getUint16( offset+2, false )
+        this.language = view.getUint16( offset+4, false )
+        this.segCount = view.getUint16( offset + 6 , false )/2;
+        this.searchRange = view.getUint16( offset + 8 , false );
+        this.entrySelector = view.getUint16( offset + 10, false );
+        this.rangeShift = view.getUint16( offset + 12 , false );
+
+        this.endCode = [];
+        this.startCode = [];
+        this.idDelta = [];
+        this.idRangeOffset = [];
+        for(var i = 0; i < this.segCount ; i++ ){
+            this.endCode.push( view.getUint16( offset + 14 + 2*i , false ) )
+            this.startCode.push( view.getUint16( offset + 16 + this.segCount*2 + 2*i, false ) );
+            this.idDelta.push( view.getInt16( offset + 16 + this.segCount*4 + 2*i, false ) );
+            this.idRangeOffset.push( view.getUint16( offset + 16 + this.segCount*6 + 2*i, false ) );
+        }
+        this.reservedPad = view.getUint16( offset + 14 + this.segCount * 2 , false)
+
+        this.glyphIndexArray = [];
+        for( var i = offset + 16 + this.segCount*8 ; i < ( offset + this.length) ; i+=2){
+            this.glyphIndexArray.push( view.getUint16( i ,false ));
+        }
+
+        this._getGlyphIndex = function ( c ) {
+            var code = c.charCodeAt(0);
+            var segmentIndex = 0;
+            this.endCode.some( function ( item ,i ) {
+                if( code <= item ){
+                    segmentIndex = i;
+                    return true;
+                }
+            });
+            var idRangeOffset = this.idRangeOffset[segmentIndex];
+            var idDelta = this.idDelta[segmentIndex];
+            var startCode = this.startCode[segmentIndex];
+            var endCode = this.endCode[segmentIndex];
+
+            if( idRangeOffset === 0 ){
+                if( code >= startCode && code <= endCode ){
+                    return code += idDelta;
+                }else{
+                    return 0;
+                }
+            }else{
+                throw 'Not support cmap format4 with idRangeOffset is not zero yet! Please submit an issue at github';
+                // Not implement yet
+            }
+        }
+    }
+
 
 
 	/**

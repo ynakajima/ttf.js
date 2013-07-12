@@ -17,5 +17,5 @@ if (!fs.existsSync(path)) {
 fs.readFile(path, function (err, data) {
 	if (err) throw err;
 	var ttf = new ttfjs.TTF(data);
-	console.dir(ttf);
+	console.dir(ttf.cmap.getGlyphIndex('德'));
 });
