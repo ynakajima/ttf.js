@@ -13,355 +13,6 @@
 (function() {
   var CompositeGlyphData, GlyfTable, Glyph, HeadTable, HheaTable, HmtxTable, LocaTable, MaxpTable, OS_2Table, SimpleGlyphData, TTFDataView, TrueType, jDataView, ttfjs;
 
-  jDataView = typeof require !== 'undefined' ? require('jdataview') : this.jDataView;
-
-  TTFDataView = (function() {
-
-    function TTFDataView(buffer) {
-      this.buffer = buffer;
-      this.view = new jDataView(this.buffer);
-    }
-
-    TTFDataView.prototype.seek = function(offset) {
-      if (typeof offset === 'number') {
-        this.view.seek(offset);
-      }
-      return this;
-    };
-
-    TTFDataView.prototype.tell = function() {
-      return this.view.tell();
-    };
-
-    TTFDataView.prototype.getString = function(length, offset) {
-      return this.view.getString(length, offset);
-    };
-
-    TTFDataView.prototype.getByte = function(offset) {
-      return this.view.getUint8(offset);
-    };
-
-    TTFDataView.prototype.getChar = function(offset) {
-      return this.view.getInt8(offset);
-    };
-
-    TTFDataView.prototype.getUshort = function(offset) {
-      return this.view.getUint16(offset);
-    };
-
-    TTFDataView.prototype.getShort = function(offset) {
-      return this.view.getInt16(offset);
-    };
-
-    TTFDataView.prototype.getUlong = function(offset) {
-      return this.view.getUint32(offset);
-    };
-
-    TTFDataView.prototype.getLong = function(offset) {
-      return this.view.getInt32(offset);
-    };
-
-    /**
-     * Return 32-bit signed fixed-point number (16.16).
-     * @param {number} `offset` offset.
-    */
-
-
-    TTFDataView.prototype.getFixed = function(offset) {
-      var fraction, mantissa;
-      if (typeof offset === 'number') {
-        this.seek(offset);
-      }
-      mantissa = this.view.getInt16();
-      fraction = this.view.getUint16() / Math.pow(2, 16);
-      return Math.ceil((mantissa + fraction) * 1000) / 1000;
-    };
-
-    TTFDataView.prototype.getF2dot14 = function(offset) {
-      var fraction, mantissa, value;
-      if (typeof offset === 'number') {
-        this.seek(offset);
-      }
-      value = this.view.getUint16();
-      mantissa = [0, 1, -2, -1][value >>> 14];
-      fraction = (value & 0x3fff) / Math.pow(2, 14);
-      return Math.round((mantissa + fraction) * 1000000) / 1000000;
-    };
-
-    /**
-     * Return the long internal format of a date
-     * in seconds since 12:00 midnight, January 1, 1904.
-     * It is represented as a signed 64-bit integer.<br />
-     *
-     * This method has been ported form the FontForge. <br />
-     * https://github.com/fontforge/fontforge/blob/v20120731-b/fonttools/showttf.c#L483-L516
-     * @param {number} offset offset.
-     * @return {Date} date.
-    */
-
-
-    TTFDataView.prototype.getLongDateTime = function(offset) {
-      var date, date1970, i, unixtime, year, _i, _j;
-      if (typeof offset === 'number') {
-        this.seek(offset);
-      }
-      date = [0, 0, 0, 0];
-      date1970 = [0, 0, 0, 0];
-      year = [];
-      date[3] = this.getUshort();
-      date[2] = this.getUshort();
-      date[1] = this.getUshort();
-      date[0] = this.getUshort();
-      year[0] = (60 * 60 * 24 * 365) & 0xffff;
-      year[1] = (60 * 60 * 24 * 365) >> 16;
-      for (i = _i = 1904; _i <= 1969; i = ++_i) {
-        date1970[0] += year[0];
-        date1970[1] += year[1];
-        if ((i & 3) === 0 && (i % 100 !== 0 || i % 400 === 0)) {
-          date1970[0] += 24 * 60 * 60;
-        }
-        date1970[1] += date1970[0] >> 16;
-        date1970[0] &= 0xffff;
-        date1970[2] += date1970[1] >> 16;
-        date1970[1] &= 0xffff;
-        date1970[3] += date1970[2] >> 16;
-        date1970[2] &= 0xffff;
-      }
-      for (i = _j = 0; _j <= 3; i = ++_j) {
-        date[i] -= date1970[i];
-        date[i + 1] += date[i] >> 16;
-        date[i] &= 0xffff;
-      }
-      date[3] -= date1970[3];
-      unixtime = ((date[1] << 16) | date[0]) * 1000;
-      return new Date(unixtime);
-    };
-
-    TTFDataView.prototype.getUFWord = function(offset) {
-      return this.getUshort(offset);
-    };
-
-    TTFDataView.prototype.getFWord = function(offset) {
-      return this.getShort(offset);
-    };
-
-    TTFDataView.prototype.getUshortFlags = function(offset) {
-      var flags, i, num, _i, _results;
-      flags = this.getUshort(offset);
-      _results = [];
-      for (i = _i = 0; _i <= 15; i = ++_i) {
-        _results.push(num = (flags & Math.pow(2, i)) === 0 ? 0 : 1);
-      }
-      return _results;
-    };
-
-    TTFDataView.prototype.getUlongFlags = function(offset) {
-      var flags, i, num, _i, _results;
-      flags = this.getUlong(offset);
-      _results = [];
-      for (i = _i = 0; _i <= 31; i = ++_i) {
-        _results.push(num = (flags & Math.pow(2, i)) === 0 ? 0 : 1);
-      }
-      return _results;
-    };
-
-    return TTFDataView;
-
-  })();
-
-
-
-
-
-
-
-
-
-
-
-  TrueType = (function() {
-
-    function TrueType() {
-      this.sfntHeader = {
-        sfntVersion: 0,
-        numTables: 0,
-        searchRange: 0,
-        entrySelector: 0,
-        rangeShift: 0
-      };
-      this.offsetTable = [];
-      this.head = new HeadTable();
-      this.maxp = new MaxpTable();
-      this.loca = new LocaTable();
-      this.glyf = new GlyfTable();
-      this.hhea = new HheaTable();
-      this.hmtx = new HmtxTable();
-      this.OS_2 = new OS_2Table();
-    }
-
-    TrueType.prototype.isMacTTF = function() {
-      return this.sfntHeader.sfntVersion === 'true';
-    };
-
-    TrueType.prototype.isWinTTF = function() {
-      return this.sfntHeader.sfntVersion === 1.0;
-    };
-
-    TrueType.prototype.isTTCF = function() {
-      return this.sfntHeader.sfntVersion === 'ttcf';
-    };
-
-    TrueType.prototype.isTTF = function() {
-      return this.isMacTTF() || this.isWinTTF() || this.isTTCF();
-    };
-
-    TrueType.prototype.isOTTO = function() {
-      return this.sfntHeader.sfntVersion === 'OTTO';
-    };
-
-    TrueType.prototype.isCFF = function() {
-      return this.isOTTO();
-    };
-
-    TrueType.prototype.getNumGlyphs = function() {
-      return this.maxp.numGlyphs;
-    };
-
-    TrueType.prototype.isLocaLong = function() {
-      return this.head.isLocaLong();
-    };
-
-    TrueType.prototype.getGlyphById = function(id) {
-      var glyphData;
-      if (this.getNumGlyphs() === 0) {
-        return false;
-      }
-      glyphData = this.glyf.getGlyphById(id);
-      if (glyphData === false) {
-        return false;
-      }
-      return new Glyph(glyphData, this);
-    };
-
-    TrueType.createFromBuffer = function(buffer) {
-      var checkSum, i, length, offset, sfntVersionNumber, sfntVersionString, tableOffsets, tag, ttf, view;
-      ttf = new TrueType();
-      view = new TTFDataView(buffer);
-      sfntVersionString = view.getString(4, 0);
-      sfntVersionNumber = view.getFixed(0);
-      ttf.sfntHeader.sfntVersion = sfntVersionNumber === 1.0 ? sfntVersionNumber : sfntVersionString;
-      if (ttf.isTTF() && !ttf.isTTCF() || ttf.isOTTO()) {
-        ttf.sfntHeader.numTables = view.getUshort(4);
-        ttf.sfntHeader.searchRange = view.getUshort();
-        ttf.sfntHeader.entrySelector = view.getUshort();
-        ttf.sfntHeader.rangeShift = view.getUshort();
-        if (ttf.sfntHeader.numTables > 0) {
-          tableOffsets = {};
-          ttf.offsetTable = (function() {
-            var _i, _ref, _results;
-            _results = [];
-            for (i = _i = 0, _ref = ttf.sfntHeader.numTables - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-              tag = view.getString(4);
-              checkSum = view.getUlong().toString(16);
-              offset = view.getUlong();
-              length = view.getUlong();
-              tableOffsets[tag] = offset;
-              _results.push({
-                tag: tag,
-                checkSum: checkSum,
-                offset: offset,
-                length: length
-              });
-            }
-            return _results;
-          })();
-          if (typeof tableOffsets.head !== 'undefined') {
-            ttf.head = HeadTable.createFromTTFDataView(view, tableOffsets.head, ttf);
-          }
-          if (typeof tableOffsets.maxp !== 'undefined') {
-            ttf.maxp = MaxpTable.createFromTTFDataView(view, tableOffsets.maxp, ttf);
-          }
-          if (typeof tableOffsets.loca !== 'undefined') {
-            ttf.loca = LocaTable.createFromTTFDataView(view, tableOffsets.loca, ttf);
-          }
-          if (typeof tableOffsets.glyf !== 'undefined') {
-            ttf.glyf = GlyfTable.createFromTTFDataView(view, tableOffsets.glyf, ttf);
-          }
-          if (typeof tableOffsets.hhea !== 'undefined') {
-            ttf.hhea = HheaTable.createFromTTFDataView(view, tableOffsets.hhea, ttf);
-          }
-          if (typeof tableOffsets.hmtx !== 'undefined') {
-            ttf.hmtx = HmtxTable.createFromTTFDataView(view, tableOffsets.hmtx, ttf);
-          }
-          if (typeof tableOffsets['OS/2'] !== 'undefined') {
-            ttf.OS_2 = OS_2Table.createFromTTFDataView(view, tableOffsets['OS/2'], ttf);
-          }
-        }
-      }
-      return ttf;
-    };
-
-    TrueType.createFromJSON = function(json) {
-      var ttf;
-      if (typeof json === 'string') {
-        json = JSON.parse(json);
-      }
-      ttf = new TrueType();
-      ttf.sfntHeader.sfntVersion = json.sfntHeader.sfntVersion;
-      if (ttf.isTTF() && !ttf.isTTCF() || ttf.isOTTO()) {
-        ttf.sfntHeader.numTables = json.sfntHeader.numTables;
-        ttf.sfntHeader.searchRange = json.sfntHeader.searchRange;
-        ttf.sfntHeader.entrySelector = json.sfntHeader.entrySelector;
-        ttf.sfntHeader.rangeShift = json.sfntHeader.rangeShift;
-        if (ttf.sfntHeader.numTables > 0) {
-          ttf.offsetTable = json.offsetTable;
-          if (typeof json.head !== 'undefined') {
-            ttf.head = HeadTable.createFromJSON(json.head);
-          }
-          if (typeof json.maxp !== 'undefined') {
-            ttf.maxp = MaxpTable.createFromJSON(json.maxp);
-          }
-          if (typeof json.loca !== 'undefined') {
-            ttf.loca = LocaTable.createFromJSON(json.loca);
-          }
-          if (typeof json.glyf !== 'undefined') {
-            ttf.glyf = GlyfTable.createFromJSON(json.glyf);
-          }
-          if (typeof json.hhea !== 'undefined') {
-            ttf.hhea = HheaTable.createFromJSON(json.hhea);
-          }
-          if (typeof json.hmtx !== 'undefined') {
-            ttf.hmtx = HmtxTable.createFromJSON(json.hmtx);
-          }
-          if (typeof json.OS_2 !== 'undefined') {
-            ttf.OS_2 = OS_2Table.createFromJSON(json.OS_2);
-          }
-        }
-      }
-      return ttf;
-    };
-
-    TrueType.prototype.toJSONString = function() {
-      var glyph, json, _i, _j, _len, _len1, _ref, _ref1;
-      _ref = this.glyf.glyphs;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        glyph = _ref[_i];
-        glyph.glyfTable = '[GlyfTable]';
-      }
-      json = JSON.stringify.apply(null, [this].concat(arguments));
-      _ref1 = this.glyf.glyphs;
-      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-        glyph = _ref1[_j];
-        glyph.glyfTable = this.glyf;
-      }
-      return json;
-    };
-
-    return TrueType;
-
-  })();
-
-
   CompositeGlyphData = (function() {
 
     function CompositeGlyphData(GID, glyfTable) {
@@ -2037,6 +1688,355 @@
     };
 
     return OS_2Table;
+
+  })();
+
+
+
+
+
+
+
+
+
+
+
+  TrueType = (function() {
+
+    function TrueType() {
+      this.sfntHeader = {
+        sfntVersion: 0,
+        numTables: 0,
+        searchRange: 0,
+        entrySelector: 0,
+        rangeShift: 0
+      };
+      this.offsetTable = [];
+      this.head = new HeadTable();
+      this.maxp = new MaxpTable();
+      this.loca = new LocaTable();
+      this.glyf = new GlyfTable();
+      this.hhea = new HheaTable();
+      this.hmtx = new HmtxTable();
+      this.OS_2 = new OS_2Table();
+    }
+
+    TrueType.prototype.isMacTTF = function() {
+      return this.sfntHeader.sfntVersion === 'true';
+    };
+
+    TrueType.prototype.isWinTTF = function() {
+      return this.sfntHeader.sfntVersion === 1.0;
+    };
+
+    TrueType.prototype.isTTCF = function() {
+      return this.sfntHeader.sfntVersion === 'ttcf';
+    };
+
+    TrueType.prototype.isTTF = function() {
+      return this.isMacTTF() || this.isWinTTF() || this.isTTCF();
+    };
+
+    TrueType.prototype.isOTTO = function() {
+      return this.sfntHeader.sfntVersion === 'OTTO';
+    };
+
+    TrueType.prototype.isCFF = function() {
+      return this.isOTTO();
+    };
+
+    TrueType.prototype.getNumGlyphs = function() {
+      return this.maxp.numGlyphs;
+    };
+
+    TrueType.prototype.isLocaLong = function() {
+      return this.head.isLocaLong();
+    };
+
+    TrueType.prototype.getGlyphById = function(id) {
+      var glyphData;
+      if (this.getNumGlyphs() === 0) {
+        return false;
+      }
+      glyphData = this.glyf.getGlyphById(id);
+      if (glyphData === false) {
+        return false;
+      }
+      return new Glyph(glyphData, this);
+    };
+
+    TrueType.createFromBuffer = function(buffer) {
+      var checkSum, i, length, offset, sfntVersionNumber, sfntVersionString, tableOffsets, tag, ttf, view;
+      ttf = new TrueType();
+      view = new TTFDataView(buffer);
+      sfntVersionString = view.getString(4, 0);
+      sfntVersionNumber = view.getFixed(0);
+      ttf.sfntHeader.sfntVersion = sfntVersionNumber === 1.0 ? sfntVersionNumber : sfntVersionString;
+      if (ttf.isTTF() && !ttf.isTTCF() || ttf.isOTTO()) {
+        ttf.sfntHeader.numTables = view.getUshort(4);
+        ttf.sfntHeader.searchRange = view.getUshort();
+        ttf.sfntHeader.entrySelector = view.getUshort();
+        ttf.sfntHeader.rangeShift = view.getUshort();
+        if (ttf.sfntHeader.numTables > 0) {
+          tableOffsets = {};
+          ttf.offsetTable = (function() {
+            var _i, _ref, _results;
+            _results = [];
+            for (i = _i = 0, _ref = ttf.sfntHeader.numTables - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+              tag = view.getString(4);
+              checkSum = view.getUlong().toString(16);
+              offset = view.getUlong();
+              length = view.getUlong();
+              tableOffsets[tag] = offset;
+              _results.push({
+                tag: tag,
+                checkSum: checkSum,
+                offset: offset,
+                length: length
+              });
+            }
+            return _results;
+          })();
+          if (typeof tableOffsets.head !== 'undefined') {
+            ttf.head = HeadTable.createFromTTFDataView(view, tableOffsets.head, ttf);
+          }
+          if (typeof tableOffsets.maxp !== 'undefined') {
+            ttf.maxp = MaxpTable.createFromTTFDataView(view, tableOffsets.maxp, ttf);
+          }
+          if (typeof tableOffsets.loca !== 'undefined') {
+            ttf.loca = LocaTable.createFromTTFDataView(view, tableOffsets.loca, ttf);
+          }
+          if (typeof tableOffsets.glyf !== 'undefined') {
+            ttf.glyf = GlyfTable.createFromTTFDataView(view, tableOffsets.glyf, ttf);
+          }
+          if (typeof tableOffsets.hhea !== 'undefined') {
+            ttf.hhea = HheaTable.createFromTTFDataView(view, tableOffsets.hhea, ttf);
+          }
+          if (typeof tableOffsets.hmtx !== 'undefined') {
+            ttf.hmtx = HmtxTable.createFromTTFDataView(view, tableOffsets.hmtx, ttf);
+          }
+          if (typeof tableOffsets['OS/2'] !== 'undefined') {
+            ttf.OS_2 = OS_2Table.createFromTTFDataView(view, tableOffsets['OS/2'], ttf);
+          }
+        }
+      }
+      return ttf;
+    };
+
+    TrueType.createFromJSON = function(json) {
+      var ttf;
+      if (typeof json === 'string') {
+        json = JSON.parse(json);
+      }
+      ttf = new TrueType();
+      ttf.sfntHeader.sfntVersion = json.sfntHeader.sfntVersion;
+      if (ttf.isTTF() && !ttf.isTTCF() || ttf.isOTTO()) {
+        ttf.sfntHeader.numTables = json.sfntHeader.numTables;
+        ttf.sfntHeader.searchRange = json.sfntHeader.searchRange;
+        ttf.sfntHeader.entrySelector = json.sfntHeader.entrySelector;
+        ttf.sfntHeader.rangeShift = json.sfntHeader.rangeShift;
+        if (ttf.sfntHeader.numTables > 0) {
+          ttf.offsetTable = json.offsetTable;
+          if (typeof json.head !== 'undefined') {
+            ttf.head = HeadTable.createFromJSON(json.head);
+          }
+          if (typeof json.maxp !== 'undefined') {
+            ttf.maxp = MaxpTable.createFromJSON(json.maxp);
+          }
+          if (typeof json.loca !== 'undefined') {
+            ttf.loca = LocaTable.createFromJSON(json.loca);
+          }
+          if (typeof json.glyf !== 'undefined') {
+            ttf.glyf = GlyfTable.createFromJSON(json.glyf);
+          }
+          if (typeof json.hhea !== 'undefined') {
+            ttf.hhea = HheaTable.createFromJSON(json.hhea);
+          }
+          if (typeof json.hmtx !== 'undefined') {
+            ttf.hmtx = HmtxTable.createFromJSON(json.hmtx);
+          }
+          if (typeof json.OS_2 !== 'undefined') {
+            ttf.OS_2 = OS_2Table.createFromJSON(json.OS_2);
+          }
+        }
+      }
+      return ttf;
+    };
+
+    TrueType.prototype.toJSONString = function() {
+      var glyph, json, _i, _j, _len, _len1, _ref, _ref1;
+      _ref = this.glyf.glyphs;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        glyph = _ref[_i];
+        glyph.glyfTable = '[GlyfTable]';
+      }
+      json = JSON.stringify.apply(null, [this].concat(arguments));
+      _ref1 = this.glyf.glyphs;
+      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+        glyph = _ref1[_j];
+        glyph.glyfTable = this.glyf;
+      }
+      return json;
+    };
+
+    return TrueType;
+
+  })();
+
+
+  jDataView = typeof require !== 'undefined' ? require('jdataview') : this.jDataView;
+
+  TTFDataView = (function() {
+
+    function TTFDataView(buffer) {
+      this.buffer = buffer;
+      this.view = new jDataView(this.buffer);
+    }
+
+    TTFDataView.prototype.seek = function(offset) {
+      if (typeof offset === 'number') {
+        this.view.seek(offset);
+      }
+      return this;
+    };
+
+    TTFDataView.prototype.tell = function() {
+      return this.view.tell();
+    };
+
+    TTFDataView.prototype.getString = function(length, offset) {
+      return this.view.getString(length, offset);
+    };
+
+    TTFDataView.prototype.getByte = function(offset) {
+      return this.view.getUint8(offset);
+    };
+
+    TTFDataView.prototype.getChar = function(offset) {
+      return this.view.getInt8(offset);
+    };
+
+    TTFDataView.prototype.getUshort = function(offset) {
+      return this.view.getUint16(offset);
+    };
+
+    TTFDataView.prototype.getShort = function(offset) {
+      return this.view.getInt16(offset);
+    };
+
+    TTFDataView.prototype.getUlong = function(offset) {
+      return this.view.getUint32(offset);
+    };
+
+    TTFDataView.prototype.getLong = function(offset) {
+      return this.view.getInt32(offset);
+    };
+
+    /**
+     * Return 32-bit signed fixed-point number (16.16).
+     * @param {number} `offset` offset.
+    */
+
+
+    TTFDataView.prototype.getFixed = function(offset) {
+      var fraction, mantissa;
+      if (typeof offset === 'number') {
+        this.seek(offset);
+      }
+      mantissa = this.view.getInt16();
+      fraction = this.view.getUint16() / Math.pow(2, 16);
+      return Math.ceil((mantissa + fraction) * 1000) / 1000;
+    };
+
+    TTFDataView.prototype.getF2dot14 = function(offset) {
+      var fraction, mantissa, value;
+      if (typeof offset === 'number') {
+        this.seek(offset);
+      }
+      value = this.view.getUint16();
+      mantissa = [0, 1, -2, -1][value >>> 14];
+      fraction = (value & 0x3fff) / Math.pow(2, 14);
+      return Math.round((mantissa + fraction) * 1000000) / 1000000;
+    };
+
+    /**
+     * Return the long internal format of a date
+     * in seconds since 12:00 midnight, January 1, 1904.
+     * It is represented as a signed 64-bit integer.<br />
+     *
+     * This method has been ported form the FontForge. <br />
+     * https://github.com/fontforge/fontforge/blob/v20120731-b/fonttools/showttf.c#L483-L516
+     * @param {number} offset offset.
+     * @return {Date} date.
+    */
+
+
+    TTFDataView.prototype.getLongDateTime = function(offset) {
+      var date, date1970, i, unixtime, year, _i, _j;
+      if (typeof offset === 'number') {
+        this.seek(offset);
+      }
+      date = [0, 0, 0, 0];
+      date1970 = [0, 0, 0, 0];
+      year = [];
+      date[3] = this.getUshort();
+      date[2] = this.getUshort();
+      date[1] = this.getUshort();
+      date[0] = this.getUshort();
+      year[0] = (60 * 60 * 24 * 365) & 0xffff;
+      year[1] = (60 * 60 * 24 * 365) >> 16;
+      for (i = _i = 1904; _i <= 1969; i = ++_i) {
+        date1970[0] += year[0];
+        date1970[1] += year[1];
+        if ((i & 3) === 0 && (i % 100 !== 0 || i % 400 === 0)) {
+          date1970[0] += 24 * 60 * 60;
+        }
+        date1970[1] += date1970[0] >> 16;
+        date1970[0] &= 0xffff;
+        date1970[2] += date1970[1] >> 16;
+        date1970[1] &= 0xffff;
+        date1970[3] += date1970[2] >> 16;
+        date1970[2] &= 0xffff;
+      }
+      for (i = _j = 0; _j <= 3; i = ++_j) {
+        date[i] -= date1970[i];
+        date[i + 1] += date[i] >> 16;
+        date[i] &= 0xffff;
+      }
+      date[3] -= date1970[3];
+      unixtime = ((date[1] << 16) | date[0]) * 1000;
+      return new Date(unixtime);
+    };
+
+    TTFDataView.prototype.getUFWord = function(offset) {
+      return this.getUshort(offset);
+    };
+
+    TTFDataView.prototype.getFWord = function(offset) {
+      return this.getShort(offset);
+    };
+
+    TTFDataView.prototype.getUshortFlags = function(offset) {
+      var flags, i, num, _i, _results;
+      flags = this.getUshort(offset);
+      _results = [];
+      for (i = _i = 0; _i <= 15; i = ++_i) {
+        _results.push(num = (flags & Math.pow(2, i)) === 0 ? 0 : 1);
+      }
+      return _results;
+    };
+
+    TTFDataView.prototype.getUlongFlags = function(offset) {
+      var flags, i, num, _i, _results;
+      flags = this.getUlong(offset);
+      _results = [];
+      for (i = _i = 0; _i <= 31; i = ++_i) {
+        _results.push(num = (flags & Math.pow(2, i)) === 0 ? 0 : 1);
+      }
+      return _results;
+    };
+
+    return TTFDataView;
 
   })();
 
