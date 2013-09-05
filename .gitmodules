@@ -1,3 +1,0 @@
-[submodule "vendor/jdataview"]
-	path = vendor/jdataview
-	url = git://github.com/vjeux/jDataView.git

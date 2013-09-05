@@ -15,7 +15,7 @@
   ],
   "main": "ttf.js",
   "dependencies": {
-    "jDataView": "~1.1.0"
+  	"jdataview": "~2.4.4"
   },
   "devDependencies": {
     "coffee-script": "~1.4",
@@ -31,6 +31,6 @@
     "url" : "https://github.com/ynakajima/ttf.js/issues"
   },
   "scripts": {
-    "test": "./node_modules/.bin/nodeunit test/tests test/tests/table"
+    "test": "node node_modules/nodeunit/bin/nodeunit test/tests test/tests/table"
   } 
 }

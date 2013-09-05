@@ -1,4 +1,4 @@
-importScripts('../../../../vendor/jdataview/src/jdataview.js');
+importScripts('http://jdataview.github.io/dist/jdataview.js');
 importScripts('../../../../ttf.js');
 importScripts('./readfont.js');
 
