@@ -2067,6 +2067,36 @@
       return first;
     };
 
+    TTFString.fromCodePoint = function() {
+      var codePoint, codeUnits, floor, highSurrogate, index, length, lowSurrogate;
+      codeUnits = [];
+      floor = Math.floor;
+      highSurrogate;
+
+      lowSurrogate;
+
+      index = -1;
+      length = arguments.length;
+      if (!length) {
+        return '';
+      }
+      while (++index < length) {
+        codePoint = Number(arguments[index]);
+        if (!isFinite(codePoint) || codePoint < 0 || codePoint > 0x10FFFF || floor(codePoint) !== codePoint) {
+          throw RangeError('Invalid code point: ' + codePoint);
+        }
+        if (codePoint <= 0xFFFF) {
+          codeUnits.push(codePoint);
+        } else {
+          codePoint -= 0x10000;
+          highSurrogate = (codePoint >> 10) + 0xD800;
+          lowSurrogate = (codePoint % 0x400) + 0xDC00;
+          codeUnits.push(highSurrogate, lowSurrogate);
+        }
+      }
+      return String.fromCharCode.apply(null, codeUnits);
+    };
+
     return TTFString;
 
   })();

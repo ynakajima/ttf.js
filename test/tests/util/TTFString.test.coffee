@@ -98,3 +98,35 @@ exports.TTFStringTest_codePointAt =
     test.equal TTFString.codePointAt('\uDF06abc', null), 0xDF06
     test.equal TTFString.codePointAt('\uDF06abc', undefined), 0xDF06
     test.done()
+
+exports.TTFStringTest_fromCodePoint =
+
+  'test TTFString.fromCodePointf is Function': (test) ->
+    test.ok typeof TTFString.fromCodePoint is 'function'
+    test.done()
+
+  'test TTFString.fromCodePoint' : (test) ->
+    test.equal TTFString.fromCodePoint(''), '\0'
+    test.equal TTFString.fromCodePoint(), ''
+    test.equal TTFString.fromCodePoint(-0), '\0'
+    test.equal TTFString.fromCodePoint(0), '\0'
+    test.equal TTFString.fromCodePoint(0x1D306), '\uD834\uDF06'
+    test.equal TTFString.fromCodePoint(0x1D306, 0x61, 0x1D307), '\uD834\uDF06a\uD834\uDF07'
+    test.equal TTFString.fromCodePoint(0x61, 0x62, 0x1D307), 'ab\uD834\uDF07'
+    test.equal TTFString.fromCodePoint(false), '\0'
+    test.equal TTFString.fromCodePoint(null), '\0'
+    test.done()
+
+  'test TTFSrting.fromCodePoint Throw RangeError' : (test) ->
+    test.throws( (-> TTFString.fromCodePoint('_')), RangeError)
+    test.throws( (-> TTFString.fromCodePoint('+Infinity')), RangeError)
+    test.throws( (-> TTFString.fromCodePoint('-Infinity')), RangeError)
+    test.throws( (-> TTFString.fromCodePoint(-1)), RangeError)
+    test.throws( (-> TTFString.fromCodePoint(0x10FFFF + 1)), RangeError)
+    test.throws( (-> TTFString.fromCodePoint(3.14)), RangeError)
+    test.throws( (-> TTFString.fromCodePoint(3e-2)), RangeError)
+    test.throws( (-> TTFString.fromCodePoint(Infinity)), RangeError)
+    test.throws( (-> TTFString.fromCodePoint(NaN)), RangeError)
+    test.throws( (-> TTFString.fromCodePoint(undefined)), RangeError)
+    test.throws( (-> TTFString.fromCodePoint({})), RangeError)
+    test.done()

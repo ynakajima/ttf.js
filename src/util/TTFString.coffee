@@ -51,6 +51,33 @@ class TTFString
         # http:#mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
         return (first - 0xD800) * 0x400 + second - 0xDC00 + 0x10000
     return first
-  
+
+  @fromCodePoint: () ->
+    codeUnits = []
+    floor = Math.floor
+    highSurrogate
+    lowSurrogate
+    index = -1
+    length = arguments.length
+    if !length
+      return ''
+     
+    while ++index < length
+      codePoint = Number(arguments[index])
+
+      # `NaN`, `+Infinity`, or `-Infinity` || not a valid Unicode code point || not a valid Unicode code point ||  not an integer
+      if !isFinite(codePoint) || codePoint < 0 || codePoint > 0x10FFFF || floor(codePoint) != codePoint
+        throw RangeError('Invalid code point: ' + codePoint)
+      if codePoint <= 0xFFFF # BMP code point
+        codeUnits.push(codePoint)
+      else # Astral code point; split in surrogate halves
+        # http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
+        codePoint -= 0x10000
+        highSurrogate = (codePoint >> 10) + 0xD800
+        lowSurrogate = (codePoint % 0x400) + 0xDC00
+        codeUnits.push(highSurrogate, lowSurrogate)
+
+    return String.fromCharCode.apply(null, codeUnits)
+
 # exports
 module.exports = TTFString
