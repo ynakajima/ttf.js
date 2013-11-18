@@ -9,6 +9,7 @@ require
 ###
 if typeof module isnt 'undefined'
   TTFDataView = require ('./util/TTFDataView')
+  TTFString = require ('./util/TTFString')
   TrueType = require ('./TrueType')
   HeadTable = require ('./table/HeadTable')
   MaxpTable = require ('./table/MaxpTable')
@@ -27,6 +28,7 @@ ttfjs = {
   TrueType: TrueType
   util : {
     TTFDataView: TTFDataView
+    TTFString: TTFString
   }
   table: {
     HeadTable: HeadTable
