@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Compile
-./node_modules/.bin/coffee -c --join ttf.tmp.js src/
+_file=`find src -name "*.coffee" | grep -v '^src/ttfjs.coffee$'`
+./node_modules/.bin/coffee --join ttf.tmp.js --compile $_file src/ttfjs.coffee
 
 # Remove unnecessary statement.
 sed -i "" -e "/module.exports = [^t]/d" -e "/require('\./d" ttf.tmp.js
