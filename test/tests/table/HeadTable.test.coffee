@@ -1,6 +1,6 @@
 fs = require 'fs'
 jDataView = require 'jdataview'
-TTFDataView = require '../../../src/TTFDataView'
+TTFDataView = require '../../../src/util/TTFDataView'
 HeadTable = require '../../../src/table/HeadTable'
 
 # test data

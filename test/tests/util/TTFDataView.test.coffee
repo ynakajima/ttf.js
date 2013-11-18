@@ -1,5 +1,5 @@
 jDataView = require 'jdataview'
-TTFDataView = require('../../src/TTFDataView')
+TTFDataView = require('../../../src/util/TTFDataView')
 
 testBuffer = jDataView.createBuffer(0xab # BYTE: 171, CHAR: -85
   0xde, 0xf0, # USHORT: 57072, SHORT: -8464

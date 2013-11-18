@@ -31,6 +31,6 @@
     "url" : "https://github.com/ynakajima/ttf.js/issues"
   },
   "scripts": {
-    "test": "./node_modules/.bin/nodeunit test/tests test/tests/table"
+    "test": "./node_modules/.bin/nodeunit test/tests test/tests/table test/tests/util"
   } 
 }

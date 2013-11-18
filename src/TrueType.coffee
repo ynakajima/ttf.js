@@ -5,7 +5,7 @@
 # Released under the MIT license.
 
 # require
-TTFDataView = require ('./TTFDataView')
+TTFDataView = require ('./util/TTFDataView')
 HeadTable = require ('./table/HeadTable')
 MaxpTable = require ('./table/MaxpTable')
 LocaTable = require ('./table/LocaTable')

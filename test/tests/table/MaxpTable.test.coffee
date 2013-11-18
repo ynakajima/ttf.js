@@ -1,6 +1,6 @@
 fs = require 'fs'
 jDataView = require 'jdataview'
-TTFDataView = require '../../../src/TTFDataView'
+TTFDataView = require '../../../src/util/TTFDataView'
 MaxpTable = require '../../../src/table/MaxpTable'
 
 # test data

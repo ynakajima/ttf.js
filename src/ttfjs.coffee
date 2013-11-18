@@ -9,7 +9,9 @@ exports
 ###
 ttfjs = {
   TrueType: TrueType
-  TTFDataView: TTFDataView
+  util : {
+    TTFDataView: TTFDataView
+  }
   table: {
     HeadTable: HeadTable
     LocaTable: LocaTable

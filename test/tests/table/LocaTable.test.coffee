@@ -1,6 +1,6 @@
 fs = require 'fs'
 jDataView = require 'jdataview'
-TTFDataView = require '../../../src/TTFDataView'
+TTFDataView = require '../../../src/util/TTFDataView'
 LocaTable = require '../../../src/table/LocaTable'
 ttf1Loca = require '../../resources/SourceCodePro/SourceCodePro-Medium.loca.json'
 

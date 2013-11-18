@@ -1,6 +1,6 @@
 fs = require 'fs'
 jDataView = require 'jdataview'
-TTFDataView = require '../../../src/TTFDataView'
+TTFDataView = require '../../../src/util/TTFDataView'
 HmtxTable = require '../../../src/table/HmtxTable'
 ttf1hmtx = require '../../resources/SourceCodePro/SourceCodePro-Medium.ttx.hmtx.json'
 
