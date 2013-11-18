@@ -1,14 +1,10 @@
 fs = require 'fs'
 jDataView = require 'jdataview'
-TTFDataView = require '../../src/util/TTFDataView'
-TrueType = require '../../src/TrueType'
-HeadTable = require '../../src/table/HeadTable'
-MaxpTable = require '../../src/table/MaxpTable'
-LocaTable = require '../../src/table/LocaTable'
-GlyfTable = require '../../src/table/GlyfTable'
-HheaTable = require '../../src/table/HheaTable'
-HmtxTable = require '../../src/table/HmtxTable'
-OS_2Table = require '../../src/table/OS_2Table'
+ttfjs = require '../../src/ttfjs'
+TrueType = ttfjs.TrueType
+TTFDataView = ttfjs.util.TTFDataView
+
+console.dir(TrueType)
 
 # test data
 ttf = new TrueType()
@@ -186,53 +182,53 @@ exports.TrueType_createFromBuffer =
     test.done()
 
   'test TrueType#head': (test) ->
-    test.ok ttf.head instanceof HeadTable
-    test.ok ttf1.head instanceof HeadTable
-    test.ok ttf1_json.head instanceof HeadTable
+    test.ok ttf.head instanceof ttfjs.table.HeadTable
+    test.ok ttf1.head instanceof ttfjs.table.HeadTable
+    test.ok ttf1_json.head instanceof ttfjs.table.HeadTable
     test.strictEqual ttf.head.version, 0
     test.strictEqual ttf1.head.version, 1
     test.strictEqual ttf1_json.head.version, 1
     test.done()
 
   'test TrueType#maxp': (test) ->
-    test.ok ttf.maxp instanceof MaxpTable
-    test.ok ttf1.maxp instanceof MaxpTable
-    test.ok ttf1_json.maxp instanceof MaxpTable
+    test.ok ttf.maxp instanceof ttfjs.table.MaxpTable
+    test.ok ttf1.maxp instanceof ttfjs.table.MaxpTable
+    test.ok ttf1_json.maxp instanceof ttfjs.table.MaxpTable
     test.strictEqual ttf.maxp.version, 0
     test.strictEqual ttf1.maxp.version, 1
     test.strictEqual ttf1_json.maxp.version, 1
     test.done()
 
   'test TrueType#loca': (test) ->
-    test.ok ttf.loca instanceof LocaTable
-    test.ok ttf1.loca instanceof LocaTable
-    test.ok ttf1_json.loca instanceof LocaTable
+    test.ok ttf.loca instanceof ttfjs.table.LocaTable
+    test.ok ttf1.loca instanceof ttfjs.table.LocaTable
+    test.ok ttf1_json.loca instanceof ttfjs.table.LocaTable
     test.strictEqual ttf.loca.offsets.length, 0
     test.strictEqual ttf1.loca.offsets.length, ttf1.maxp.numGlyphs + 1
     test.strictEqual ttf1_json.loca.offsets.length, ttf1_json.maxp.numGlyphs + 1
     test.done()
 
   'test TrueType#glyf': (test) ->
-    test.ok ttf.glyf instanceof GlyfTable
-    test.ok ttf1.glyf instanceof GlyfTable
-    test.ok ttf1_json.glyf instanceof GlyfTable
+    test.ok ttf.glyf instanceof ttfjs.table.GlyfTable
+    test.ok ttf1.glyf instanceof ttfjs.table.GlyfTable
+    test.ok ttf1_json.glyf instanceof ttfjs.table.GlyfTable
     test.strictEqual ttf.glyf.glyphs.length, 0
     test.strictEqual ttf1.glyf.glyphs.length, ttf1.maxp.numGlyphs
     test.strictEqual ttf1_json.glyf.glyphs.length, ttf1.maxp.numGlyphs
     test.done()
 
   'test TrueType#hhea': (test) ->
-    test.ok ttf.hhea instanceof HheaTable
-    test.ok ttf1.hhea instanceof HheaTable
-    test.ok ttf1_json.hhea instanceof HheaTable
+    test.ok ttf.hhea instanceof ttfjs.table.HheaTable
+    test.ok ttf1.hhea instanceof ttfjs.table.HheaTable
+    test.ok ttf1_json.hhea instanceof ttfjs.table.HheaTable
     test.strictEqual ttf1.hhea.version, 1.0
     test.strictEqual ttf1_json.hhea.version, 1.0
     test.done()
 
   'test TrueType#hmtx': (test) ->
-    test.ok ttf.hmtx instanceof HmtxTable
-    test.ok ttf1.hmtx instanceof HmtxTable
-    test.ok ttf1_json.hmtx instanceof HmtxTable
+    test.ok ttf.hmtx instanceof ttfjs.table.HmtxTable
+    test.ok ttf1.hmtx instanceof ttfjs.table.HmtxTable
+    test.ok ttf1_json.hmtx instanceof ttfjs.table.HmtxTable
 
     test.strictEqual ttf1.hmtx.hMetrics.length, 965
     test.strictEqual ttf1_json.hmtx.hMetrics.length, 965
@@ -242,9 +238,9 @@ exports.TrueType_createFromBuffer =
     test.done()
 
   'test TrueType#OS_2': (test) ->
-    test.ok ttf.OS_2 instanceof OS_2Table
-    test.ok ttf1.OS_2 instanceof OS_2Table
-    test.ok ttf1_json.OS_2 instanceof OS_2Table
+    test.ok ttf.OS_2 instanceof ttfjs.table.OS_2Table
+    test.ok ttf1.OS_2 instanceof ttfjs.table.OS_2Table
+    test.ok ttf1_json.OS_2 instanceof ttfjs.table.OS_2Table
 
     test.strictEqual ttf1.OS_2.version, 3
     test.strictEqual ttf1_json.OS_2.version, 3

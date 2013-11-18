@@ -5,6 +5,22 @@
 # Released under the MIT license.
 
 ###
+require
+###
+if typeof module isnt 'undefined'
+  TTFDataView = require ('./util/TTFDataView')
+  TrueType = require ('./TrueType')
+  HeadTable = require ('./table/HeadTable')
+  MaxpTable = require ('./table/MaxpTable')
+  LocaTable = require ('./table/LocaTable')
+  GlyfTable = require ('./table/GlyfTable')
+  HheaTable = require ('./table/HheaTable')
+  HmtxTable = require ('./table/HmtxTable')
+  OS_2Table = require ('./table/OS_2Table')
+  SimpleGlyphData = require ('./glyph/SimpleGlyphData')
+  CompositeGlyphData= require ('./glyph/CompositeGlyphData')
+
+###
 exports
 ###
 ttfjs = {
