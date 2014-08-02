@@ -497,9 +497,9 @@
 		var startPts = 0;
 		var currentPts = 0;
 
-		// 各輪郭毎に処理
-		for ( var i = 0, l = this.endPtsOfContours.length; i < l; i++) {
-			try {
+		try {
+			// 各輪郭毎に処理
+			for ( var i = 0, l = this.endPtsOfContours.length; i < l; i++) {
 				// 各輪郭内の座標処理
 				for ( var endPts = this.endPtsOfContours[i]; currentPts < endPts + 1; currentPts++) {
 					var path = "";
@@ -515,8 +515,7 @@
 
 					if (currentPts === startPts) { // 輪郭の開始点
 						if (currentPoint.isOnCurve) {
-							path += "M" + currentPoint.x + "," + currentPoint.y
-									+ " ";
+							path += "M" + currentPoint.x + "," + currentPoint.y + " ";
 						} else { // 開始点が曲線上になかった場合
 
 							// 中間点
@@ -580,11 +579,11 @@
 
 				// 次の輪郭の開始点
 				startPts = this.endPtsOfContours[i] + 1;
-			} catch (e) {
-				//エラー処理
-				console.log(e);
-				console.log(currentPoint, prevPoint, nextPoint, this);
 			}
+		} catch (e) {
+			//エラー処理
+			console.log(e);
+			console.log(currentPoint, prevPoint, nextPoint, this);
 		}
 		this.pathArray = pathArray;
 		this.path = pathArray.join(" ");
