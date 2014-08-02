@@ -77,7 +77,7 @@
 		this.rengeShift = view.getUint16(10, false);
 
 		// tableDirectoryの取得と各テーブルの初期化
-		this.tableDirectory = new TTFTableDirecotry(view, view.tell(), this.numTables);
+		this.tableDirectory = new TTFTableDirectory(view, view.tell(), this.numTables);
 
 		//各種テーブルの初期化
 		for (var tag in this.tableDirectory) {
@@ -121,8 +121,7 @@
 		this.maxp.maxFunctionDefs = view.getUint16(maxpOffset + 18, false);
 		this.maxp.maxInstructionDefs = view.getUint16(maxpOffset + 20, false);
 		this.maxp.maxStackElements = view.getUint16(maxpOffset + 22, false);
-		this.maxp.maxSizeOfInstructions = view
-				.getUint16(maxpOffset + 26, false);
+		this.maxp.maxSizeOfInstructions = view.getUint16(maxpOffset + 26, false);
 		this.maxp.maxComponentElements = view.getUint16(maxpOffset + 28, false);
 		this.maxp.maxComponentDepth = view.getUint16(maxpOffset + 30, false);
 
@@ -199,7 +198,7 @@
 	 * @param {jDataView} view
 	 * @param {Number} offset
 	 */
-	function TTFTableDirecotry (view, offset, numTables) {
+	function TTFTableDirectory (view, offset, numTables) {
 		this.init(view, offset, numTables);
 	};
 
@@ -208,7 +207,7 @@
 	 * @param {jDataView} view
 	 * @param {Number} offset
 	 */
-	TTFTableDirecotry.prototype.init = function(view, offset, numTables) {
+	TTFTableDirectory.prototype.init = function(view, offset, numTables) {
 		for ( var i = offset, l = numTables * 16; i < l; i += 16) {
 
 			var tag = view.getString(4, i);
@@ -625,7 +624,7 @@
 	// export
 	var ttfjs = {
 		TTF : TTF,
-		TTFTableDirecotry: TTFTableDirecotry,
+		TTFTableDirectory: TTFTableDirectory,
 		TTFGlyf : TTFGlyf
 	};
 
