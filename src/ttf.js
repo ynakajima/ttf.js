@@ -219,7 +219,7 @@
 				tag : tag,
 				checkSum : checkSum,
 				offset : offset,
-				length : length,
+				length : length
 			};
 
 		}
@@ -243,8 +243,8 @@
      * init format 0
      */
     TTFCmap.prototype._initFormat0 = function ( view, offset ) {
-        this.length = view.getUint16( offset+2, false )
-        this.language = view.getUint16( offset+4, false )
+        this.length = view.getUint16( offset+2, false );
+        this.language = view.getUint16( offset+4, false );
         this.glyphIndexArray = [];
         this.offset = offset;
         for( var i = 6 ; i< this.length ; i++ ){
@@ -259,11 +259,11 @@
                 return 0;
             }
         }
-    }
+    };
 
     TTFCmap.prototype._initFormat4 = function ( view, offset ) {
-        this.length = view.getUint16( offset+2, false )
-        this.language = view.getUint16( offset+4, false )
+        this.length = view.getUint16( offset+2, false );
+        this.language = view.getUint16( offset+4, false );
         this.segCount = view.getUint16( offset + 6 , false )/2;
         this.searchRange = view.getUint16( offset + 8 , false );
         this.entrySelector = view.getUint16( offset + 10, false );
@@ -274,12 +274,12 @@
         this.idDelta = [];
         this.idRangeOffset = [];
         for(var i = 0; i < this.segCount ; i++ ){
-            this.endCode.push( view.getUint16( offset + 14 + 2*i , false ) )
+            this.endCode.push( view.getUint16( offset + 14 + 2*i , false ) );
             this.startCode.push( view.getUint16( offset + 16 + this.segCount*2 + 2*i, false ) );
             this.idDelta.push( view.getInt16( offset + 16 + this.segCount*4 + 2*i, false ) );
             this.idRangeOffset.push( view.getUint16( offset + 16 + this.segCount*6 + 2*i, false ) );
         }
-        this.reservedPad = view.getUint16( offset + 14 + this.segCount * 2 , false)
+        this.reservedPad = view.getUint16( offset + 14 + this.segCount * 2 , false);
 
         this.glyphIndexArray = [];
         for( var i = offset + 16 + this.segCount*8 ; i < ( offset + this.length) ; i+=2){
@@ -311,7 +311,7 @@
                 // Not implement yet
             }
         }
-    }
+    };
 
 
 
