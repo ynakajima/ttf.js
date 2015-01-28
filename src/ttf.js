@@ -77,7 +77,7 @@
 		this.rengeShift = view.getUint16(10, false);
 
 		// tableDirectoryの取得と各テーブルの初期化
-		this.tableDirectory = new TTFTableDirecotry(view, view.tell(), this.numTables);
+		this.tableDirectory = new TTFTableDirectory(view, view.tell(), this.numTables);
 
 		//各種テーブルの初期化
 		for (var tag in this.tableDirectory) {
@@ -121,8 +121,7 @@
 		this.maxp.maxFunctionDefs = view.getUint16(maxpOffset + 18, false);
 		this.maxp.maxInstructionDefs = view.getUint16(maxpOffset + 20, false);
 		this.maxp.maxStackElements = view.getUint16(maxpOffset + 22, false);
-		this.maxp.maxSizeOfInstructions = view
-				.getUint16(maxpOffset + 26, false);
+		this.maxp.maxSizeOfInstructions = view.getUint16(maxpOffset + 26, false);
 		this.maxp.maxComponentElements = view.getUint16(maxpOffset + 28, false);
 		this.maxp.maxComponentDepth = view.getUint16(maxpOffset + 30, false);
 
@@ -199,7 +198,7 @@
 	 * @param {jDataView} view
 	 * @param {Number} offset
 	 */
-	function TTFTableDirecotry (view, offset, numTables) {
+	function TTFTableDirectory (view, offset, numTables) {
 		this.init(view, offset, numTables);
 	};
 
@@ -208,7 +207,7 @@
 	 * @param {jDataView} view
 	 * @param {Number} offset
 	 */
-	TTFTableDirecotry.prototype.init = function(view, offset, numTables) {
+	TTFTableDirectory.prototype.init = function(view, offset, numTables) {
 		for ( var i = offset, l = numTables * 16; i < l; i += 16) {
 
 			var tag = view.getString(4, i);
@@ -220,7 +219,7 @@
 				tag : tag,
 				checkSum : checkSum,
 				offset : offset,
-				length : length,
+				length : length
 			};
 
 		}
@@ -244,8 +243,8 @@
      * init format 0
      */
     TTFCmap.prototype._initFormat0 = function ( view, offset ) {
-        this.length = view.getUint16( offset+2, false )
-        this.language = view.getUint16( offset+4, false )
+        this.length = view.getUint16( offset+2, false );
+        this.language = view.getUint16( offset+4, false );
         this.glyphIndexArray = [];
         this.offset = offset;
         for( var i = 6 ; i< this.length ; i++ ){
@@ -260,11 +259,11 @@
                 return 0;
             }
         }
-    }
+    };
 
     TTFCmap.prototype._initFormat4 = function ( view, offset ) {
-        this.length = view.getUint16( offset+2, false )
-        this.language = view.getUint16( offset+4, false )
+        this.length = view.getUint16( offset+2, false );
+        this.language = view.getUint16( offset+4, false );
         this.segCount = view.getUint16( offset + 6 , false )/2;
         this.searchRange = view.getUint16( offset + 8 , false );
         this.entrySelector = view.getUint16( offset + 10, false );
@@ -275,12 +274,12 @@
         this.idDelta = [];
         this.idRangeOffset = [];
         for(var i = 0; i < this.segCount ; i++ ){
-            this.endCode.push( view.getUint16( offset + 14 + 2*i , false ) )
+            this.endCode.push( view.getUint16( offset + 14 + 2*i , false ) );
             this.startCode.push( view.getUint16( offset + 16 + this.segCount*2 + 2*i, false ) );
             this.idDelta.push( view.getInt16( offset + 16 + this.segCount*4 + 2*i, false ) );
             this.idRangeOffset.push( view.getUint16( offset + 16 + this.segCount*6 + 2*i, false ) );
         }
-        this.reservedPad = view.getUint16( offset + 14 + this.segCount * 2 , false)
+        this.reservedPad = view.getUint16( offset + 14 + this.segCount * 2 , false);
 
         this.glyphIndexArray = [];
         for( var i = offset + 16 + this.segCount*8 ; i < ( offset + this.length) ; i+=2){
@@ -312,7 +311,7 @@
                 // Not implement yet
             }
         }
-    }
+    };
 
 
 
@@ -498,9 +497,9 @@
 		var startPts = 0;
 		var currentPts = 0;
 
-		// 各輪郭毎に処理
-		for ( var i = 0, l = this.endPtsOfContours.length; i < l; i++) {
-			try {
+		try {
+			// 各輪郭毎に処理
+			for ( var i = 0, l = this.endPtsOfContours.length; i < l; i++) {
 				// 各輪郭内の座標処理
 				for ( var endPts = this.endPtsOfContours[i]; currentPts < endPts + 1; currentPts++) {
 					var path = "";
@@ -516,8 +515,7 @@
 
 					if (currentPts === startPts) { // 輪郭の開始点
 						if (currentPoint.isOnCurve) {
-							path += "M" + currentPoint.x + "," + currentPoint.y
-									+ " ";
+							path += "M" + currentPoint.x + "," + currentPoint.y + " ";
 						} else { // 開始点が曲線上になかった場合
 
 							// 中間点
@@ -581,11 +579,11 @@
 
 				// 次の輪郭の開始点
 				startPts = this.endPtsOfContours[i] + 1;
-			} catch (e) {
-				//エラー処理
-				console.log(e);
-				console.log(currentPoint, prevPoint, nextPoint, this);
 			}
+		} catch (e) {
+			//エラー処理
+			console.log(e);
+			console.log(currentPoint, prevPoint, nextPoint, this);
 		}
 		this.pathArray = pathArray;
 		this.path = pathArray.join(" ");
@@ -625,7 +623,7 @@
 	// export
 	var ttfjs = {
 		TTF : TTF,
-		TTFTableDirecotry: TTFTableDirecotry,
+		TTFTableDirectory: TTFTableDirectory,
 		TTFGlyf : TTFGlyf
 	};
 
